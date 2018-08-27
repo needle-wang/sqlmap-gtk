@@ -68,9 +68,9 @@ class UI_Window(g.Window):
     self._build_page1_enumeration()
     self._build_page1_file()
 
-    _notebook.append_page(self.page1_enumeration, g.Label('枚举'))
     _notebook.append_page(self.page1_setting, g.Label('设置'))
     _notebook.append_page(self.page1_request, g.Label('请求'))
+    _notebook.append_page(self.page1_enumeration, g.Label('枚举'))
     _notebook.append_page(self.page1_file, g.Label('文件'))
 
     self.page1.pack_start(_notebook, True, True, 0)
@@ -437,53 +437,148 @@ class UI_Window(g.Window):
 
   def _build_page1_enumeration(self):
     '''
-    完全用Gtk.Box()写吧
+    完全用Gtk.Box和Frame写吧
     '''
     self.page1_enumeration = g.Box(
-      orientation=g.Orientation.VERTICAL, spacing=6)
+      orientation=g.Orientation.VERTICAL, spacing=0)
 
+    # 行1
     _row1 = g.Box()
+    _row1.props.margin = 10
 
     self._build_page1_enumeration_enum()
     self._build_page1_enumeration_dump()
+    self._build_page1_enumeration_blind()
+    self._build_page1_enumeration_limit()
 
-    _row1.add(self._enum_area)
-    _row1.add(self._dump_area)
+    _row1.pack_start(self._enum_area, False, True, 10)
+    _row1.pack_start(self._dump_area, False, True, 10)
+    _row1.pack_start(self._blind_area, False, True, 10)
+    _row1.pack_start(self._limit_area, False, True, 10)
 
-    self.page1_enumeration.pack_start(_row1, False, True, 10)
+    self.page1_enumeration.add(_row1)
 
+    # 行2
     _row2 = g.Box()
+    _row2.props.margin = 10
 
-    pass
+    self._build_page1_enumeration_meta()
 
-    self.page1_enumeration.pack_start(_row2, False, True, 10)
+    _row2.pack_start(self._meta_area, True, True, 10)
+    self.page1_enumeration.add(_row2)
+
+    # 行3
+    _row3 = g.Box()
+    _row3.props.margin = 10
+    self._build_page1_enumeration_runsql()
+
+    _row3.pack_start(self._runsql_area, True, True, 10)
+    self.page1_enumeration.add(_row3)
+
+  def _build_page1_enumeration_runsql(self):
+    self._runsql_area = g.Frame.new('执行SQL语句')
+
+    _runsql_area_opts = g.Box(orientation=g.Orientation.VERTICAL)
+
+    # 行1
+    _runsql_area_opts_row1 = g.Box()
+    _runsql_area_opts_row1.pack_start(g.CheckButton(), False, True, 10)
+    _runsql_area_opts_row1.pack_start(g.Entry(), True, True, 10)
+
+    _runsql_area_opts.pack_start(_runsql_area_opts_row1, False, True, 5)
+    self._runsql_area.add(_runsql_area_opts)
+
+  def _build_page1_enumeration_meta(self):
+    self._meta_area = g.Frame.new('数据库名, 表名, 列名')
+
+    _meta_area_opts = g.Box(orientation=g.Orientation.VERTICAL)
+
+    # 行1
+    _meta_area_opts_row1 = g.Box()
+    _meta_area_opts_row1.pack_start(g.CheckButton('指定数据库名'), False, True, 10)
+    _meta_area_opts_row1.pack_start(g.Entry(), True, True, 10)
+
+    # 行2
+    _meta_area_opts_row2 = g.Box()
+    _meta_area_opts_row2.pack_start(g.CheckButton('指定表名'), False, True, 10)
+    _meta_area_opts_row2.pack_start(g.Entry(), True, True, 10)
+
+    # 行3
+    _meta_area_opts_row3 = g.Box()
+    _meta_area_opts_row3.pack_start(g.CheckButton('指定列名'), False, True, 10)
+    _meta_area_opts_row3.pack_start(g.Entry(), True, True, 10)
+
+    _meta_area_opts.pack_start(_meta_area_opts_row1, False, True, 5)
+    _meta_area_opts.pack_start(_meta_area_opts_row2, False, True, 5)
+    _meta_area_opts.pack_start(_meta_area_opts_row3, False, True, 5)
+
+    self._meta_area.add(_meta_area_opts)
+
+  def _build_page1_enumeration_limit(self):
+    self._limit_area = g.Frame.new('limit(限制)')
+
+    _limit_area_opts = g.Box(orientation=g.Orientation.VERTICAL)
+
+    # 行1
+    _limit_area_opts_row1 = g.Box()
+    _limit_area_opts_row1.pack_start(g.CheckButton('始'), False, True, 5)
+    _limit_area_opts_row1.pack_start(g.Entry(), False, True, 10)
+
+    # 行2
+    _limit_area_opts_row2 = g.Box()
+    _limit_area_opts_row2.pack_start(g.CheckButton('末'), False, True, 5)
+    _limit_area_opts_row2.pack_start(g.Entry(), False, True, 10)
+
+    _limit_area_opts.pack_start(_limit_area_opts_row1, False, True, 10)
+    _limit_area_opts.pack_start(_limit_area_opts_row2, False, True, 10)
+
+    self._limit_area.add(_limit_area_opts)
+
+  def _build_page1_enumeration_blind(self):
+    self._blind_area = g.Frame.new('盲注选项')
+
+    _blind_area_opts = g.Box(orientation=g.Orientation.VERTICAL)
+
+    # 行1
+    _blind_area_opts_row1 = g.Box()
+    _blind_area_opts_row1.pack_start(g.CheckButton('第一字符'), False, True, 5)
+    _blind_area_opts_row1.pack_start(g.Entry(), False, True, 10)
+
+    # 行2
+    _blind_area_opts_row2 = g.Box()
+    _blind_area_opts_row2.pack_start(g.CheckButton('最末字符'), False, True, 5)
+    _blind_area_opts_row2.pack_start(g.Entry(), False, True, 10)
+
+    _blind_area_opts.pack_start(_blind_area_opts_row1, False, True, 10)
+    _blind_area_opts.pack_start(_blind_area_opts_row2, False, True, 10)
+
+    self._blind_area.add(_blind_area_opts)
 
   def _build_page1_enumeration_dump(self):
-    self._dump_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._dump_area = g.Frame.new('Dump(转储)')
 
-    _dump_area_opts = g.Box()
+    _dump_area_opts = g.Box(spacing=6)
 
     _dump_area_opts_cols = g.Box(orientation=g.Orientation.VERTICAL)
 
-    _ckbtn1 = g.CheckButton('dump')
+    _ckbtn1 = g.CheckButton('dump(拖库)')
     _ckbtn2 = g.CheckButton('全部dump')
     _ckbtn3 = g.CheckButton('搜索')
     _ckbtn4 = g.CheckButton('不包含系统数据库')
 
-    _dump_area_opts_cols.pack_start(_ckbtn1, False, True, 3)
+    _dump_area_opts_cols.add(_ckbtn1)
     _dump_area_opts_cols.add(_ckbtn2)
     _dump_area_opts_cols.add(_ckbtn3)
     _dump_area_opts_cols.add(_ckbtn4)
 
-    _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 0)
+    _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
 
-    self._dump_area.pack_start(g.Label('Dump'), False, True, 3)
-    self._dump_area.pack_start(_dump_area_opts, False, True, 0)
+    self._dump_area.add(_dump_area_opts)
 
   def _build_page1_enumeration_enum(self):
-    self._enum_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._enum_area = g.Frame.new('枚举')
 
-    _enu_area_opts = g.Box(spacing=6)   # 添加三列, 方便对齐...
+    _enu_area_opts = g.Box(spacing=6)  # 添加三列, 方便对齐...
     _enu_area_opts_list = (
       ('当前用户' , '当前数据库' , '是否是DBA' , '用户')   ,
       ('密码'     , '权限'       , '角色'      , '数据库') ,
@@ -496,13 +591,66 @@ class UI_Window(g.Window):
       _enu_area_opts_cols.append(g.Box(orientation=g.Orientation.VERTICAL))
       for _y in _enu_area_opts_list[_x]:
         _enu_area_opts_cols[_x].add(g.CheckButton(_y))
-      _enu_area_opts.add(_enu_area_opts_cols[_x])
+      _enu_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
 
-    self._enum_area.pack_start(g.Label('枚举'), False, True, 0)
-    self._enum_area.pack_start(_enu_area_opts, False, True, 0)
+    self._enum_area.add(_enu_area_opts)
 
   def _build_page1_file(self):
     self.page1_file = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
+
+    # 行1
+    _row1 = g.Box(orientation=g.Orientation.HORIZONTAL)
+    _row1.props.margin = 10
+
+    self._build_page1_file_read()
+
+    _row1.pack_start(self._file_read_area, True, True, 10)
+
+    self.page1_file.add(_row1)
+
+    # 行2
+    _row2 = g.Box(orientation=g.Orientation.HORIZONTAL)
+    _row2.props.margin = 10
+
+    self._build_page1_file_type()
+    self._build_page1_file_logfile()
+
+    _row2.pack_start(self._file_type_area, False, True, 10)
+    _row2.pack_start(self._file_logfile_area, True, True, 10)
+
+    self.page1_file.add(_row2)
+
+  def _build_page1_file_logfile(self):
+    self._file_logfile_area = g.Frame.new('默认*log, *config')
+
+  def _build_page1_file_type(self):
+    self._file_type_area = g.Frame.new('类别')
+
+    # _file_type_area_list = g.ListBox()
+    # _file_type_area_list.set_size_request(300, 200)
+
+    # _file_type_area_list.add(g.TextView())
+
+    _file_type_area_list = g.TextView()
+    _file_type_area_list.set_size_request(300, 200)
+
+    self._file_type_area.add(_file_type_area_list)
+
+  def _build_page1_file_read(self):
+    self._file_read_area = g.Frame.new('读文件')
+
+    _file_read_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
+
+    # 行1
+    _file_read_area_opts_row1 = g.Box()
+
+    _file_read_area_opts_row1.pack_start(g.CheckButton(), False, True, 10)
+    _file_read_area_opts_row1.pack_start(g.Entry(), True, True, 10)
+    _file_read_area_opts_row1.pack_start(g.Button('在记录中查看'), False, True, 10)
+
+    _file_read_area_opts.pack_start(_file_read_area_opts_row1, False, True, 5)
+
+    self._file_read_area.add(_file_read_area_opts)
 
   def _build_page2(self):
     self.page2 = g.Box()
