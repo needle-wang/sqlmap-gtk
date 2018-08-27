@@ -33,30 +33,23 @@ class UI_Window(g.Window):
     name_store.append([1, "www.baidu.com"])
     name_store.append([11, "www.sina.com"])
 
-    _url_area = g.Stack()
+    _url_area = g.Frame.new('目标url')
+    _url_area.set_border_width(0)
 
     _url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
     _url_combobox.set_size_request(0, 0)
     # _url_combobox.connect('changed', None)
     _url_combobox.set_entry_text_column(1)
-    _url_area.add_titled(_url_combobox, '_url_combobox', '目标url')
+    _url_area.add(_url_combobox)
 
-    _stack_switcher1 = g.StackSwitcher()
-    _stack_switcher1.set_stack(_url_area)
-
-    self.page1.pack_start(_stack_switcher1, False, True, 0)
     self.page1.pack_start(_url_area, False, True, 0)
 
     # sqlmap命令语句
-    _cmd_area = g.Stack()
+    _cmd_area = g.Frame.new('sqlmap命令语句:')
 
     _cmd_str = g.Entry()
-    _cmd_area.add_titled(_cmd_str, '_cmd_str', 'sqlmap命令语句:')
+    _cmd_area.add(_cmd_str)
 
-    _stack_switcher2 = g.StackSwitcher()
-    _stack_switcher2.set_stack(_cmd_area)
-
-    self.page1.pack_start(_stack_switcher2, False, True, 0)
     self.page1.pack_start(_cmd_area, False, True, 0)
 
     # 主构造区
@@ -110,9 +103,9 @@ class UI_Window(g.Window):
     self.page1_setting.pack_start(_row2, True, True, 0)
 
   def _build_page1_setting_tech(self):
-    self._tech_area = g.Box(orientation=g.Orientation.VERTICAL)
+    # self._tech_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._tech_area = g.Frame.new('技术')
 
-    _tech_area_stack = g.Stack()
     _tech_area_opts = g.ListBox()
 
     # 行1
@@ -156,18 +149,11 @@ class UI_Window(g.Window):
     _row4.pack_end(_entry, False, True, 0)
     _tech_area_opts.add(_row4)
 
-    _tech_area_stack.add_titled(_tech_area_opts, '_tech_area_opts', '技术')
-
-    _tech_area_switcher = g.StackSwitcher()
-    _tech_area_switcher.set_stack(_tech_area_stack)
-
-    self._tech_area.pack_start(_tech_area_switcher, False, True, 0)
-    self._tech_area.pack_end(_tech_area_stack, True, True, 0)
+    self._tech_area.add(_tech_area_opts)
 
   def _build_page1_setting_check(self):
-    self._check_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._check_area = g.Frame.new('检测')
 
-    _check_area_stack = g.Stack()
     _check_area_opts = g.ListBox()
 
     # 行1
@@ -231,18 +217,11 @@ class UI_Window(g.Window):
     _row5.pack_end(_risk_combobox, False, True, 10)
     _check_area_opts.add(_row5)
 
-    _check_area_stack.add_titled(_check_area_opts, '_check_area_opts', '检测')
-
-    _check_area_switcher = g.StackSwitcher()
-    _check_area_switcher.set_stack(_check_area_stack)
-
-    self._check_area.pack_start(_check_area_switcher, False, True, 0)
-    self._check_area.pack_end(_check_area_stack, True, True, 0)
+    self._check_area.add(_check_area_opts)
 
   def _build_page1_setting_misc(self):
-    self._misc_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._misc_area = g.Frame.new('其他')
 
-    _misc_area_stack = g.Stack()
     _misc_area_opts = g.ListBox()
 
     _misc_area_opts.add(g.CheckButton('详细检测数据库类型'))
@@ -261,18 +240,11 @@ class UI_Window(g.Window):
     _detail_vv_row.pack_end(_detail_vv, False, True, 0)
     _misc_area_opts.add(_detail_vv_row)
 
-    _misc_area_stack.add_titled(_misc_area_opts, '_misc_area_opts', '其他')
-
-    _misc_area_switcher = g.StackSwitcher()
-    _misc_area_switcher.set_stack(_misc_area_stack)
-
-    self._misc_area.pack_start(_misc_area_switcher, False, True, 0)
-    self._misc_area.pack_end(_misc_area_stack, True, True, 0)
+    self._misc_area.add(_misc_area_opts)
 
   def _build_page1_setting_optimize(self):
-    self._optimize_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._optimize_area = g.Frame.new('优化')
 
-    _optimize_area_stack = g.Stack()
     _optimize_area_opts = g.ListBox()
 
     _optimize_area_opts.add(g.CheckButton('打开所有优化选项'))
@@ -290,19 +262,11 @@ class UI_Window(g.Window):
     _thread_num_row.pack_end(_thread_num, False, True, 0)
     _optimize_area_opts.add(_thread_num_row)
 
-    _optimize_area_stack.add_titled(_optimize_area_opts, '_optimize_area_opts',
-                                    '优化')
-
-    _optimize_area_switcher = g.StackSwitcher()
-    _optimize_area_switcher.set_stack(_optimize_area_stack)
-
-    self._optimize_area.pack_start(_optimize_area_switcher, False, True, 0)
-    self._optimize_area.pack_end(_optimize_area_stack, True, True, 0)
+    self._optimize_area.add(_optimize_area_opts)
 
   def _build_page1_setting_tamper(self):
-    self._tamper_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._tamper_area = g.Frame.new('tamper脚本')
 
-    _tamper_area_stack = g.Stack()
     _tamper_area_list = g.ListBox()
     # 最小尺寸
     _tamper_area_list.set_size_request(300, 0)
@@ -315,18 +279,11 @@ class UI_Window(g.Window):
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _scrolled.add(_tamper_area_list)
 
-    _tamper_area_stack.add_titled(_scrolled, '_tamper_area_list', 'tamper脚本')
-
-    _tamper_area_switcher = g.StackSwitcher()
-    _tamper_area_switcher.set_stack(_tamper_area_stack)
-
-    self._tamper_area.pack_start(_tamper_area_switcher, False, True, 0)
-    self._tamper_area.pack_end(_tamper_area_stack, True, True, 0)
+    self._tamper_area.add(_scrolled)
 
   def _build_page1_setting_inject(self):
-    self._inject_area = g.Box(orientation=g.Orientation.VERTICAL)
+    self._inject_area = g.Frame.new('注入')
 
-    _inject_area_stack = g.Stack()
     _inject_area_opts = g.ListBox()
 
     # 行1
@@ -395,13 +352,7 @@ class UI_Window(g.Window):
     _row7.pack_start(_ckbtn7, True, True, 0)
     _inject_area_opts.add(_row7)
 
-    _inject_area_stack.add_titled(_inject_area_opts, '_inject_area_opts', '注入')
-
-    _inject_area_switcher = g.StackSwitcher()
-    _inject_area_switcher.set_stack(_inject_area_stack)
-
-    self._inject_area.pack_start(_inject_area_switcher, False, True, 0)
-    self._inject_area.pack_end(_inject_area_stack, True, True, 0)
+    self._inject_area.add(_inject_area_opts)
 
   def _build_page1_request(self):
     self.page1_request = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
