@@ -16,13 +16,14 @@ class UI_Window(g.Window):
     self.add(self.notebook)
 
     self._build_page1()
-    self.notebook.append_page(self.page1, g.Label('功能'))
     self._build_page2()
-    self.notebook.append_page(self.page2, g.Label('查看记录'))
     self._build_page3()
-    self.notebook.append_page(self.page3, g.Label('帮助'))
     self._build_page4()
-    self.notebook.append_page(self.page4, g.Label('感谢'))
+
+    self.notebook.append_page(self.page1, g.Label('功能'))
+    self.notebook.append_page(self.page2, g.Label('查看记录'))
+    self.notebook.append_page(self.page3, g.Label('帮助'))
+    self.notebook.append_page(self.page4, g.Label('关于'))
 
   def _build_page1(self):
     self.page1 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
@@ -604,19 +605,57 @@ class UI_Window(g.Window):
     self._file_read_area.add(_file_read_area_opts)
 
   def _build_page2(self):
-    self.page2 = g.Box()
+    self.page2 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
     self.page2.set_border_width(10)
-    self.page2.add(g.Label('带图片的页面'))
+
+    # 行1
+    _row1 = g.Frame()
+
+    _scrolled = g.ScrolledWindow()
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(g.TextView())
+
+    _row1.add(_scrolled)
+
+    self.page2.pack_start(_row1, True, True, 10)
+
+    # 行2
+    _row2 = g.Box()
+
+    _row2.pack_end(g.Button(' log '), False, True, 0)
+    _row2.pack_end(g.Button(' session '), False, True, 30)
+
+    self.page2.pack_end(_row2, False, True, 0)
 
   def _build_page3(self):
-    self.page3 = g.Box()
+    self.page3 = g.Box(orientation=g.Orientation.VERTICAL)
     self.page3.set_border_width(10)
-    self.page3.add(g.Label('带图片的页面'))
+
+    # 行1
+    _row1 = g.Frame()
+
+    _scrolled = g.ScrolledWindow()
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(g.TextView())
+
+    _row1.add(_scrolled)
+
+    self.page3.pack_start(_row1, True, True, 10)
 
   def _build_page4(self):
-    self.page4 = g.Box()
+    self.page4 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
     self.page4.set_border_width(10)
-    self.page4.add(g.Label('带图片的页面'))
+
+    _about_str = '''
+    0. VERSION: 0.1\n
+    1. 作者: needle wang ( needlewang2011@gmail.com )\n\n
+    2. 使用PyGObject(Gtk-3: python3-gi)重写sqm.py的界面\n
+    3. Gtk-3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest/index.html\n
+    4. Gtk-3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
+    5. 感谢sqm的原作者, sqm UI 使用的是tkinter\n
+    6. 界面上的中文参考的是 ettack ( ettack@gmail.com ) 汉化的sqm.py\n
+    '''
+    self.page4.pack_start(g.Label(_about_str), True, False, 0)
 
 
 def main():
