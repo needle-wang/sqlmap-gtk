@@ -4,13 +4,16 @@
 # 2018年 08月 26日 星期日 16:54:41 CST
 # sqlmap gui gtk-3 by needle wang
 
+from gtk3_header import Gdk as d
 from gtk3_header import Gtk as g
+from sqlmap_ui_handlers import Singal_Handlers as handlers
 
 
 class UI_Window(g.Window):
   def __init__(self):
     super().__init__(title='sqlmap-ui')
-    # self.set_default_size(700, 0)
+    self.connect('key_press_event', self.on_key_press_event)
+    self._handlers = handlers(self)
 
     self.notebook = g.Notebook()
     self.add(self.notebook)
@@ -25,6 +28,19 @@ class UI_Window(g.Window):
     self.notebook.append_page(self.page3, g.Label('帮助'))
     self.notebook.append_page(self.page4, g.Label('关于'))
 
+  # 如果是实现do_key_press_event, 那事件就传不出去了, why?
+  def on_key_press_event(self, widget, event: d.EventKey):
+    keysym = event.keyval  # see: gdk/gdkkeysyms.h
+    # key_name = d.keyval_name(keysym)
+    # print('(keysym %s, %s)' % (keysym, key_name))
+
+    state = event.state
+    ctrl = (state & d.ModifierType.CONTROL_MASK)
+
+    if ctrl and(keysym == d.KEY_q or keysym == d.KEY_w):
+      g.main_quit()
+      return True
+
   def _build_page1(self):
     self.page1 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
     self.page1.set_border_width(10)
@@ -35,21 +51,24 @@ class UI_Window(g.Window):
     name_store.append([11, "www.sina.com"])
 
     _url_area = g.Frame.new('目标url')
-    _url_area.set_border_width(0)
 
-    _url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
-    _url_combobox.set_size_request(0, 0)
-    # _url_combobox.connect('changed', None)
-    _url_combobox.set_entry_text_column(1)
-    _url_area.add(_url_combobox)
+    self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
+    self._url_combobox.set_size_request(0, 0)
+    self._url_combobox.set_entry_text_column(1)
+    _url_area.add(self._url_combobox)
 
     self.page1.pack_start(_url_area, False, True, 0)
 
     # sqlmap命令语句
     _cmd_area = g.Frame.new('sqlmap命令语句:')
 
-    _cmd_str = g.Entry()
-    _cmd_area.add(_cmd_str)
+    self._cmd_entry = g.Entry()
+
+    # 没用呢?
+    _scrolled = g.ScrolledWindow()
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.NEVER)
+    _scrolled.add(self._cmd_entry)
+    _cmd_area.add(_scrolled)
 
     self.page1.pack_start(_cmd_area, False, True, 0)
 
@@ -69,9 +88,11 @@ class UI_Window(g.Window):
 
     self.page1.pack_start(_notebook, True, True, 0)
 
-    # 执行
+    # 构造与执行
     _exec_area = g.Box()
-    _exec_area.pack_start(g.Button('构造命令语句'), False, True, 0)
+    _build_button = g.Button('构造命令语句')
+    _build_button.connect('clicked', self._handlers.build_all)
+    _exec_area.pack_start(_build_button, False, True, 0)
     _exec_area.pack_end(g.Button('开始'), False, True, 0)
 
     self.page1.pack_start(_exec_area, True, True, 0)
@@ -111,43 +132,40 @@ class UI_Window(g.Window):
 
     # 行1
     _row1 = g.Box()
-    _tech_store = g.ListStore(int, str)
-    _tech_store.append([1, "B"])
-    _tech_store.append([2, "E"])
 
-    _ckbtn1 = g.CheckButton('注入技术')
-    _tech_combobox = g.ComboBox.new_with_model_and_entry(_tech_store)
-    _tech_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+    self._tech_area_tech_ckbtn = g.CheckButton('注入技术')
+    self._tech_area_tech_entry = g.Entry()
+    self._tech_area_tech_entry.set_text('BEUSTQ')
 
-    _row1.pack_start(_ckbtn1, False, True, 0)
-    _row1.pack_end(_tech_combobox, False, True, 0)
+    _row1.pack_start(self._tech_area_tech_ckbtn, False, True, 0)
+    _row1.pack_end(self._tech_area_tech_entry, False, True, 0)
     _tech_area_opts.add(_row1)
 
     # 行2
     _row2 = g.Box()
-    _ckbtn2 = g.CheckButton('union数')
-    _entry = g.Entry()
+    self._tech_area_union_col_ckbtn = g.CheckButton('union数')
+    self._tech_area_union_col_entry = g.Entry()
 
-    _row2.pack_start(_ckbtn2, False, True, 0)
-    _row2.pack_end(_entry, False, True, 0)
+    _row2.pack_start(self._tech_area_union_col_ckbtn, False, True, 0)
+    _row2.pack_end(self._tech_area_union_col_entry, False, True, 0)
     _tech_area_opts.add(_row2)
 
     # 行3
     _row3 = g.Box()
-    _ckbtn3 = g.CheckButton('union字符')
-    _entry = g.Entry()
+    self._tech_area_union_chr_ckbtn = g.CheckButton('union字符')
+    self._tech_area_union_chr_entry = g.Entry()
 
-    _row3.pack_start(_ckbtn3, False, True, 0)
-    _row3.pack_end(_entry, False, True, 0)
+    _row3.pack_start(self._tech_area_union_chr_ckbtn, False, True, 0)
+    _row3.pack_end(self._tech_area_union_chr_entry, False, True, 0)
     _tech_area_opts.add(_row3)
 
     # 行4
     _row4 = g.Box()
-    _ckbtn4 = g.CheckButton('查询延迟时间')
-    _entry = g.Entry()
+    self._tech_area_time_sec_ckbtn = g.CheckButton('查询延迟时间')
+    self._tech_area_time_sec_entry = g.Entry()
 
-    _row4.pack_start(_ckbtn4, False, True, 0)
-    _row4.pack_end(_entry, False, True, 0)
+    _row4.pack_start(self._tech_area_time_sec_ckbtn, False, True, 0)
+    _row4.pack_end(self._tech_area_time_sec_entry, False, True, 0)
     _tech_area_opts.add(_row4)
 
     self._tech_area.add(_tech_area_opts)
@@ -159,29 +177,29 @@ class UI_Window(g.Window):
 
     # 行1
     _row1 = g.Box()
-    _ckbtn1 = g.CheckButton('字符串')
-    _entry = g.Entry()
+    self._check_area_str_ckbtn = g.CheckButton('字符串')
+    self._check_area_str_entry = g.Entry()
 
-    _row1.pack_start(_ckbtn1, True, True, 0)
-    _row1.pack_end(_entry, True, True, 0)
+    _row1.pack_start(self._check_area_str_ckbtn, True, True, 0)
+    _row1.pack_end(self._check_area_str_entry, True, True, 0)
     _check_area_opts.add(_row1)
 
     # 行2
     _row2 = g.Box()
-    _ckbtn2 = g.CheckButton('正则')
-    _entry = g.Entry()
+    self._check_area_re_ckbtn = g.CheckButton('正则')
+    self._check_area_re_entry = g.Entry()
 
-    _row2.pack_start(_ckbtn2, True, True, 0)
-    _row2.pack_end(_entry, True, True, 0)
+    _row2.pack_start(self._check_area_re_ckbtn, True, True, 0)
+    _row2.pack_end(self._check_area_re_entry, True, True, 0)
     _check_area_opts.add(_row2)
 
     # 行3
     _row3 = g.Box()
-    _ckbtn3 = g.CheckButton('代码')
-    _entry = g.Entry()
+    self._check_area_code_ckbtn = g.CheckButton('代码')
+    self._check_area_code_entry = g.Entry()
 
-    _row3.pack_start(_ckbtn3, True, True, 0)
-    _row3.pack_end(_entry, True, True, 0)
+    _row3.pack_start(self._check_area_code_ckbtn, True, True, 0)
+    _row3.pack_end(self._check_area_code_entry, True, True, 0)
     _check_area_opts.add(_row3)
 
     # 行4
@@ -190,15 +208,15 @@ class UI_Window(g.Window):
     _level_store.append([1, "1"])
     _level_store.append([2, "2"])
 
-    _ckbtn4 = g.CheckButton('等级')
-    _level = g.ComboBox.new_with_model_and_entry(_level_store)
-    _level.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+    self._check_area_level_ckbtn = g.CheckButton('测试级别')
+    self._check_area_level_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
+    self._check_area_level_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
 
-    _ckbtn5 = g.CheckButton('仅文本')
+    self._check_area_text_only_ckbtn = g.CheckButton('仅对比文本')
 
-    _row4.pack_start(_ckbtn4, False, True, 0)
-    _row4.pack_end(_ckbtn5, False, True, 0)
-    _row4.pack_end(_level, False, True, 10)
+    _row4.pack_start(self._check_area_level_ckbtn, False, True, 0)
+    _row4.pack_end(self._check_area_text_only_ckbtn, False, True, 0)
+    _row4.pack_end(self._check_area_level_combobox, False, True, 10)
     _check_area_opts.add(_row4)
 
     # 行5
@@ -207,38 +225,48 @@ class UI_Window(g.Window):
     _level_store.append([1, "1"])
     _level_store.append([2, "2"])
 
-    _ckbtn5 = g.CheckButton('风险度')
-    _risk_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
-    _risk_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+    self._check_area_risk_ckbtn = g.CheckButton('风险度')
+    self._check_area_risk_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
+    self._check_area_risk_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
 
-    _ckbtn6 = g.CheckButton('标题')
+    self._check_area_titles_ckbtn = g.CheckButton('仅对比title')
 
-    _row5.pack_start(_ckbtn5, False, True, 0)
-    _row5.pack_end(_ckbtn6, False, True, 0)
-    _row5.pack_end(_risk_combobox, False, True, 10)
+    _row5.pack_start(self._check_area_risk_ckbtn, False, True, 0)
+    _row5.pack_end(self._check_area_titles_ckbtn, False, True, 0)
+    _row5.pack_end(self._check_area_risk_combobox, False, True, 10)
     _check_area_opts.add(_row5)
 
     self._check_area.add(_check_area_opts)
 
   def _build_page1_setting_misc(self):
-    self._misc_area = g.Frame.new('其他')
+    self._misc_area = g.Frame.new('杂项')
 
     _misc_area_opts = g.ListBox()
 
-    _misc_area_opts.add(g.CheckButton('详细检测数据库类型'))
-    _misc_area_opts.add(g.CheckButton('数据库版本信息'))
-    _misc_area_opts.add(g.CheckButton('hex'))
-    _misc_area_opts.add(g.CheckButton('无交互模式'))
+    self._misc_area_finger_chkbtn = g.CheckButton('详细检测数据库类型')
+    self._misc_area_banner_chkbtn = g.CheckButton('数据库版本信息')
+    self._misc_area_hex_ckbtn = g.CheckButton('hex')
+    self._misc_area_batch_ckbtn = g.CheckButton('非交互模式')
+
+    _misc_area_opts.add(self._misc_area_finger_chkbtn)
+    _misc_area_opts.add(self._misc_area_banner_chkbtn)
+    _misc_area_opts.add(self._misc_area_hex_ckbtn)
+    _misc_area_opts.add(self._misc_area_batch_ckbtn)
 
     _detail_vv_row = g.Box()
+
+    self._misc_area_verbose_ckbtn = g.CheckButton('输出详细度')
+
     _detail_vv_store = g.ListStore(int, str)
     _detail_vv_store.append([1, "1"])
     _detail_vv_store.append([2, "2"])
-    _detail_vv = g.ComboBox.new_with_model_and_entry(_detail_vv_store)
-    _detail_vv.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
 
-    _detail_vv_row.pack_start(g.CheckButton('输出详细度'), False, True, 0)
-    _detail_vv_row.pack_end(_detail_vv, False, True, 0)
+    self._detail_vv_combobox = g.ComboBox.new_with_model_and_entry(_detail_vv_store)
+    self._detail_vv_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+
+    _detail_vv_row.pack_start(self._misc_area_verbose_ckbtn, False, True, 0)
+    _detail_vv_row.pack_end(self._detail_vv_combobox, False, True, 0)
+
     _misc_area_opts.add(_detail_vv_row)
 
     self._misc_area.add(_misc_area_opts)
@@ -248,19 +276,32 @@ class UI_Window(g.Window):
 
     _optimize_area_opts = g.ListBox()
 
-    _optimize_area_opts.add(g.CheckButton('打开所有优化选项'))
-    _optimize_area_opts.add(g.CheckButton('预测输出结果'))
-    _optimize_area_opts.add(g.CheckButton('持续连接'))
-    _optimize_area_opts.add(g.CheckButton('只比较响应包长度'))
+    self._optimize_area_turn_all_ckbtn = g.CheckButton('打开所有优化选项')
+    _optimize_area_opts.add(self._optimize_area_turn_all_ckbtn)
+
+    self._optimize_area_predict_ckbtn = g.CheckButton('预测输出结果')
+    _optimize_area_opts.add(self._optimize_area_predict_ckbtn)
+
+    self._optimize_area_keep_alive_ckbtn = g.CheckButton('持续连接')
+    _optimize_area_opts.add(self._optimize_area_keep_alive_ckbtn)
+
+    self._optimize_area_null_connect_ckbtn = g.CheckButton('只比较响应包长度')
+    _optimize_area_opts.add(self._optimize_area_null_connect_ckbtn)
+
     _thread_num_row = g.Box()
+
+    self._optimize_area_thread_num_ckbtn = g.CheckButton('线程数')
+    _thread_num_row.pack_start(self._optimize_area_thread_num_ckbtn, False, True, 0)
 
     _thread_num_store = g.ListStore(int, str)
     _thread_num_store.append([1, "1"])
     _thread_num_store.append([2, "2"])
-    _thread_num = g.ComboBox.new_with_model_and_entry(_thread_num_store)
-    _thread_num.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
-    _thread_num_row.pack_start(g.CheckButton('线程数'), False, True, 0)
-    _thread_num_row.pack_end(_thread_num, False, True, 0)
+    self._optimize_area_thread_num_combobox = g.ComboBox.new_with_model_and_entry(_thread_num_store)
+    # 设成0, 会出现段错误~~, NB!
+    self._optimize_area_thread_num_combobox.set_entry_text_column(1)
+
+    _thread_num_row.pack_end(self._optimize_area_thread_num_combobox, False, True, 0)
+
     _optimize_area_opts.add(_thread_num_row)
 
     self._optimize_area.add(_optimize_area_opts)
@@ -293,64 +334,65 @@ class UI_Window(g.Window):
     _db_store.append([1, "access"])
     _db_store.append([11, "mysql"])
 
-    _ckbtn1 = g.CheckButton('数据库类型')
-    _db_combobox = g.ComboBox.new_with_model_and_entry(_db_store)
-    _db_combobox.set_entry_text_column(1)
+    self._inject_area_dbms_ckbtn = g.CheckButton('数据库类型')
+    self._inject_area_dbms_combobox = g.ComboBox.new_with_model_and_entry(
+      _db_store)
+    self._inject_area_dbms_combobox.set_entry_text_column(1)
 
-    _row1.pack_start(_ckbtn1, True, True, 0)
-    _row1.pack_end(_db_combobox, True, True, 0)
+    _row1.pack_start(self._inject_area_dbms_ckbtn, True, True, 0)
+    _row1.pack_end(self._inject_area_dbms_combobox, True, True, 0)
     _inject_area_opts.add(_row1)
 
     # 行2
-    _ckbtn2 = g.CheckButton('待测试参数')
-    _entry = g.Entry()
+    self._inject_area_param_ckbtn = g.CheckButton('待测试参数')
+    self._inject_area_param_entry = g.Entry()
 
     _row2 = g.Box()
-    _row2.pack_start(_ckbtn2, True, True, 0)
-    _row2.pack_end(_entry, True, True, 0)
+    _row2.pack_start(self._inject_area_param_ckbtn, True, True, 0)
+    _row2.pack_end(self._inject_area_param_entry, True, True, 0)
     _inject_area_opts.add(_row2)
 
     # 行3
     _row3 = g.Box()
-    _ckbtn3 = g.CheckButton('前缀')
-    _entry = g.Entry()
+    self._inject_area_prefix_ckbtn = g.CheckButton('前缀')
+    self._inject_area_prefix_entry = g.Entry()
 
-    _row3.pack_start(_ckbtn3, True, True, 0)
-    _row3.pack_end(_entry, True, True, 0)
+    _row3.pack_start(self._inject_area_prefix_ckbtn, True, True, 0)
+    _row3.pack_end(self._inject_area_prefix_entry, True, True, 0)
     _inject_area_opts.add(_row3)
 
     # 行4
     _row4 = g.Box()
-    _ckbtn4 = g.CheckButton('后缀')
-    _entry = g.Entry()
+    self._inject_area_suffix_ckbtn = g.CheckButton('后缀')
+    self._inject_area_suffix_entry = g.Entry()
 
-    _row4.pack_start(_ckbtn4, True, True, 0)
-    _row4.pack_end(_entry, True, True, 0)
+    _row4.pack_start(self._inject_area_suffix_ckbtn, True, True, 0)
+    _row4.pack_end(self._inject_area_suffix_entry, True, True, 0)
     _inject_area_opts.add(_row4)
 
     # 行5
     _row5 = g.Box()
-    _ckbtn5 = g.CheckButton('操作系统')
-    _entry = g.Entry()
+    self._inject_area_os_ckbtn = g.CheckButton('操作系统')
+    self._inject_area_os_entry = g.Entry()
 
-    _row5.pack_start(_ckbtn5, True, True, 0)
-    _row5.pack_end(_entry, True, True, 0)
+    _row5.pack_start(self._inject_area_os_ckbtn, True, True, 0)
+    _row5.pack_end(self._inject_area_os_entry, True, True, 0)
     _inject_area_opts.add(_row5)
 
     # 行6
     _row6 = g.Box()
-    _ckbtn6 = g.CheckButton('跳过某参数')
-    _entry = g.Entry()
+    self._inject_area_skip_ckbtn = g.CheckButton('跳过某参数')
+    self._inject_area_skip_entry = g.Entry()
 
-    _row6.pack_start(_ckbtn6, True, True, 0)
-    _row6.pack_end(_entry, True, True, 0)
+    _row6.pack_start(self._inject_area_skip_ckbtn, True, True, 0)
+    _row6.pack_end(self._inject_area_skip_entry, True, True, 0)
     _inject_area_opts.add(_row6)
 
     # 行7
     _row7 = g.Box()
-    _ckbtn7 = g.CheckButton('使用逻辑选项')
+    self._inject_area_logic_ckbtn = g.CheckButton('使用逻辑选项(废弃)')
 
-    _row7.pack_start(_ckbtn7, True, True, 0)
+    _row7.pack_start(self._inject_area_logic_ckbtn, True, True, 0)
     _inject_area_opts.add(_row7)
 
     self._inject_area.add(_inject_area_opts)
@@ -364,11 +406,11 @@ class UI_Window(g.Window):
 
     # 行2
     _row2 = g.Box()
-    _ckbtn_row2 = g.CheckButton()
-    _entry_row2 = g.Entry()
+    self.page1_request_post_ckbtn = g.CheckButton()
+    self.page1_request_post_entry = g.Entry()
 
-    _row2.pack_start(_ckbtn_row2, False, True, 10)
-    _row2.pack_start(_entry_row2, True, True, 10)
+    _row2.pack_start(self.page1_request_post_ckbtn, False, True, 10)
+    _row2.pack_start(self.page1_request_post_entry, True, True, 10)
 
     # 行3
     _row3 = g.Box()
@@ -376,11 +418,11 @@ class UI_Window(g.Window):
 
     # 行4
     _row4 = g.Box()
-    _ckbtn_row4 = g.CheckButton()
-    _entry_row4 = g.Entry()
+    self._cookie_ckbtn = g.CheckButton()
+    self._cookie_entry = g.Entry()
 
-    _row4.pack_start(_ckbtn_row4, False, True, 10)
-    _row4.pack_start(_entry_row4, True, True, 10)
+    _row4.pack_start(self._cookie_ckbtn, False, True, 10)
+    _row4.pack_start(self._cookie_entry, True, True, 10)
 
     self.page1_request.pack_start(_row1, False, True, 10)
     self.page1_request.pack_start(_row2, False, True, 10)
@@ -434,8 +476,10 @@ class UI_Window(g.Window):
 
     # 行1
     _runsql_area_opts_row1 = g.Box()
-    _runsql_area_opts_row1.pack_start(g.CheckButton(), False, True, 10)
-    _runsql_area_opts_row1.pack_start(g.Entry(), True, True, 10)
+    self._runsql_area_runsql_ckbtn = g.CheckButton()
+    self._runsql_area_runsql_entry = g.Entry()
+    _runsql_area_opts_row1.pack_start(self._runsql_area_runsql_ckbtn, False, True, 10)
+    _runsql_area_opts_row1.pack_start(self._runsql_area_runsql_entry, True, True, 10)
 
     _runsql_area_opts.pack_start(_runsql_area_opts_row1, False, True, 5)
     self._runsql_area.add(_runsql_area_opts)
@@ -447,18 +491,30 @@ class UI_Window(g.Window):
 
     # 行1
     _meta_area_opts_row1 = g.Box()
-    _meta_area_opts_row1.pack_start(g.CheckButton('指定数据库名'), False, True, 10)
-    _meta_area_opts_row1.pack_start(g.Entry(), True, True, 10)
+
+    self._meta_area_D_ckbtn = g.CheckButton('指定数据库名')
+    self._meta_area_D_entry = g.Entry()
+
+    _meta_area_opts_row1.pack_start(self._meta_area_D_ckbtn, False, True, 10)
+    _meta_area_opts_row1.pack_start(self._meta_area_D_entry, True, True, 10)
 
     # 行2
     _meta_area_opts_row2 = g.Box()
-    _meta_area_opts_row2.pack_start(g.CheckButton('指定表名'), False, True, 10)
-    _meta_area_opts_row2.pack_start(g.Entry(), True, True, 10)
+
+    self._meta_area_T_ckbtn = g.CheckButton('指定表名')
+    self._meta_area_T_entry = g.Entry()
+
+    _meta_area_opts_row2.pack_start(self._meta_area_T_ckbtn, False, True, 10)
+    _meta_area_opts_row2.pack_start(self._meta_area_T_entry, True, True, 10)
 
     # 行3
     _meta_area_opts_row3 = g.Box()
-    _meta_area_opts_row3.pack_start(g.CheckButton('指定列名'), False, True, 10)
-    _meta_area_opts_row3.pack_start(g.Entry(), True, True, 10)
+
+    self._meta_area_C_ckbtn = g.CheckButton('指定列名')
+    self._meta_area_C_entry = g.Entry()
+
+    _meta_area_opts_row3.pack_start(self._meta_area_C_ckbtn, False, True, 10)
+    _meta_area_opts_row3.pack_start(self._meta_area_C_entry, True, True, 10)
 
     _meta_area_opts.pack_start(_meta_area_opts_row1, False, True, 5)
     _meta_area_opts.pack_start(_meta_area_opts_row2, False, True, 5)
@@ -473,13 +529,21 @@ class UI_Window(g.Window):
 
     # 行1
     _limit_area_opts_row1 = g.Box()
-    _limit_area_opts_row1.pack_start(g.CheckButton('始'), False, True, 5)
-    _limit_area_opts_row1.pack_start(g.Entry(), False, True, 10)
+
+    self._limit_area_start_ckbtn = g.CheckButton('始于')
+    self._limit_area_start_entry = g.Entry()
+
+    _limit_area_opts_row1.pack_start(self._limit_area_start_ckbtn, False, True, 5)
+    _limit_area_opts_row1.pack_start(self._limit_area_start_entry, False, True, 10)
 
     # 行2
     _limit_area_opts_row2 = g.Box()
-    _limit_area_opts_row2.pack_start(g.CheckButton('末'), False, True, 5)
-    _limit_area_opts_row2.pack_start(g.Entry(), False, True, 10)
+
+    self._limit_area_stop_ckbtn = g.CheckButton('止于')
+    self._limit_area_stop_entry = g.Entry()
+
+    _limit_area_opts_row2.pack_start(self._limit_area_stop_ckbtn, False, True, 5)
+    _limit_area_opts_row2.pack_start(self._limit_area_stop_entry, False, True, 10)
 
     _limit_area_opts.pack_start(_limit_area_opts_row1, False, True, 10)
     _limit_area_opts.pack_start(_limit_area_opts_row2, False, True, 10)
@@ -493,15 +557,24 @@ class UI_Window(g.Window):
 
     # 行1
     _blind_area_opts_row1 = g.Box()
-    _blind_area_opts_row1.pack_start(g.CheckButton('第一字符'), False, True, 5)
-    _blind_area_opts_row1.pack_start(g.Entry(), False, True, 10)
+
+    self._blind_area_first_ckbtn = g.CheckButton('首字符')
+    self._blind_area_first_entry = g.Entry()
+
+    _blind_area_opts_row1.pack_start(self._blind_area_first_ckbtn, False, True, 5)
+    _blind_area_opts_row1.pack_start(self._blind_area_first_entry, False, True, 10)
+
+    _blind_area_opts.pack_start(_blind_area_opts_row1, False, True, 10)
 
     # 行2
     _blind_area_opts_row2 = g.Box()
-    _blind_area_opts_row2.pack_start(g.CheckButton('最末字符'), False, True, 5)
-    _blind_area_opts_row2.pack_start(g.Entry(), False, True, 10)
 
-    _blind_area_opts.pack_start(_blind_area_opts_row1, False, True, 10)
+    self._blind_area_last_ckbtn = g.CheckButton('末字符')
+    self._blind_area_last_entry = g.Entry()
+
+    _blind_area_opts_row2.pack_start(self._blind_area_last_ckbtn, False, True, 5)
+    _blind_area_opts_row2.pack_start(self._blind_area_last_entry, False, True, 10)
+
     _blind_area_opts.pack_start(_blind_area_opts_row2, False, True, 10)
 
     self._blind_area.add(_blind_area_opts)
@@ -513,15 +586,15 @@ class UI_Window(g.Window):
 
     _dump_area_opts_cols = g.Box(orientation=g.Orientation.VERTICAL)
 
-    _ckbtn1 = g.CheckButton('dump(拖库)')
-    _ckbtn2 = g.CheckButton('全部dump')
-    _ckbtn3 = g.CheckButton('搜索')
-    _ckbtn4 = g.CheckButton('不包含系统数据库')
+    self._dump_area_dump_ckbtn = g.CheckButton('dump(拖库)')
+    self._dump_area_dump_all_ckbtn = g.CheckButton('全部dump')
+    self._dump_area_search_ckbtn = g.CheckButton('搜索')
+    self._dump_area_no_sys_db_ckbtn = g.CheckButton('不包含系统数据库')
 
-    _dump_area_opts_cols.add(_ckbtn1)
-    _dump_area_opts_cols.add(_ckbtn2)
-    _dump_area_opts_cols.add(_ckbtn3)
-    _dump_area_opts_cols.add(_ckbtn4)
+    _dump_area_opts_cols.add(self._dump_area_dump_ckbtn)
+    _dump_area_opts_cols.add(self._dump_area_dump_all_ckbtn)
+    _dump_area_opts_cols.add(self._dump_area_search_ckbtn)
+    _dump_area_opts_cols.add(self._dump_area_no_sys_db_ckbtn)
 
     _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
 
@@ -530,22 +603,28 @@ class UI_Window(g.Window):
   def _build_page1_enumeration_enum(self):
     self._enum_area = g.Frame.new('枚举')
 
-    _enu_area_opts = g.Box(spacing=6)  # 添加三列, 方便对齐...
-    _enu_area_opts_list = (
-      ('当前用户' , '当前数据库' , '是否是DBA' , '用户')   ,
-      ('密码'     , '权限'       , '角色'      , '数据库') ,
-      ('表'       , '字段'       , '架构'      , '计数')   ,
+    _enum_area_opts = g.Box(spacing=6)  # 添加三列, 方便对齐...
+    _enum_area_opts_list = (
+      ('当前用户', '当前数据库', '是否是DBA', '用户'),
+      ('密码', '权限', '角色', '数据库'),
+      ('表', '字段', '架构', '计数'),
     )
+    self._enum_area_opts_ckbtns = []
 
     # Do not use: [g.Box()] * 3, 会有闭包现象
     _enu_area_opts_cols = []
-    for _x in range(len(_enu_area_opts_list)):
+    for _x in range(len(_enum_area_opts_list)):
+      self._enum_area_opts_ckbtns.append([])
       _enu_area_opts_cols.append(g.Box(orientation=g.Orientation.VERTICAL))
-      for _y in _enu_area_opts_list[_x]:
-        _enu_area_opts_cols[_x].add(g.CheckButton(_y))
-      _enu_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
 
-    self._enum_area.add(_enu_area_opts)
+      for _y in _enum_area_opts_list[_x]:
+        _tmp = g.CheckButton(_y)
+        self._enum_area_opts_ckbtns[_x].append(_tmp)
+        _enu_area_opts_cols[_x].add(_tmp)
+
+      _enum_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
+
+    self._enum_area.add(_enum_area_opts)
 
   def _build_page1_file(self):
     self.page1_file = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
@@ -596,12 +675,15 @@ class UI_Window(g.Window):
     # 行1
     _file_read_area_opts_row1 = g.Box()
 
-    _file_read_area_opts_row1.pack_start(g.CheckButton(), False, True, 10)
-    _file_read_area_opts_row1.pack_start(g.Entry(), True, True, 10)
-    _file_read_area_opts_row1.pack_start(g.Button('在记录中查看'), False, True, 10)
+    self._file_read_area_file_ckbtn = g.CheckButton()
+    self._file_read_area_file_entry = g.Entry()
+    self._file_read_area_file_btn = g.Button('在记录中查看')
+
+    _file_read_area_opts_row1.pack_start(self._file_read_area_file_ckbtn, False, True, 10)
+    _file_read_area_opts_row1.pack_start(self._file_read_area_file_entry, True, True, 10)
+    _file_read_area_opts_row1.pack_start(self._file_read_area_file_btn, False, True, 10)
 
     _file_read_area_opts.pack_start(_file_read_area_opts_row1, False, True, 5)
-
     self._file_read_area.add(_file_read_area_opts)
 
   def _build_page2(self):
@@ -652,7 +734,7 @@ class UI_Window(g.Window):
     2. 使用PyGObject(Gtk-3: python3-gi)重写sqm.py的界面\n
     3. Gtk-3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest/index.html\n
     4. Gtk-3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
-    5. 感谢sqm的原作者, sqm UI 使用的是tkinter\n
+    5. 感谢sqm的作者 KINGX ( https://github.com/kxcode ), sqm UI 使用的是tkinter\n
     6. 界面上的中文参考的是 ettack ( ettack@gmail.com ) 汉化的sqm.py\n
     '''
     self.page4.pack_start(g.Label(_about_str), True, False, 0)
