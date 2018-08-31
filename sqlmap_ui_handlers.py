@@ -22,39 +22,44 @@ class Singal_Handlers(object):
   def build_all(self, button):
     ui = self._w
     _agent = ' --random-agent'
-    _target = " -u '" + ui._url_combobox.get_child().get_text() + "'"
 
-    _final_line = (
-      _agent + _target + self._param_builder() +
-      self._tamper_builder() + self._read_file_builder() +
-      self._sql_query_builder() + self._post_builder() +
-      self._level_builder() + self._risk_builder() +
-      self._titles_builder() + self._hex_builder() +
-      self._text_only_builder() + self._code_builder() +
-      self._re_builder() + self._str_builder() +
-      self._time_sec_builder() + self._tech_builder() +
-      self._opti_turn_all_builder() + self._predict_builder() +
-      self._keep_alive_builder() + self._null_connect_builder() +
-      self._thread_num_builder() + self._dbms_builder() +
-      self._union_col_builder() + self._union_chr_builder() +
-      self._cookie_builder() + self._prefix_builder() +
-      self._suffix_builder() + self._os_builder() +
-      self._skip_builder() + self._batch_builder() +
-      self._banner_builder() + self._cur_user_builder() +
-      self._cur_db_builder() + self._hostname_builder() +
-      self._is_dba_builder() + self._users_builder() +
-      self._passwds_builder() + self._priv_builder() +
-      self._roles_builder() + self._dbs_builder() +
-      self._tables_builder() + self._columns_builder() +
-      self._schema_builder() + self._count_builder() +
-      self._dump_builder() + self._dump_all_builder() +
-      self._search_builder() + self._D_builder() +
-      self._T_builder() + self._C_builder() +
-      self._no_sys_db_builder() + self._start_builder() +
-      self._stop_builder() + self._first_builder() +
-      self._last_builder() + self._verbose_builder() +
-      self._finger_builder()
-    )
+    _final_line = ''.join((
+      _agent, self._target_builder(), self._param_builder(),
+      self._tamper_builder(), self._read_file_builder(),
+      self._sql_query_builder(), self._post_builder(),
+      self._level_builder(), self._risk_builder(),
+      self._titles_builder(), self._hex_builder(),
+      self._text_only_builder(), self._code_builder(),
+      self._re_builder(), self._str_builder(),
+      self._time_sec_builder(), self._tech_builder(),
+      self._opti_turn_all_builder(), self._predict_builder(),
+      self._keep_alive_builder(), self._null_connect_builder(),
+      self._thread_num_builder(), self._dbms_builder(),
+      self._union_col_builder(), self._union_chr_builder(),
+      self._cookie_builder(), self._prefix_builder(),
+      self._suffix_builder(), self._os_builder(),
+      self._skip_builder(), self._batch_builder(),
+      self._banner_builder(), self._cur_user_builder(),
+      self._cur_db_builder(), self._hostname_builder(),
+      self._is_dba_builder(), self._users_builder(),
+      self._passwds_builder(), self._priv_builder(),
+      self._roles_builder(), self._dbs_builder(),
+      self._tables_builder(), self._columns_builder(),
+      self._schema_builder(), self._count_builder(),
+      self._dump_builder(), self._dump_all_builder(),
+      self._search_builder(), self._D_builder(),
+      self._T_builder(), self._C_builder(),
+      self._no_sys_db_builder(), self._start_builder(),
+      self._stop_builder(), self._first_builder(),
+      self._last_builder(), self._verbose_builder(),
+      self._finger_builder(), self._skip_static_builder(),
+      self._invalid_logic_builder(), self._no_case_builder(),
+      self._no_escape_builder(), self._union_from_builder(),
+      self._dns_domain_builder(), self._second_url_builder(),
+      self._second_req_builder(), self._where_clause_builder(),
+      self._udf_builder(), self._shared_lib_builder(),
+      self._file_write_builder(), self._file_dest_builder(),
+    ))
 
     ui._cmd_entry.set_text(_final_line)
 
@@ -70,6 +75,106 @@ class Singal_Handlers(object):
       print(_cmdline_str)
       subprocess.Popen(_cmdline_str, shell = True)
 
+  def _target_builder(self):
+    ui = self._w
+    if ui._target_notbook.get_current_page() is 0:
+      return " -u '" + ui._url_combobox.get_child().get_text() + "'"
+    elif ui._target_notbook.get_current_page() is 1:
+      return " -l '" + ui._burp_logfile.get_text() + "'"
+    elif ui._target_notbook.get_current_page() is 2:
+      return " -r '" + ui._request_file.get_text() + "'"
+
+  def _file_dest_builder(self):
+    ''' --file-dest=DFILE   Back-end DBMS absolute filepath to write to '''
+    ui = self._w
+    if ui._file_read_area_file_dest_ckbtn.get_active():
+      return " --file-dest='" + ui._file_read_area_file_dest_entry.get_text() + "'"
+    return ''
+
+  def _file_write_builder(self):
+    ''' --file-write=WFILE  Write a local file on the back-end DBMS file system '''
+    ui = self._w
+    if ui._file_read_area_file_write_ckbtn.get_active():
+      return " --file-write='" + ui._file_read_area_file_write_entry.get_text() + "'"
+    return ''
+
+  def _shared_lib_builder(self):
+    ''' --shared-lib=SHLIB  Local path of the shared library '''
+    ui = self._w
+    if ui._file_read_area_shared_lib_ckbtn.get_active():
+      return " --shared-lib='" + ui._file_read_area_shared_lib_entry.get_text() + "'"
+    return ''
+
+  def _udf_builder(self):
+    ''' --udf-inject        Inject custom user-defined functions '''
+    ui = self._w
+    if ui._file_read_area_udf_ckbtn.get_active():
+      return ' --udf-inject'
+    return ''
+
+  def _where_clause_builder(self):
+    ''' --where=DUMPWHERE   Use WHERE condition while table dumping '''
+    ui = self._w
+    if ui._meta_area_where_ckbtn.get_active():
+      return " --where='" + ui._meta_area_where_entry.get_text() + "'"
+    return ''
+
+  def _second_req_builder(self):
+    ''' --second-req=SEC..  Load second-order HTTP request from file '''
+    ui = self._w
+    if ui._tech_area_second_req_url_ckbtn.get_active():
+      return " --second-req='" + ui._tech_area_second_req_url_entry.get_text() + "'"
+    return ''
+
+  def _second_url_builder(self):
+    ''' --second-url=SEC..  Resulting page URL searched for second-order response '''
+    ui = self._w
+    if ui._tech_area_second_url_ckbtn.get_active():
+      return " --second-url='" + ui._tech_area_second_url_entry.get_text() + "'"
+    return ''
+
+  def _dns_domain_builder(self):
+    ''' --dns-domain=DNS..  Domain name used for DNS exfiltration attack '''
+    ui = self._w
+    if ui._tech_area_dns_ckbtn.get_active():
+      return " --dns-domain='" + ui._tech_area_dns_entry.get_text() + "'"
+    return ''
+
+  def _union_from_builder(self):
+    ''' --union-from=UFROM  Table to use in FROM part of UNION query SQL injection '''
+    ui = self._w
+    if ui._tech_area_union_table_ckbtn.get_active():
+      return " --union-from='" + ui._tech_area_union_table_entry.get_text() + "'"
+    return ''
+
+  def _no_escape_builder(self):
+    ''' --no-escape         Turn off string escaping mechanism '''
+    ui = self._w
+    if ui._inject_area_no_escape_ckbtn.get_active():
+      return ' --no-escape'
+    return ''
+
+  def _no_case_builder(self):
+    ''' --no-cast           Turn off payload casting mechanism '''
+    ui = self._w
+    if ui._inject_area_no_cast_ckbtn.get_active():
+      return ' --no-cast'
+    return ''
+
+  def _invalid_logic_builder(self):
+    ''' --invalid-logical   Use logical operations for invalidating values '''
+    ui = self._w
+    if ui._inject_area_logic_ckbtn.get_active():
+      return ' --invalid-logical'
+    return ''
+
+  def _skip_static_builder(self):
+    ''' --skip-static       Skip testing parameters that not appear to be dynamic '''
+    ui = self._w
+    if ui._inject_area_skip_static_ckbtn.get_active():
+      return ' --skip-static'
+    return ''
+
   def _finger_builder(self):
     ''' -f, --fingerprint   Perform an extensive DBMS version fingerprint '''
     ui = self._w
@@ -81,7 +186,7 @@ class Singal_Handlers(object):
     ''' -v VERBOSE            Verbosity level: 0-6 (default 1) '''
     ui = self._w
     if ui._general_area_verbose_ckbtn.get_active():
-      return ' -v ' + ui._detail_vv_combobox.get_child().get_text()
+      return ' -v ' + ui._detail_vv_entry.get_text()
     return ''
 
   def _last_builder(self):
@@ -309,7 +414,7 @@ class Singal_Handlers(object):
     ''' --union-char=UCHAR  Character to use for bruteforcing number of columns '''
     ui = self._w
     if ui._tech_area_union_chr_ckbtn.get_active():
-      return " --union-cols='" + ui._tech_area_union_chr_entry.get_text() + "'"
+      return " --union-char='" + ui._tech_area_union_chr_entry.get_text() + "'"
     return ''
 
   def _union_col_builder(self):

@@ -14,6 +14,7 @@ class UI_Window(g.Window):
   def __init__(self):
     super().__init__(title='sqlmap-ui')
     self.connect('key_press_event', self.on_window_key_press_event)
+
     self._handlers = handlers(self)
 
     self.notebook = g.Notebook()
@@ -50,16 +51,18 @@ class UI_Window(g.Window):
     name_store = g.ListStore(int, str)
     name_store.append([1, "www.google.com?id=1"])
 
-    _target_notbook = g.Notebook()
+    self._target_notbook = g.Notebook()
 
     _url_area = g.Box()
 
     self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
     self._url_combobox.set_size_request(0, 0)
     self._url_combobox.set_entry_text_column(1)
+    self._url_combobox.get_child().set_text('必填项, 从目标url, burp日志, HTTP请求任选一项')
+
     _url_area.pack_start(self._url_combobox, True, True, 0)
 
-    _target_notbook.append_page(_url_area, g.Label('目标url'))
+    self._target_notbook.append_page(_url_area, g.Label('目标url'))
 
     _burp_area = g.Box()
 
@@ -68,7 +71,7 @@ class UI_Window(g.Window):
 
     _burp_area.pack_start(self._burp_logfile, True, True, 0)
 
-    _target_notbook.append_page(_burp_area, g.Label('burp日志'))
+    self._target_notbook.append_page(_burp_area, g.Label('burp日志'))
 
     _request_area = g.Box()
 
@@ -77,9 +80,9 @@ class UI_Window(g.Window):
 
     _request_area.pack_start(self._request_file, True, True, 0)
 
-    _target_notbook.append_page(_request_area, g.Label('HTTP请求'))
+    self._target_notbook.append_page(_request_area, g.Label('HTTP请求'))
 
-    self.page1.pack_start(_target_notbook, False, True, 0)
+    self.page1.pack_start(self._target_notbook, False, True, 0)
 
     # sqlmap命令语句
     _cmd_area = g.Frame.new('sqlmap命令语句:')
@@ -119,10 +122,10 @@ class UI_Window(g.Window):
     # 构造与执行
     _exec_area = g.Box()
 
-    _build_button = g.Button('构造命令语句')
+    _build_button = g.Button.new_with_mnemonic('构造命令语句(_E)')
     _build_button.connect('clicked', self._handlers.build_all)
 
-    _run_button = g.Button('开始')
+    _run_button = g.Button.new_with_mnemonic('开始(_R)')
     _run_button.connect('clicked', self._handlers.run_cmd)
 
     _exec_area.pack_start(_build_button, False, True, 0)
@@ -226,7 +229,7 @@ class UI_Window(g.Window):
 
     # 行7
     _row7 = g.Box()
-    self._tech_area_second_url_ckbtn = g.CheckButton('指定秒序响应的url')
+    self._tech_area_second_url_ckbtn = g.CheckButton('指定二阶响应的url')
     self._tech_area_second_url_entry = g.Entry()
 
     _row7.pack_start(self._tech_area_second_url_ckbtn, True, True, 0)
@@ -235,7 +238,7 @@ class UI_Window(g.Window):
 
     # 行8
     _row8 = g.Box()
-    self._tech_area_second_req_url_ckbtn = g.CheckButton('指定含秒序HTTP请求的文件')
+    self._tech_area_second_req_url_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件')
     self._tech_area_second_req_url_entry = g.Entry()
 
     _row8.pack_start(self._tech_area_second_req_url_ckbtn, True, True, 0)
@@ -309,7 +312,7 @@ class UI_Window(g.Window):
     _row5 = g.Box()
     self._check_area_code_ckbtn = g.CheckButton('指定http状态码')
     self._check_area_code_entry = g.Entry()
-    self._check_area_code_entry.set_text('(查询为真时)')
+    self._check_area_code_entry.set_text('(查询为真时的)')
 
     _row5.pack_start(self._check_area_code_ckbtn, False, True, 0)
     _row5.pack_end(self._check_area_code_entry, True, True, 5)
@@ -333,17 +336,13 @@ class UI_Window(g.Window):
 
     _detail_vv_row = g.Box()
 
-    self._general_area_verbose_ckbtn = g.CheckButton('输出详细度')
+    self._general_area_verbose_ckbtn = g.CheckButton('输出详细程度')
 
-    _detail_vv_store = g.ListStore(int, str)
-    _detail_vv_store.append([1, "1"])
-    _detail_vv_store.append([2, "2"])
-
-    self._detail_vv_combobox = g.ComboBox.new_with_model_and_entry(_detail_vv_store)
-    self._detail_vv_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+    self._detail_vv_entry = g.Entry()
+    self._detail_vv_entry.set_text('(0-6), 默认为1')
 
     _detail_vv_row.pack_start(self._general_area_verbose_ckbtn, False, True, 0)
-    _detail_vv_row.pack_end(self._detail_vv_combobox, False, True, 0)
+    _detail_vv_row.pack_start(self._detail_vv_entry, True, True, 5)
 
     _general_area_opts.add(_detail_vv_row)
 
@@ -363,7 +362,7 @@ class UI_Window(g.Window):
     self._optimize_area_keep_alive_ckbtn = g.CheckButton('http连接使用keep-alive')
     _optimize_area_opts.add(self._optimize_area_keep_alive_ckbtn)
 
-    self._optimize_area_null_connect_ckbtn = g.CheckButton('只比较页面长度, 而非内容')
+    self._optimize_area_null_connect_ckbtn = g.CheckButton('只用页面长度报头来比较, 不去获取实际的响应体')
     _optimize_area_opts.add(self._optimize_area_null_connect_ckbtn)
 
     _thread_num_row = g.Box()
@@ -465,16 +464,16 @@ class UI_Window(g.Window):
 
     # 行7
     _row7 = g.Box()
-    self._inject_area_logic_ckbtn = g.CheckButton('关掉payload变形机制')
+    self._inject_area_no_cast_ckbtn = g.CheckButton('关掉payload变形机制')
 
-    _row7.pack_start(self._inject_area_logic_ckbtn, True, True, 0)
+    _row7.pack_start(self._inject_area_no_cast_ckbtn, True, True, 0)
     _inject_area_opts.add(_row7)
 
     # 行8
     _row8 = g.Box()
-    self._inject_area_logic_ckbtn = g.CheckButton('关掉string转义')
+    self._inject_area_no_escape_ckbtn = g.CheckButton('关掉string转义')
 
-    _row8.pack_start(self._inject_area_logic_ckbtn, True, True, 0)
+    _row8.pack_start(self._inject_area_no_escape_ckbtn, True, True, 0)
     _inject_area_opts.add(_row8)
 
     # 行9
@@ -499,36 +498,37 @@ class UI_Window(g.Window):
     self._inject_area.add(_inject_area_opts)
 
   def _build_page1_request(self):
-    self.page1_request = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
+    self.page1_request = g.Box(orientation=g.Orientation.VERTICAL, spacing=5)
 
     # 行1
     _row1 = g.Box()
-    _row1.pack_start(g.Label('POST数据'), False, True, 10)
+    _row1.pack_start(g.Label('通过POST请求要提交的DATA:'), False, True, 5)
 
     # 行2
     _row2 = g.Box()
     self.page1_request_post_ckbtn = g.CheckButton()
     self.page1_request_post_entry = g.Entry()
 
-    _row2.pack_start(self.page1_request_post_ckbtn, False, True, 10)
-    _row2.pack_start(self.page1_request_post_entry, True, True, 10)
+    _row2.pack_start(self.page1_request_post_ckbtn, False, True, 5)
+    _row2.pack_start(self.page1_request_post_entry, True, True, 5)
 
     # 行3
     _row3 = g.Box()
-    _row3.pack_start(g.Label('Cookie'), False, True, 10)
+    _row3.pack_start(g.Label('设置请求中要包含的Cookie值'), False, True, 5)
 
     # 行4
     _row4 = g.Box()
     self._cookie_ckbtn = g.CheckButton()
     self._cookie_entry = g.Entry()
+    self._cookie_entry.set_text('请求选项太多了, 没时间写, # TODO')
 
-    _row4.pack_start(self._cookie_ckbtn, False, True, 10)
-    _row4.pack_start(self._cookie_entry, True, True, 10)
+    _row4.pack_start(self._cookie_ckbtn, False, True, 5)
+    _row4.pack_start(self._cookie_entry, True, True, 5)
 
-    self.page1_request.pack_start(_row1, False, True, 10)
-    self.page1_request.pack_start(_row2, False, True, 10)
-    self.page1_request.pack_start(_row3, False, True, 10)
-    self.page1_request.pack_start(_row4, False, True, 10)
+    self.page1_request.pack_start(_row1, False, True, 5)
+    self.page1_request.pack_start(_row2, False, True, 5)
+    self.page1_request.pack_start(_row3, False, True, 5)
+    self.page1_request.pack_start(_row4, False, True, 5)
 
   def _build_page1_enumeration(self):
     '''
@@ -805,7 +805,7 @@ class UI_Window(g.Window):
 
     _file_write_area_opts_row1.pack_start(self._file_read_area_udf_ckbtn, False, True, 5)
 
-    self._file_read_area_shared_lib_ckbtn = g.CheckButton('本地共享库路径(--shared-lib)')
+    self._file_read_area_shared_lib_ckbtn = g.CheckButton('本地共享库路径(--shared-lib=)')
     self._file_read_area_shared_lib_entry = g.Entry()
     self._file_read_area_shared_lib_entry.set_text('与--udf-inject配套使用, 可选')
 
@@ -905,7 +905,7 @@ class UI_Window(g.Window):
 
     _about_str = '''
     1. VERSION: 0.1
-       2018年 08月 31日 星期五 18:22:06 CST
+       2018年 08月 31日 星期五 23:26:51 CST
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk-3: python3-gi)重写sqm.py\n
     3. Gtk-3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
