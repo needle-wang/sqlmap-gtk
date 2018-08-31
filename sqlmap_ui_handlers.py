@@ -3,6 +3,9 @@
 #
 # 2018年 08月 29日 星期三 15:34:10 CST
 
+import os
+import subprocess
+
 from basis_and_tool.logging_needle import get_console_logger
 
 logger = get_console_logger()
@@ -37,7 +40,8 @@ class Singal_Handlers(object):
       self._cookie_builder() + self._prefix_builder() +
       self._suffix_builder() + self._os_builder() +
       self._skip_builder() + self._batch_builder() +
-      self._cur_user_builder() + self._cur_db_builder() +
+      self._banner_builder() + self._cur_user_builder() +
+      self._cur_db_builder() + self._hostname_builder() +
       self._is_dba_builder() + self._users_builder() +
       self._passwds_builder() + self._priv_builder() +
       self._roles_builder() + self._dbs_builder() +
@@ -49,29 +53,34 @@ class Singal_Handlers(object):
       self._no_sys_db_builder() + self._start_builder() +
       self._stop_builder() + self._first_builder() +
       self._last_builder() + self._verbose_builder() +
-      self._finger_builder() + self._banner_builder()
+      self._finger_builder()
     )
 
     ui._cmd_entry.set_text(_final_line)
 
-  def _banner_builder(self):
-    ''' -b, --banner        Retrieve DBMS banner '''
+  def run_cmd(self, button):
     ui = self._w
-    if ui._misc_area_banner_chkbtn.get_active():
-      return ' --banner'
-    return ''
+    _sqlmap_opts = ui._cmd_entry.get_text()
+    if _sqlmap_opts:
+      if os.name == 'posix':
+        _cmdline_str = '/usr/bin/env sqlmap' + _sqlmap_opts
+      else:
+        _cmdline_str = "start cmd /k python sqlmap.py " + _sqlmap_opts
+
+      print(_cmdline_str)
+      subprocess.Popen(_cmdline_str, shell = True)
 
   def _finger_builder(self):
     ''' -f, --fingerprint   Perform an extensive DBMS version fingerprint '''
     ui = self._w
-    if ui._misc_area_finger_chkbtn.get_active():
+    if ui._general_area_finger_chkbtn.get_active():
       return ' --fingerprint'
     return ''
 
   def _verbose_builder(self):
     ''' -v VERBOSE            Verbosity level: 0-6 (default 1) '''
     ui = self._w
-    if ui._misc_area_verbose_ckbtn.get_active():
+    if ui._general_area_verbose_ckbtn.get_active():
       return ' -v ' + ui._detail_vv_combobox.get_child().get_text()
     return ''
 
@@ -107,7 +116,7 @@ class Singal_Handlers(object):
     ''' -C COL              DBMS database table column(s) to enumerate '''
     ui = self._w
     if ui._meta_area_C_ckbtn.get_active():
-      return ' -C "' + ui._meta_area_C_entry.get_text() + '"'
+      return " -C '" + ui._meta_area_C_entry.get_text() + "'"
     return ''
 
   def _T_builder(self):
@@ -116,7 +125,7 @@ class Singal_Handlers(object):
     '''
     ui = self._w
     if ui._meta_area_T_ckbtn.get_active():
-      return ' -T "' + ui._meta_area_T_entry.get_text() + '"'
+      return " -T '" + ui._meta_area_T_entry.get_text() + "'"
     return ''
 
   def _D_builder(self):
@@ -125,7 +134,7 @@ class Singal_Handlers(object):
     '''
     ui = self._w
     if ui._meta_area_D_ckbtn.get_active():
-      return ' -D "' + ui._meta_area_D_entry.get_text() + '"'
+      return " -D '" + ui._meta_area_D_entry.get_text() + "'"
     return ''
 
   def _no_sys_db_builder(self):
@@ -187,63 +196,77 @@ class Singal_Handlers(object):
   def _dbs_builder(self):
     ''' --dbs               Enumerate DBMS databases '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[1][3].get_active():
+    if ui._enum_area_opts_ckbtns[1][4].get_active():
       return ' --dbs'
     return ''
 
   def _roles_builder(self):
     ''' --roles             Enumerate DBMS users roles '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[1][2].get_active():
+    if ui._enum_area_opts_ckbtns[1][3].get_active():
       return ' --roles'
     return ''
 
   def _priv_builder(self):
     ''' --privileges        Enumerate DBMS users privileges '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[1][1].get_active():
+    if ui._enum_area_opts_ckbtns[1][2].get_active():
       return ' --privileges'
     return ''
 
   def _passwds_builder(self):
     ''' --passwords         Enumerate DBMS users password hashes '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[1][0].get_active():
+    if ui._enum_area_opts_ckbtns[1][1].get_active():
       return ' --passwords'
     return ''
 
   def _users_builder(self):
     ''' --users             Enumerate DBMS users '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[0][3].get_active():
+    if ui._enum_area_opts_ckbtns[1][0].get_active():
       return ' --users'
     return ''
 
   def _is_dba_builder(self):
     ''' --is-dba            Detect if the DBMS current user is DBA '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[0][2].get_active():
+    if ui._enum_area_opts_ckbtns[0][4].get_active():
       return ' --is-dba'
+    return ''
+
+  def _hostname_builder(self):
+    ''' --hostname          Retrieve DBMS server hostname '''
+    ui = self._w
+    if ui._enum_area_opts_ckbtns[0][3].get_active():
+      return ' --hostname'
     return ''
 
   def _cur_db_builder(self):
     ''' --current-db        Retrieve DBMS current database '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[0][1].get_active():
+    if ui._enum_area_opts_ckbtns[0][2].get_active():
       return ' --current-db'
     return ''
 
   def _cur_user_builder(self):
     ''' --current-user      Retrieve DBMS current user '''
     ui = self._w
-    if ui._enum_area_opts_ckbtns[0][0].get_active():
+    if ui._enum_area_opts_ckbtns[0][1].get_active():
       return ' --current-user'
+    return ''
+
+  def _banner_builder(self):
+    ''' -b, --banner        Retrieve DBMS banner '''
+    ui = self._w
+    if ui._enum_area_opts_ckbtns[0][0].get_active():
+      return ' --banner'
     return ''
 
   def _batch_builder(self):
     ''' --batch             Never ask for user input, use the default behavior '''
     ui = self._w
-    if ui._misc_area_batch_ckbtn.get_active():
+    if ui._general_area_batch_ckbtn.get_active():
       return ' --batch'
     return ''
 
@@ -251,35 +274,35 @@ class Singal_Handlers(object):
     ''' --skip=SKIP         Skip testing for given parameter(s) '''
     ui = self._w
     if ui._inject_area_skip_ckbtn.get_active():
-      return ' --skip="' + ui._inject_area_skip_entry.get_text() + '"'
+      return " --skip='" + ui._inject_area_skip_entry.get_text() + "'"
     return ''
 
   def _os_builder(self):
     ''' --os=OS             Force back-end DBMS operating system to provided value '''
     ui = self._w
     if ui._inject_area_os_ckbtn.get_active():
-      return ' --os="' + ui._inject_area_os_entry.get_text() + '"'
+      return " --os='" + ui._inject_area_os_entry.get_text() + "'"
     return ''
 
   def _suffix_builder(self):
     ''' --suffix=SUFFIX     Injection payload suffix string '''
     ui = self._w
     if ui._inject_area_suffix_ckbtn.get_active():
-      return ' --suffix="' + ui._inject_area_suffix_entry.get_text() + '"'
+      return " --suffix='" + ui._inject_area_suffix_entry.get_text() + "'"
     return ''
 
   def _prefix_builder(self):
     ''' --prefix=PREFIX     Injection payload prefix string '''
     ui = self._w
     if ui._inject_area_prefix_ckbtn.get_active():
-      return ' --prefix="' + ui._inject_area_prefix_entry.get_text() + '"'
+      return " --prefix='" + ui._inject_area_prefix_entry.get_text() + "'"
     return ''
 
   def _cookie_builder(self):
     ''' --cookie=COOKIE     HTTP Cookie header value '''
     ui = self._w
     if ui._cookie_ckbtn.get_active():
-      return ' --cookie="' + ui._cookie_entry.get_text() + '"'
+      return " --cookie='" + ui._cookie_entry.get_text() + "'"
     return ''
 
   def _union_chr_builder(self):
@@ -300,14 +323,14 @@ class Singal_Handlers(object):
     ''' --dbms=DBMS         Force back-end DBMS to provided value '''
     ui = self._w
     if ui._inject_area_dbms_ckbtn.get_active():
-      return ' --dbms="' + ui._inject_area_dbms_combobox.get_child().get_text() + '"'
+      return " --dbms='" + ui._inject_area_dbms_combobox.get_child().get_text() + "'"
     return ''
 
   def _thread_num_builder(self):
     ''' --threads=THREADS   Max number of concurrent HTTP(s) requests (default 1) '''
     ui = self._w
     if ui._optimize_area_thread_num_ckbtn.get_active():
-      return ' --threads="' + ui._optimize_area_thread_num_combobox.get_child().get_text() + '"'
+      return " --threads='" + ui._optimize_area_thread_num_combobox.get_child().get_text() + "'"
     return ''
 
   def _null_connect_builder(self):
@@ -342,28 +365,28 @@ class Singal_Handlers(object):
     ''' --technique=TECH    SQL injection techniques to use (default "BEUSTQ") '''
     ui = self._w
     if ui._tech_area_tech_ckbtn.get_active():
-      return ' --technique="' + ui._tech_area_tech_entry.get_text() + '"'
+      return " --technique='" + ui._tech_area_tech_entry.get_text() + "'"
     return ''
 
   def _time_sec_builder(self):
     ''' --time-sec=TIMESEC  Seconds to delay the DBMS response (default 5) '''
     ui = self._w
     if ui._tech_area_time_sec_ckbtn.get_active():
-      return ' --time-sec="' + ui._tech_area_time_sec_entry.get_text() + '"'
+      return " --time-sec='" + ui._tech_area_time_sec_entry.get_text() + "'"
     return ''
 
   def _str_builder(self):
     ''' --string=STRING     String to match when query is evaluated to True '''
     ui = self._w
     if ui._check_area_str_ckbtn.get_active():
-      return ' --string="' + ui._check_area_str_entry.get_text() + '"'
+      return " --string='" + ui._check_area_str_entry.get_text() + "'"
     return ''
 
   def _re_builder(self):
     ''' --regexp=REGEXP     Regexp to match when query is evaluated to True '''
     ui = self._w
     if ui._check_area_re_ckbtn.get_active():
-      return ' --regexp="' + ui._check_area_re_entry.get_text() + '"'
+      return " --regexp='" + ui._check_area_re_entry.get_text() + "'"
     return ''
 
   def _code_builder(self):
@@ -383,7 +406,7 @@ class Singal_Handlers(object):
   def _hex_builder(self):
     ''' --hex               Use hex conversion during data retrieval '''
     ui = self._w
-    if ui._misc_area_hex_ckbtn.get_active():
+    if ui._general_area_hex_ckbtn.get_active():
       return ' --hex'
     return ''
 
@@ -398,35 +421,35 @@ class Singal_Handlers(object):
     ''' --risk=RISK         Risk of tests to perform (1-3, default 1) '''
     ui = self._w
     if ui._check_area_risk_ckbtn.get_active():
-      return ' --risk="' + ui._check_area_risk_combobox.get_child().get_text() + '"'
+      return " --risk='" + ui._check_area_risk_combobox.get_child().get_text() + "'"
     return ''
 
   def _level_builder(self):
     ''' --level=LEVEL       Level of tests to perform (1-5, default 1) '''
     ui = self._w
     if ui._check_area_level_ckbtn.get_active():
-      return ' --level="' + ui._check_area_level_combobox.get_child().get_text() + '"'
+      return " --level='" + ui._check_area_level_combobox.get_child().get_text() + "'"
     return ''
 
   def _post_builder(self):
     ''' --data=DATA         Data string to be sent through POST '''
     ui = self._w
     if ui.page1_request_post_ckbtn.get_active():
-      return ' --data="' + ui.page1_request_post_entry.get_text() + '"'
+      return " --data='" + ui.page1_request_post_entry.get_text() + "'"
     return ''
 
   def _sql_query_builder(self):
     ''' --sql-query=QUERY   SQL statement to be executed '''
     ui = self._w
     if ui._runsql_area_runsql_ckbtn.get_active():
-      return ' --file-read="' + ui._runsql_area_runsql_entry.get_text() + '"'
+      return " --sql-query='" + ui._runsql_area_runsql_entry.get_text() + "'"
     return ''
 
   def _read_file_builder(self):
     ''' --file-read=RFILE   Read a file from the back-end DBMS file system '''
     ui = self._w
-    if ui._file_read_area_file_ckbtn.get_active():
-      return ' --file-read="' + ui._file_read_area_file_entry.get_text() + '"'
+    if ui._file_read_area_file_read_ckbtn.get_active():
+      return " --file-read='" + ui._file_read_area_file_read_entry.get_text() + "'"
     return ''
 
   def _tamper_builder(self):
@@ -439,7 +462,7 @@ class Singal_Handlers(object):
     ''' -p TESTPARAMETER    Testable parameter(s) '''
     ui = self._w
     if ui._inject_area_param_ckbtn.get_active():
-      return ' -p "' + ui._inject_area_param_entry.get_text() + '"'
+      return " -p '" + ui._inject_area_param_entry.get_text() + "'"
     return ''
 
 
