@@ -30,6 +30,13 @@ class UI_Window(g.Window):
     self.notebook.append_page(self.page3, g.Label('帮助'))
     self.notebook.append_page(self.page4, g.Label('关于'))
 
+  def unselect_all_ckbtn(self, button):
+    for i in dir(self):
+      if 'ckbtn' in i:
+        _tmp_ckbtn = getattr(self, i)
+        if isinstance(_tmp_ckbtn, g.CheckButton):
+          _tmp_ckbtn.set_active(False)
+
   # 如果是实现do_key_press_event, 那事件就传不出去了, why?
   def on_window_key_press_event(self, widget, event: d.EventKey):
     keysym = event.keyval  # see: gdk/gdkkeysyms.h
@@ -58,7 +65,7 @@ class UI_Window(g.Window):
     self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
     self._url_combobox.set_size_request(0, 0)
     self._url_combobox.set_entry_text_column(1)
-    self._url_combobox.get_child().set_text('必填项, 从目标url, burp日志, HTTP请求任选一项')
+    self._url_combobox.get_child().set_text('必填项, 从 目标url/burp日志/HTTP请求 任选一项')
 
     _url_area.pack_start(self._url_combobox, True, True, 0)
 
@@ -110,12 +117,11 @@ class UI_Window(g.Window):
     _scrolled = g.ScrolledWindow()
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _scrolled.add(self.page1_setting)
-    _notebook.append_page(_scrolled, g.Label('设置'))
 
-    # _notebook.append_page(self.page1_setting, g.Label('设置'))
-    _notebook.append_page(self.page1_request, g.Label('请求'))
-    _notebook.append_page(self.page1_enumeration, g.Label('枚举'))
-    _notebook.append_page(self.page1_file, g.Label('文件'))
+    _notebook.append_page(_scrolled, g.Label.new_with_mnemonic('设置(_1)'))
+    _notebook.append_page(self.page1_request, g.Label.new_with_mnemonic('请求(_2)'))
+    _notebook.append_page(self.page1_enumeration, g.Label.new_with_mnemonic('枚举(_3)'))
+    _notebook.append_page(self.page1_file, g.Label.new_with_mnemonic('文件(_4)'))
 
     self.page1.pack_start(_notebook, True, True, 0)
 
@@ -126,7 +132,7 @@ class UI_Window(g.Window):
     _build_button.connect('clicked', self._handlers.build_all)
 
     _run_button = g.Button.new_with_mnemonic('开始(_R)')
-    _run_button.connect('clicked', self._handlers.run_cmd)
+    _run_button.connect('clicked', self._handlers.run_cmdline)
 
     _exec_area.pack_start(_build_button, False, True, 0)
     _exec_area.pack_end(_run_button, False, True, 0)
@@ -250,7 +256,7 @@ class UI_Window(g.Window):
   def _build_page1_setting_detection(self):
     self._detection_area = g.Frame.new('探测选项')
 
-    _check_area_opts = g.ListBox()
+    _detection_area_opts = g.ListBox()
 
     # 行1
     _row1 = g.Box()
@@ -258,17 +264,17 @@ class UI_Window(g.Window):
     _level_store.append([1, "1"])
     _level_store.append([2, "2"])
 
-    self._check_area_level_ckbtn = g.CheckButton('探测等级(范围)')
-    self._check_area_level_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
-    self._check_area_level_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
-    self._check_area_level_combobox.get_child().set_text('默认为1')
+    self._detection_area_level_ckbtn = g.CheckButton('探测等级(范围)')
+    self._detection_area_level_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
+    self._detection_area_level_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+    self._detection_area_level_combobox.get_child().set_text('默认为1')
 
-    self._check_area_text_only_ckbtn = g.CheckButton('仅对比文本')
+    self._detection_area_text_only_ckbtn = g.CheckButton('仅对比文本')
 
-    _row1.pack_start(self._check_area_level_ckbtn, False, True, 0)
-    _row1.pack_start(self._check_area_level_combobox, True, False, 10)
-    _row1.pack_start(self._check_area_text_only_ckbtn, False, True, 0)
-    _check_area_opts.add(_row1)
+    _row1.pack_start(self._detection_area_level_ckbtn, False, True, 0)
+    _row1.pack_start(self._detection_area_level_combobox, True, False, 10)
+    _row1.pack_start(self._detection_area_text_only_ckbtn, False, True, 0)
+    _detection_area_opts.add(_row1)
 
     # 行2
     _row2 = g.Box()
@@ -276,49 +282,55 @@ class UI_Window(g.Window):
     _level_store.append([1, "1"])
     _level_store.append([2, "2"])
 
-    self._check_area_risk_ckbtn = g.CheckButton('payload危险等级')
-    self._check_area_risk_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
-    self._check_area_risk_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
-    self._check_area_risk_combobox.get_child().set_text('默认为1')
+    self._detection_area_risk_ckbtn = g.CheckButton('payload危险等级')
+    self._detection_area_risk_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
+    self._detection_area_risk_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
+    self._detection_area_risk_combobox.get_child().set_text('默认为1')
 
-    self._check_area_titles_ckbtn = g.CheckButton('仅对比title')
+    self._detection_area_titles_ckbtn = g.CheckButton('仅对比title')
 
-    _row2.pack_start(self._check_area_risk_ckbtn, False, True, 0)
-    _row2.pack_start(self._check_area_risk_combobox, True, False, 10)
-    _row2.pack_start(self._check_area_titles_ckbtn, False, True, 0)
-    _check_area_opts.add(_row2)
+    _row2.pack_start(self._detection_area_risk_ckbtn, False, True, 0)
+    _row2.pack_start(self._detection_area_risk_combobox, True, False, 10)
+    _row2.pack_start(self._detection_area_titles_ckbtn, False, True, 0)
+    _detection_area_opts.add(_row2)
 
     # 行3
     _row3 = g.Box()
-    self._check_area_str_ckbtn = g.CheckButton('指定字符串')
-    self._check_area_str_entry = g.Entry()
-    self._check_area_str_entry.set_text('(查询为真时的)')
+    self._detection_area_str_ckbtn = g.CheckButton('指定字符串')
+    self._detection_area_str_entry = g.Entry()
+    self._detection_area_str_entry.set_text('(查询为真时的)')
 
-    _row3.pack_start(self._check_area_str_ckbtn, False, True, 0)
-    _row3.pack_end(self._check_area_str_entry, True, True, 5)
-    _check_area_opts.add(_row3)
+    _row3.pack_start(self._detection_area_str_ckbtn, False, True, 0)
+    _row3.pack_end(self._detection_area_str_entry, True, True, 5)
+    _detection_area_opts.add(_row3)
 
     # 行4
     _row4 = g.Box()
-    self._check_area_re_ckbtn = g.CheckButton('指定正则')
-    self._check_area_re_entry = g.Entry()
-    self._check_area_re_entry.set_text('(查询为真时的)')
+    self._detection_area_re_ckbtn = g.CheckButton('指定正则')
+    self._detection_area_re_entry = g.Entry()
+    self._detection_area_re_entry.set_text('(查询为真时的)')
 
-    _row4.pack_start(self._check_area_re_ckbtn, False, True, 0)
-    _row4.pack_end(self._check_area_re_entry, True, True, 5)
-    _check_area_opts.add(_row4)
+    _row4.pack_start(self._detection_area_re_ckbtn, False, True, 0)
+    _row4.pack_end(self._detection_area_re_entry, True, True, 5)
+    _detection_area_opts.add(_row4)
 
     # 行5
     _row5 = g.Box()
-    self._check_area_code_ckbtn = g.CheckButton('指定http状态码')
-    self._check_area_code_entry = g.Entry()
-    self._check_area_code_entry.set_text('(查询为真时的)')
+    self._detection_area_code_ckbtn = g.CheckButton('指定http状态码')
+    self._detection_area_code_entry = g.Entry()
+    self._detection_area_code_entry.set_text('(查询为真时的)')
 
-    _row5.pack_start(self._check_area_code_ckbtn, False, True, 0)
-    _row5.pack_end(self._check_area_code_entry, True, True, 5)
-    _check_area_opts.add(_row5)
+    _row5.pack_start(self._detection_area_code_ckbtn, False, True, 0)
+    _row5.pack_end(self._detection_area_code_entry, True, True, 5)
+    _detection_area_opts.add(_row5)
 
-    self._detection_area.add(_check_area_opts)
+    # 行6, 与sqlmap无关, 用于改善ui的使用体验!
+    _unselect_all_btn = g.Button.new_with_mnemonic('反选所有复选框(_C)')
+    _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
+
+    _detection_area_opts.add(_unselect_all_btn)
+
+    self._detection_area.add(_detection_area_opts)
 
   def _build_page1_setting_general(self):
     self._general_area = g.Frame.new('通用选项')
@@ -326,11 +338,11 @@ class UI_Window(g.Window):
     # _general_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=10)
     _general_area_opts = g.ListBox()
 
-    self._general_area_finger_chkbtn = g.CheckButton('执行宽泛的DB版本检测(--fingerprint)')
+    self._general_area_finger_ckbtn = g.CheckButton('执行宽泛的DB版本检测(--fingerprint)')
     self._general_area_batch_ckbtn = g.CheckButton('非交互模式(--batch), 使用默认行为')
     self._general_area_hex_ckbtn = g.CheckButton('获取数据时使用hex转换(--hex)')
 
-    _general_area_opts.add(self._general_area_finger_chkbtn)
+    _general_area_opts.add(self._general_area_finger_ckbtn)
     _general_area_opts.add(self._general_area_batch_ckbtn)
     _general_area_opts.add(self._general_area_hex_ckbtn)
 
@@ -502,28 +514,33 @@ class UI_Window(g.Window):
 
     # 行1
     _row1 = g.Box()
-    _row1.pack_start(g.Label('通过POST请求要提交的DATA:'), False, True, 5)
+    _row1.pack_start(g.Label('通过POST请求要提交的data:'), False, True, 5)
 
     # 行2
     _row2 = g.Box()
-    self.page1_request_post_ckbtn = g.CheckButton()
-    self.page1_request_post_entry = g.Entry()
 
-    _row2.pack_start(self.page1_request_post_ckbtn, False, True, 5)
-    _row2.pack_start(self.page1_request_post_entry, True, True, 5)
+    self._request_area_post_ckbtn = g.CheckButton()
+
+    self._request_area_post_entry = g.Entry()
+
+    _row2.pack_start(self._request_area_post_ckbtn, False, True, 5)
+    _row2.pack_start(self._request_area_post_entry, True, True, 5)
 
     # 行3
     _row3 = g.Box()
+
     _row3.pack_start(g.Label('设置请求中要包含的Cookie值'), False, True, 5)
 
     # 行4
     _row4 = g.Box()
-    self._cookie_ckbtn = g.CheckButton()
-    self._cookie_entry = g.Entry()
-    self._cookie_entry.set_text('请求选项太多了, 没时间写, # TODO')
 
-    _row4.pack_start(self._cookie_ckbtn, False, True, 5)
-    _row4.pack_start(self._cookie_entry, True, True, 5)
+    self._request_area_cookie_ckbtn = g.CheckButton()
+
+    self._request_area_cookie_entry = g.Entry()
+    self._request_area_cookie_entry.set_text('请求选项太多了, 没时间写, # TODO')
+
+    _row4.pack_start(self._request_area_cookie_ckbtn, False, True, 5)
+    _row4.pack_start(self._request_area_cookie_entry, True, True, 5)
 
     self.page1_request.pack_start(_row1, False, True, 5)
     self.page1_request.pack_start(_row2, False, True, 5)
@@ -801,40 +818,40 @@ class UI_Window(g.Window):
     # 行1
     _file_write_area_opts_row1 = g.Box()
 
-    self._file_read_area_udf_ckbtn = g.CheckButton('注入sqlmap自带的用户定义函数(--udf-inject)')
+    self._file_write_area_udf_ckbtn = g.CheckButton('注入sqlmap自带的用户定义函数(--udf-inject)')
 
-    _file_write_area_opts_row1.pack_start(self._file_read_area_udf_ckbtn, False, True, 5)
+    _file_write_area_opts_row1.pack_start(self._file_write_area_udf_ckbtn, False, True, 5)
 
-    self._file_read_area_shared_lib_ckbtn = g.CheckButton('本地共享库路径(--shared-lib=)')
-    self._file_read_area_shared_lib_entry = g.Entry()
-    self._file_read_area_shared_lib_entry.set_text('与--udf-inject配套使用, 可选')
+    self._file_write_area_shared_lib_ckbtn = g.CheckButton('本地共享库路径(--shared-lib=)')
+    self._file_write_area_shared_lib_entry = g.Entry()
+    self._file_write_area_shared_lib_entry.set_text('与--udf-inject配套使用, 可选')
 
-    _file_write_area_opts_row1.pack_start(self._file_read_area_shared_lib_ckbtn, False, True, 5)
-    _file_write_area_opts_row1.pack_start(self._file_read_area_shared_lib_entry, True, True, 5)
+    _file_write_area_opts_row1.pack_start(self._file_write_area_shared_lib_ckbtn, False, True, 5)
+    _file_write_area_opts_row1.pack_start(self._file_write_area_shared_lib_entry, True, True, 5)
 
     _file_write_area_opts.pack_start(_file_write_area_opts_row1, False, True, 5)
 
     # 行2
     _file_write_area_opts_row2 = g.Box()
 
-    self._file_read_area_file_write_ckbtn = g.CheckButton('本地文件路径(--file-write=)')
-    self._file_read_area_file_write_entry = g.Entry()
-    self._file_read_area_file_write_entry.set_text('若使用此选项, 则--file-dest为必选项')
+    self._file_write_area_file_write_ckbtn = g.CheckButton('本地文件路径(--file-write=)')
+    self._file_write_area_file_write_entry = g.Entry()
+    self._file_write_area_file_write_entry.set_text('若使用此选项, 则--file-dest为必选项')
 
-    _file_write_area_opts_row2.pack_start(self._file_read_area_file_write_ckbtn, False, True, 5)
-    _file_write_area_opts_row2.pack_start(self._file_read_area_file_write_entry, True, True, 5)
+    _file_write_area_opts_row2.pack_start(self._file_write_area_file_write_ckbtn, False, True, 5)
+    _file_write_area_opts_row2.pack_start(self._file_write_area_file_write_entry, True, True, 5)
 
     _file_write_area_opts.pack_start(_file_write_area_opts_row2, False, True, 5)
 
     # 行3
     _file_write_area_opts_row3 = g.Box()
 
-    self._file_read_area_file_dest_ckbtn = g.CheckButton('远程文件路径(--file-dest=)')
-    self._file_read_area_file_dest_entry = g.Entry()
-    self._file_read_area_file_dest_entry.set_text('与本地文件路径配套使用, 单独勾选无意义(要求是绝对路径, 构造后会有引号!)')
+    self._file_write_area_file_dest_ckbtn = g.CheckButton('远程文件路径(--file-dest=)')
+    self._file_write_area_file_dest_entry = g.Entry()
+    self._file_write_area_file_dest_entry.set_text('与本地文件路径配套使用, 单独勾选无意义(要求是绝对路径, 构造后会有引号!)')
 
-    _file_write_area_opts_row3.pack_start(self._file_read_area_file_dest_ckbtn, False, True, 5)
-    _file_write_area_opts_row3.pack_start(self._file_read_area_file_dest_entry, True, True, 5)
+    _file_write_area_opts_row3.pack_start(self._file_write_area_file_dest_ckbtn, False, True, 5)
+    _file_write_area_opts_row3.pack_start(self._file_write_area_file_dest_entry, True, True, 5)
 
     _file_write_area_opts.pack_start(_file_write_area_opts_row3, False, True, 5)
 

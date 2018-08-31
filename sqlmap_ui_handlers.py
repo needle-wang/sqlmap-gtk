@@ -63,14 +63,14 @@ class Singal_Handlers(object):
 
     ui._cmd_entry.set_text(_final_line)
 
-  def run_cmd(self, button):
+  def run_cmdline(self, button):
     ui = self._w
     _sqlmap_opts = ui._cmd_entry.get_text()
     if _sqlmap_opts:
       if os.name == 'posix':
-        _cmdline_str = '/usr/bin/env sqlmap' + _sqlmap_opts
+        _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap', _sqlmap_opts))
       else:
-        _cmdline_str = "start cmd /k python sqlmap.py " + _sqlmap_opts
+        _cmdline_str = ''.join(('start cmd /k python sqlmap.py', _sqlmap_opts))
 
       print(_cmdline_str)
       subprocess.Popen(_cmdline_str, shell = True)
@@ -87,28 +87,28 @@ class Singal_Handlers(object):
   def _file_dest_builder(self):
     ''' --file-dest=DFILE   Back-end DBMS absolute filepath to write to '''
     ui = self._w
-    if ui._file_read_area_file_dest_ckbtn.get_active():
-      return " --file-dest='" + ui._file_read_area_file_dest_entry.get_text() + "'"
+    if ui._file_write_area_file_dest_ckbtn.get_active():
+      return " --file-dest='" + ui._file_write_area_file_dest_entry.get_text() + "'"
     return ''
 
   def _file_write_builder(self):
     ''' --file-write=WFILE  Write a local file on the back-end DBMS file system '''
     ui = self._w
-    if ui._file_read_area_file_write_ckbtn.get_active():
-      return " --file-write='" + ui._file_read_area_file_write_entry.get_text() + "'"
+    if ui._file_write_area_file_write_ckbtn.get_active():
+      return " --file-write='" + ui._file_write_area_file_write_entry.get_text() + "'"
     return ''
 
   def _shared_lib_builder(self):
     ''' --shared-lib=SHLIB  Local path of the shared library '''
     ui = self._w
-    if ui._file_read_area_shared_lib_ckbtn.get_active():
-      return " --shared-lib='" + ui._file_read_area_shared_lib_entry.get_text() + "'"
+    if ui._file_write_area_shared_lib_ckbtn.get_active():
+      return " --shared-lib='" + ui._file_write_area_shared_lib_entry.get_text() + "'"
     return ''
 
   def _udf_builder(self):
     ''' --udf-inject        Inject custom user-defined functions '''
     ui = self._w
-    if ui._file_read_area_udf_ckbtn.get_active():
+    if ui._file_write_area_udf_ckbtn.get_active():
       return ' --udf-inject'
     return ''
 
@@ -178,7 +178,7 @@ class Singal_Handlers(object):
   def _finger_builder(self):
     ''' -f, --fingerprint   Perform an extensive DBMS version fingerprint '''
     ui = self._w
-    if ui._general_area_finger_chkbtn.get_active():
+    if ui._general_area_finger_ckbtn.get_active():
       return ' --fingerprint'
     return ''
 
@@ -406,8 +406,8 @@ class Singal_Handlers(object):
   def _cookie_builder(self):
     ''' --cookie=COOKIE     HTTP Cookie header value '''
     ui = self._w
-    if ui._cookie_ckbtn.get_active():
-      return " --cookie='" + ui._cookie_entry.get_text() + "'"
+    if ui._request_area_cookie_ckbtn.get_active():
+      return " --cookie='" + ui._request_area_cookie_entry.get_text() + "'"
     return ''
 
   def _union_chr_builder(self):
@@ -483,28 +483,28 @@ class Singal_Handlers(object):
   def _str_builder(self):
     ''' --string=STRING     String to match when query is evaluated to True '''
     ui = self._w
-    if ui._check_area_str_ckbtn.get_active():
-      return " --string='" + ui._check_area_str_entry.get_text() + "'"
+    if ui._detection_area_str_ckbtn.get_active():
+      return " --string='" + ui._detection_area_str_entry.get_text() + "'"
     return ''
 
   def _re_builder(self):
     ''' --regexp=REGEXP     Regexp to match when query is evaluated to True '''
     ui = self._w
-    if ui._check_area_re_ckbtn.get_active():
-      return " --regexp='" + ui._check_area_re_entry.get_text() + "'"
+    if ui._detection_area_re_ckbtn.get_active():
+      return " --regexp='" + ui._detection_area_re_entry.get_text() + "'"
     return ''
 
   def _code_builder(self):
     ''' --code=CODE         HTTP code to match when query is evaluated to True '''
     ui = self._w
-    if ui._check_area_code_ckbtn.get_active():
-      return ' --code="' + ui._check_area_code_entry.get_text() + '"'
+    if ui._detection_area_code_ckbtn.get_active():
+      return ' --code="' + ui._detection_area_code_entry.get_text() + '"'
     return ''
 
   def _text_only_builder(self):
     ''' --text-only         Compare pages based only on the textual content '''
     ui = self._w
-    if ui._check_area_text_only_ckbtn.get_active():
+    if ui._detection_area_text_only_ckbtn.get_active():
       return ' --text-only'
     return ''
 
@@ -518,29 +518,29 @@ class Singal_Handlers(object):
   def _titles_builder(self):
     ''' --titles            Compare pages based only on their titles '''
     ui = self._w
-    if ui._check_area_titles_ckbtn.get_active():
+    if ui._detection_area_titles_ckbtn.get_active():
       return ' --titles'
     return ''
 
   def _risk_builder(self):
     ''' --risk=RISK         Risk of tests to perform (1-3, default 1) '''
     ui = self._w
-    if ui._check_area_risk_ckbtn.get_active():
-      return " --risk='" + ui._check_area_risk_combobox.get_child().get_text() + "'"
+    if ui._detection_area_risk_ckbtn.get_active():
+      return " --risk='" + ui._detection_area_risk_combobox.get_child().get_text() + "'"
     return ''
 
   def _level_builder(self):
     ''' --level=LEVEL       Level of tests to perform (1-5, default 1) '''
     ui = self._w
-    if ui._check_area_level_ckbtn.get_active():
-      return " --level='" + ui._check_area_level_combobox.get_child().get_text() + "'"
+    if ui._detection_area_level_ckbtn.get_active():
+      return " --level='" + ui._detection_area_level_combobox.get_child().get_text() + "'"
     return ''
 
   def _post_builder(self):
     ''' --data=DATA         Data string to be sent through POST '''
     ui = self._w
-    if ui.page1_request_post_ckbtn.get_active():
-      return " --data='" + ui.page1_request_post_entry.get_text() + "'"
+    if ui._request_area_post_ckbtn.get_active():
+      return " --data='" + ui._request_area_post_entry.get_text() + "'"
     return ''
 
   def _sql_query_builder(self):
