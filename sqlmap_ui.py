@@ -4,6 +4,8 @@
 # 2018年 08月 26日 星期日 16:54:41 CST
 # sqlmap gui gtk-3 by needle wang
 
+import sys
+print(sys.path)
 from gtk3_header import Gdk as d
 from gtk3_header import Gtk as g
 
@@ -514,7 +516,7 @@ class UI_Window(g.Window):
 
     # 行1
     _row1 = g.Box()
-    _row1.pack_start(g.Label('通过POST请求要提交的data:'), False, True, 5)
+    _row1.pack_start(g.Label('通过POST请求要提交的data(是数据, 不是填文件路径哈):'), False, True, 5)
 
     # 行2
     _row2 = g.Box()
@@ -529,7 +531,7 @@ class UI_Window(g.Window):
     # 行3
     _row3 = g.Box()
 
-    _row3.pack_start(g.Label('设置请求中要包含的Cookie值'), False, True, 5)
+    _row3.pack_start(g.Label('设置请求中要包含的Cookie值(是数据, 不是填文件):'), False, True, 5)
 
     # 行4
     _row4 = g.Box()
