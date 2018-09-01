@@ -558,9 +558,18 @@ class Singal_Handlers(object):
     return ''
 
   def _tamper_builder(self):
-    '''
-    暂时不写
-    '''
+    ''' --tamper=TAMPER     Use given script(s) for tampering injection data '''
+    ui = self._w
+    _tampers = ''
+
+    _start_iter = ui._tamper_area_tamper_textbuffer.get_start_iter()
+    _end_iter = ui._tamper_area_tamper_textbuffer.get_end_iter()
+    for _tamper_tmp in ui._tamper_area_tamper_textbuffer.get_text(_start_iter, _end_iter, False).splitlines():
+      if _tamper_tmp.strip():
+        _tampers = _tampers + _tamper_tmp.strip() + ','
+
+    if _tampers:
+      return " --tamper='" + _tampers.rstrip(',') + "'"
     return ''
 
   def _param_builder(self):
