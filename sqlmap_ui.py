@@ -2,7 +2,9 @@
 # encoding: utf-8
 #
 # 2018年 08月 26日 星期日 16:54:41 CST
-# sqlmap gui gtk-3 by needle wang
+# sqlmap gui(gtk+3 by needle wang)
+# required: python3.5+, python3-gi, sqlmap
+# sqlmap requires python 2.6.x and 2.7.x
 
 # python3.5+
 from pathlib import Path
@@ -1073,7 +1075,8 @@ class UI_Window(g.Window):
 
     _about_str = '''
     1. VERSION: 0.1
-       2018年 09月 03日 星期一 00:56:42 CST
+       2018年 09月 03日 星期一 03:34:31 CST
+       required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
     3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
