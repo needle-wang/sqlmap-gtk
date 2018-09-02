@@ -83,6 +83,21 @@ class Singal_Handlers(object):
     ui = self._w
     ui._log_view_textbuffer.set_text('')
 
+  def optimize_area_controller(self, button):
+    ui = self._w
+    if ui._optimize_area_turn_all_ckbtn.get_active():
+      ui._optimize_area_predict_ckbtn.set_active(False)
+      ui._optimize_area_keep_alive_ckbtn.set_active(False)
+      ui._optimize_area_null_connect_ckbtn.set_active(False)
+
+      ui._optimize_area_predict_ckbtn.set_sensitive(False)
+      ui._optimize_area_keep_alive_ckbtn.set_sensitive(False)
+      ui._optimize_area_null_connect_ckbtn.set_sensitive(False)
+    else:
+      ui._optimize_area_predict_ckbtn.set_sensitive(True)
+      ui._optimize_area_keep_alive_ckbtn.set_sensitive(True)
+      ui._optimize_area_null_connect_ckbtn.set_sensitive(True)
+
   def _get_url_dir(self):
     '''
     return: pathlib.PosixPath
@@ -136,6 +151,8 @@ class Singal_Handlers(object):
 
   def read_dumped_file(self, button):
     ui = self._w
+    ui.notebook.next_page()
+
     _base_dir = self._get_url_dir()
     _load_file = ui._file_read_area_file_read_entry.get_text()
 

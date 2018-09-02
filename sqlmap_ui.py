@@ -25,18 +25,26 @@ class UI_Window(g.Window):
 
     self._handlers = handlers(self)
 
+    self.main_box = g.Box.new(orientation = g.Orientation.VERTICAL, spacing = 0)
+    self.add(self.main_box)
+
+    self._build_page_target()
+
+    self.main_box.pack_start(self._target_notbook, False, True, 0)
+
     self.notebook = g.Notebook()
-    self.add(self.notebook)
 
     self._build_page1()
     self._build_page2()
     self._build_page3()
     self._build_page4()
 
-    self.notebook.append_page(self.page1, g.Label.new_with_mnemonic('功能(_Q)'))
-    self.notebook.append_page(self.page2, g.Label.new_with_mnemonic('查看文件(_W)'))
+    self.notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_Q)'))
+    self.notebook.append_page(self.page2, g.Label.new_with_mnemonic('显示区(_W)'))
     self.notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
     self.notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
+
+    self.main_box.pack_start(self.notebook, True, True, 0)
 
   def unselect_all_ckbtn(self, button):
     for i in dir(self):
@@ -58,10 +66,7 @@ class UI_Window(g.Window):
       g.main_quit()
       return True
 
-  def _build_page1(self):
-    self.page1 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
-    self.page1.set_border_width(10)
-
+  def _build_page_target(self):
     # 目标url
     name_store = g.ListStore(int, str)
     name_store.append([1, "www.google.com?id=1"])
@@ -99,7 +104,9 @@ class UI_Window(g.Window):
 
     self._target_notbook.append_page(_request_area, g.Label('HTTP请求'))
 
-    self.page1.pack_start(self._target_notbook, False, True, 0)
+  def _build_page1(self):
+    self.page1 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
+    self.page1.set_border_width(10)
 
     # sqlmap命令语句
     _cmd_area = g.Frame.new('sqlmap命令语句:')
@@ -118,7 +125,7 @@ class UI_Window(g.Window):
     # 主构造区
     _notebook = g.Notebook()
 
-    # 功能 - 设置, 请求, 枚举, 文件
+    # 选项区 - 设置, 请求, 枚举, 文件
     self._build_page1_setting()
     self._build_page1_request()
     self._build_page1_enumeration()
@@ -182,7 +189,6 @@ class UI_Window(g.Window):
     self.page1_setting.pack_start(_row2, True, True, 0)
 
   def _build_page1_setting_tech(self):
-    # self._tech_area = g.Box(orientation=g.Orientation.VERTICAL)
     self._tech_area = g.Frame.new('各注入技术的选项')
 
     _tech_area_opts = g.ListBox()
@@ -294,6 +300,9 @@ class UI_Window(g.Window):
     _level_store = g.ListStore(int, str)
     _level_store.append([1, "1"])
     _level_store.append([2, "2"])
+    _level_store.append([3, "3"])
+    _level_store.append([4, "4"])
+    _level_store.append([5, "5"])
 
     self._detection_area_level_ckbtn = g.CheckButton('探测等级(范围)')
     self._detection_area_level_ckbtn.set_tooltip_text('--level=默认为1')
@@ -315,6 +324,7 @@ class UI_Window(g.Window):
     _level_store = g.ListStore(int, str)
     _level_store.append([1, "1"])
     _level_store.append([2, "2"])
+    _level_store.append([3, "3"])
 
     self._detection_area_risk_ckbtn = g.CheckButton('payload危险等级')
     self._detection_area_risk_ckbtn.set_tooltip_text('--risk=默认为1')
@@ -371,7 +381,6 @@ class UI_Window(g.Window):
   def _build_page1_setting_general(self):
     self._general_area = g.Frame.new('通用选项')
 
-    # _general_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=10)
     _general_area_opts = g.ListBox()
 
     self._general_area_finger_ckbtn = g.CheckButton('执行宽泛的DB版本检测')
@@ -406,7 +415,7 @@ class UI_Window(g.Window):
     _optimize_area_opts = g.ListBox()
 
     self._optimize_area_turn_all_ckbtn = g.CheckButton('启用所有优化选项')
-    # self._optimize_area_turn_all_ckbtn.connect('clicked', )
+    self._optimize_area_turn_all_ckbtn.connect('clicked', self._handlers.optimize_area_controller)
     self._optimize_area_turn_all_ckbtn.set_tooltip_text('-o')
     _optimize_area_opts.add(self._optimize_area_turn_all_ckbtn)
 
@@ -501,8 +510,9 @@ class UI_Window(g.Window):
     _row4.set_tooltip_text('--dbms=')
 
     _db_store = g.ListStore(int, str)
-    _db_store.append([1, "access"])
-    _db_store.append([11, "mysql"])
+    _db_store.append([1, "mysql"])
+    _db_store.append([2, "sqlite"])
+    _db_store.append([3, "sqlserver"])
 
     self._inject_area_dbms_ckbtn = g.CheckButton('固定DB类型为')
     self._inject_area_dbms_combobox = g.ComboBox.new_with_model_and_entry(
@@ -577,6 +587,7 @@ class UI_Window(g.Window):
     self._inject_area.add(_inject_area_opts)
 
   def _build_page1_request(self):
+    ''' TODO '''
     self.page1_request = g.Box(orientation=g.Orientation.VERTICAL, spacing=5)
 
     # 行1
@@ -877,10 +888,12 @@ class UI_Window(g.Window):
     self.page1_file.add(_row2)
 
   def _build_page1_file_logfile(self):
+    ''' TODO '''
     self._file_logfile_area = g.Frame.new('默认*log, *config')
     self._file_logfile_area.set_tooltip_text('未实现, 不知道这块是干嘛的')
 
   def _build_page1_file_type(self):
+    ''' TODO '''
     self._file_type_area = g.Frame.new('类别')
 
     # _file_type_area_list = g.ListBox()
@@ -978,7 +991,7 @@ class UI_Window(g.Window):
 
     self._log_view_textbuffer = _log_view.get_buffer()
     self._log_view_textbuffer.set_text(''.join(
-      ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output'))
+      ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output\n'))
     ))
 
     _scrolled = g.ScrolledWindow()
@@ -1018,6 +1031,7 @@ class UI_Window(g.Window):
     _row1 = g.Frame()
 
     _manual_view = g.TextView()
+    _manual_view.set_editable(False)
 
     self._manual_view_textbuffer = _manual_view.get_buffer()
 
@@ -1061,10 +1075,10 @@ class UI_Window(g.Window):
     1. VERSION: 0.1
        2018年 09月 03日 星期一 00:56:42 CST
        作者: needle wang ( needlewang2011@gmail.com )\n
-    2. 使用PyGObject(Gtk-3: python3-gi)重写sqm.py\n
-    3. Gtk-3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
-    4. Gtk-3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
-    5. 感谢sqm的作者 KINGX ( https://github.com/kxcode ), sqm UI 使用的是tkinter
+    2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
+    3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
+    4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
+    5. 感谢sqm的作者 KINGX ( https://github.com/kxcode ), sqm UI 使用的是python2 + tkinter
     '''
     self.page4.pack_start(g.Label(_about_str), True, False, 0)
 
