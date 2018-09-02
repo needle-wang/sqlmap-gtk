@@ -4,10 +4,14 @@
 # 2018年 08月 29日 星期三 15:34:10 CST
 
 import os
-import subprocess
+import time
+
+# python3.5+
+from pathlib import Path
+from subprocess import Popen
+from urllib.parse import urlparse
 
 from basis_and_tool.logging_needle import get_console_logger
-
 logger = get_console_logger()
 
 
@@ -21,7 +25,7 @@ class Singal_Handlers(object):
 
   def build_all(self, button):
     ui = self._w
-    _agent = ' --random-agent'
+    _agent = '--random-agent'
 
     _final_line = ''.join((
       _agent, self._target_builder(), self._param_builder(),
@@ -65,15 +69,79 @@ class Singal_Handlers(object):
 
   def run_cmdline(self, button):
     ui = self._w
-    _sqlmap_opts = ui._cmd_entry.get_text()
+    _sqlmap_opts = ui._cmd_entry.get_text().strip()
     if _sqlmap_opts:
       if os.name == 'posix':
-        _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap', _sqlmap_opts))
+        _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap ', _sqlmap_opts))
       else:
-        _cmdline_str = ''.join(('start cmd /k python sqlmap.py', _sqlmap_opts))
+        _cmdline_str = ''.join(('start cmd /k python sqlmap.py ', _sqlmap_opts))
 
-      print(_cmdline_str)
-      subprocess.Popen(_cmdline_str, shell = True)
+      # print(_cmdline_str)
+      Popen(_cmdline_str, shell = True)
+
+  def clear_buffer(self, button):
+    ui = self._w
+    ui._log_view_textbuffer.set_text('')
+
+  def _get_url_dir(self):
+    '''
+    return: pathlib.PosixPath
+    '''
+    ui = self._w
+    _load_url = ui._url_combobox.get_child().get_text()
+
+    if _load_url:
+      if not _load_url.startswith('http'):
+        _load_url = 'http://' + _load_url
+
+      _load_host = urlparse(_load_url).netloc
+
+      return Path.home() / '.sqlmap/output' / _load_host
+
+  def _log_view_insert(self, file_path):
+    '''
+    file_path: pathlib.PosixPath
+    '''
+    ui = self._w
+    _end_iter = ui._log_view_textbuffer.get_end_iter()
+    try:
+      with file_path.open() as _f:
+        _line_list_tmp = _f.readlines()
+        if _line_list_tmp:
+          for _line_tmp in _line_list_tmp:
+            ui._log_view_textbuffer.insert(_end_iter, _line_tmp)
+        else:
+          ui._log_view_textbuffer.insert(_end_iter, str(file_path) + ': 空文件')
+    except EnvironmentError as e:
+      ui._log_view_textbuffer.insert(_end_iter, str(e))
+    finally:
+      ui._log_view_textbuffer.insert(
+        _end_iter,
+        time.strftime('\n%Y-%m-%d %R:%S: ----------我是分割线----------\n',
+                      time.localtime()))
+
+  def read_log_file(self, button):
+    _base_dir = self._get_url_dir()
+
+    if _base_dir:
+      _log_file_path = _base_dir / 'log'
+      self._log_view_insert(_log_file_path)
+
+  def read_target_file(self, button):
+    _base_dir = self._get_url_dir()
+
+    if _base_dir:
+      _target_file_path = _base_dir / 'target.txt'
+      self._log_view_insert(_target_file_path)
+
+  def read_dumped_file(self, button):
+    ui = self._w
+    _base_dir = self._get_url_dir()
+    _load_file = ui._file_read_area_file_read_entry.get_text()
+
+    if _base_dir and _load_file:
+      _dumped_file_path = _base_dir / 'files' / _load_file.replace(os.sep, '_')
+      self._log_view_insert(_dumped_file_path)
 
   def _target_builder(self):
     ui = self._w

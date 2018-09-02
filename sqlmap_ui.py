@@ -4,10 +4,18 @@
 # 2018年 08月 26日 星期日 16:54:41 CST
 # sqlmap gui gtk-3 by needle wang
 
-from gtk3_header import Gdk as d
-from gtk3_header import Gtk as g
+# python3.5+
+from pathlib import Path
+from subprocess import Popen, PIPE
+from threading import Thread
 
+from gtk3_header import Gdk as d
+from gtk3_header import GLib
+from gtk3_header import Gtk as g
 from sqlmap_ui_handlers import Singal_Handlers as handlers
+
+from basis_and_tool.logging_needle import get_console_logger
+logger = get_console_logger()
 
 
 class UI_Window(g.Window):
@@ -25,10 +33,10 @@ class UI_Window(g.Window):
     self._build_page3()
     self._build_page4()
 
-    self.notebook.append_page(self.page1, g.Label('功能'))
-    self.notebook.append_page(self.page2, g.Label('查看记录'))
-    self.notebook.append_page(self.page3, g.Label('帮助'))
-    self.notebook.append_page(self.page4, g.Label('关于'))
+    self.notebook.append_page(self.page1, g.Label.new_with_mnemonic('功能(_Q)'))
+    self.notebook.append_page(self.page2, g.Label.new_with_mnemonic('查看文件(_W)'))
+    self.notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
+    self.notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
 
   def unselect_all_ckbtn(self, button):
     for i in dir(self):
@@ -63,7 +71,6 @@ class UI_Window(g.Window):
     _url_area = g.Box()
 
     self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
-    self._url_combobox.set_size_request(0, 0)
     self._url_combobox.set_entry_text_column(1)
     self._url_combobox.set_tooltip_text(
       '必填项, 从 目标url/burp日志/HTTP请求 任选一项')
@@ -399,6 +406,7 @@ class UI_Window(g.Window):
     _optimize_area_opts = g.ListBox()
 
     self._optimize_area_turn_all_ckbtn = g.CheckButton('启用所有优化选项')
+    # self._optimize_area_turn_all_ckbtn.connect('clicked', )
     self._optimize_area_turn_all_ckbtn.set_tooltip_text('-o')
     _optimize_area_opts.add(self._optimize_area_turn_all_ckbtn)
 
@@ -437,21 +445,18 @@ class UI_Window(g.Window):
     self._tamper_area = g.Frame.new('tamper脚本')
 
     _tamper_area_list = g.Box()
-    # 最小尺寸
-    _tamper_area_list.set_size_request(300, 0)
 
     _tamper_area_tamper_view = g.TextView()
     _tamper_area_tamper_view.set_tooltip_text(
       '此处填写要使用的tamper脚本名\n详见: sqlmap --list-tamper\n回车或逗号拼接')
 
-    self._tamper_area_tamper_textbuffer = g.TextBuffer()
-
-    _tamper_area_tamper_view.set_buffer(self._tamper_area_tamper_textbuffer)
+    self._tamper_area_tamper_textbuffer = _tamper_area_tamper_view.get_buffer()
 
     _tamper_area_list.pack_start(_tamper_area_tamper_view, True, True, 0)
 
     _scrolled = g.ScrolledWindow()
-    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.set_size_request(300, 0)
+    _scrolled.set_policy(g.PolicyType.ALWAYS, g.PolicyType.ALWAYS)
     _scrolled.add(_tamper_area_list)
 
     self._tamper_area.add(_scrolled)
@@ -873,6 +878,7 @@ class UI_Window(g.Window):
 
   def _build_page1_file_logfile(self):
     self._file_logfile_area = g.Frame.new('默认*log, *config')
+    self._file_logfile_area.set_tooltip_text('未实现, 不知道这块是干嘛的')
 
   def _build_page1_file_type(self):
     self._file_type_area = g.Frame.new('类别')
@@ -884,6 +890,7 @@ class UI_Window(g.Window):
 
     _file_type_area_list = g.TextView()
     _file_type_area_list.set_size_request(300, 200)
+    _file_type_area_list.set_tooltip_text('未实现, 不知道这块是干嘛的')
 
     self._file_type_area.add(_file_type_area_list)
 
@@ -947,7 +954,10 @@ class UI_Window(g.Window):
 
     self._file_read_area_file_read_ckbtn = g.CheckButton('远程文件路径(--file-read=)')
     self._file_read_area_file_read_entry = g.Entry()
-    self._file_read_area_file_btn = g.Button('在记录中查看')
+    self._file_read_area_file_read_entry.set_text('/etc/passwd')
+    self._file_read_area_file_btn = g.Button('查看')
+    self._file_read_area_file_btn.set_tooltip_text('只能查看已下载到本地的文件')
+    self._file_read_area_file_btn.connect('clicked', self._handlers.read_dumped_file)
 
     _file_read_area_opts_row1.pack_start(self._file_read_area_file_read_ckbtn, False, True, 10)
     _file_read_area_opts_row1.pack_start(self._file_read_area_file_read_entry, True, True, 10)
@@ -964,19 +974,39 @@ class UI_Window(g.Window):
     # 行1
     _row1 = g.Frame()
 
+    _log_view = g.TextView()
+
+    self._log_view_textbuffer = _log_view.get_buffer()
+    self._log_view_textbuffer.set_text(''.join(
+      ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output'))
+    ))
+
     _scrolled = g.ScrolledWindow()
-    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
-    _scrolled.add(g.TextView())
+    _scrolled.set_policy(g.PolicyType.ALWAYS, g.PolicyType.ALWAYS)
+    _scrolled.add(_log_view)
 
     _row1.add(_scrolled)
 
-    self.page2.pack_start(_row1, True, True, 10)
+    self.page2.pack_start(_row1, True, True, 5)
 
     # 行2
     _row2 = g.Box()
 
-    _row2.pack_end(g.Button(' log '), False, True, 0)
-    _row2.pack_end(g.Button(' session '), False, True, 30)
+    self._page3_read_target_btn = g.Button('查看target文件')
+    self._page3_read_target_btn.connect('clicked', self._handlers.read_target_file)
+
+    _row2.pack_start(self._page3_read_target_btn, True, False, 0)
+
+    self._page3_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
+    self._page3_clear_btn.set_tooltip_text('不会动实际的文件')
+    self._page3_clear_btn.connect('clicked', self._handlers.clear_buffer)
+
+    _row2.pack_start(self._page3_clear_btn, True, False, 0)
+
+    self._page3_read_log_btn = g.Button('查看log文件')
+    self._page3_read_log_btn.connect('clicked', self._handlers.read_log_file)
+
+    _row2.pack_start(self._page3_read_log_btn, True, False, 0)
 
     self.page2.pack_end(_row2, False, True, 0)
 
@@ -987,13 +1017,41 @@ class UI_Window(g.Window):
     # 行1
     _row1 = g.Frame()
 
+    _manual_view = g.TextView()
+
+    self._manual_view_textbuffer = _manual_view.get_buffer()
+
+    # 启动线程, 填充帮助标签, 加快启动速度
+    t = Thread(target = self._set_manual_view)
+    t.daemon = True
+    t.start()
+
     _scrolled = g.ScrolledWindow()
-    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
-    _scrolled.add(g.TextView())
+    _scrolled.set_policy(g.PolicyType.ALWAYS, g.PolicyType.ALWAYS)
+    _scrolled.add(_manual_view)
 
     _row1.add(_scrolled)
 
     self.page3.pack_start(_row1, True, True, 10)
+
+  def _set_manual_view(self):
+    '''
+    不用多线程能行嘛? 想要获得输出结果就一定会有阻塞的可能!
+    https://www.jianshu.com/p/11090e197648
+    https://wiki.gnome.org/Projects/PyGObject/Threading
+    '''
+    _end_iter = self._manual_view_textbuffer.get_end_iter()
+    # _manual_hh = '/home/needle/bin/output_interval.sh'
+    _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
+    try:
+      _subprocess = Popen(_manual_hh, stdout=PIPE, bufsize=1)
+
+      for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
+        GLib.idle_add(self._manual_view_textbuffer.insert, _end_iter, _an_bytes_line_tmp.decode('utf8'))
+      _subprocess.stdout.close()
+      _subprocess.wait()
+    except FileNotFoundError as e:
+      GLib.idle_add(self._manual_view_textbuffer.insert, _end_iter, str(e))
 
   def _build_page4(self):
     self.page4 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
@@ -1001,7 +1059,7 @@ class UI_Window(g.Window):
 
     _about_str = '''
     1. VERSION: 0.1
-       2018年 08月 31日 星期五 23:26:51 CST
+       2018年 09月 03日 星期一 00:56:42 CST
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk-3: python3-gi)重写sqm.py\n
     3. Gtk-3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
@@ -1016,6 +1074,7 @@ def main():
   win.connect('destroy', g.main_quit)
   # win.maximize()
   win.show_all()
+
   g.main()
 
 
