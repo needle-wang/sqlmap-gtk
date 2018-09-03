@@ -16,8 +16,8 @@ from gtk3_header import GLib
 from gtk3_header import Gtk as g
 from sqlmap_ui_handlers import Singal_Handlers as handlers
 
-from basis_and_tool.logging_needle import get_console_logger
-logger = get_console_logger()
+# from basis_and_tool.logging_needle import get_console_logger
+# logger = get_console_logger()
 
 
 class UI_Window(g.Window):

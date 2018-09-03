@@ -11,8 +11,8 @@ from pathlib import Path
 from subprocess import Popen
 from urllib.parse import urlparse
 
-from basis_and_tool.logging_needle import get_console_logger
-logger = get_console_logger()
+# from basis_and_too.logging_needle import get_console_logger
+# logger = get_console_logger()
 
 
 class Singal_Handlers(object):
