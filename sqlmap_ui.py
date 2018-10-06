@@ -71,7 +71,7 @@ class UI_Window(g.Window):
   def _build_page_target(self):
     # 目标url
     name_store = g.ListStore(int, str)
-    name_store.append([1, "www.google.com?id=1"])
+    name_store.append([1, "http://www.site.com/vuln.php?id=1"])
 
     self._target_notbook = g.Notebook()
 
@@ -80,7 +80,7 @@ class UI_Window(g.Window):
     self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
     self._url_combobox.set_entry_text_column(1)
     self._url_combobox.set_tooltip_text(
-      '必填项, 从 目标url/burp日志/HTTP请求 任选一项')
+      '必填项, 从 目标url/burp日志/HTTP请求... 任选一项')
 
     _url_area.pack_start(self._url_combobox, True, True, 0)
 
@@ -105,6 +105,46 @@ class UI_Window(g.Window):
     _request_area.pack_start(self._request_file, True, True, 0)
 
     self._target_notbook.append_page(_request_area, g.Label('HTTP请求'))
+
+    _sitemap_url_area = g.Box()
+
+    self._sitemap_url = g.Entry()
+    self._sitemap_url.set_tooltip_text(
+      '-x: 远程sitemap(.xml)文件的url(用来解析目标)')
+
+    _sitemap_url_area.pack_start(self._sitemap_url, True, True, 0)
+
+    self._target_notbook.append_page(_sitemap_url_area, g.Label('xml_url'))
+
+    _bulkfile_area = g.Box()
+
+    self._bulkfile = g.Entry()
+    self._bulkfile.set_tooltip_text(
+      '-m: 给定一个包含多个目标的文本路径')
+
+    _bulkfile_area.pack_start(self._bulkfile, True, True, 0)
+
+    self._target_notbook.append_page(_bulkfile_area, g.Label('BULKFILE'))
+
+    _google_dork_area = g.Box()
+
+    self._google_dork = g.Entry()
+    self._google_dork.set_tooltip_text(
+      '-g: 处理google dork 结果为目标url')
+
+    _google_dork_area.pack_start(self._google_dork, True, True, 0)
+
+    self._target_notbook.append_page(_google_dork_area, g.Label('GOOGLEDORK'))
+
+    _configfile_area = g.Box()
+
+    self._configfile = g.Entry()
+    self._configfile.set_tooltip_text(
+      '-c: 从一个本地ini配置文件载入选项')
+
+    _configfile_area.pack_start(self._configfile, True, True, 0)
+
+    self._target_notbook.append_page(_configfile_area, g.Label('ini文件'))
 
   def _build_page1(self):
     self.page1 = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
@@ -193,7 +233,7 @@ class UI_Window(g.Window):
   def _build_page1_setting_tech(self):
     self._tech_area = g.Frame.new('各注入技术的选项')
 
-    _tech_area_opts = g.ListBox()
+    _tech_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
     # 行1
     _row1 = g.Box()
@@ -203,8 +243,8 @@ class UI_Window(g.Window):
     self._tech_area_tech_entry = g.Entry()
     self._tech_area_tech_entry.set_text('BEUSTQ')
 
-    _row1.pack_start(self._tech_area_tech_ckbtn, False, True, 0)
-    _row1.pack_end(self._tech_area_tech_entry, False, True, 0)
+    _row1.pack_start(self._tech_area_tech_ckbtn, False, True, 5)
+    _row1.pack_end(self._tech_area_tech_entry, False, True, 5)
     _tech_area_opts.add(_row1)
 
     # 行2
@@ -215,8 +255,8 @@ class UI_Window(g.Window):
     self._tech_area_time_sec_entry = g.Entry()
     self._tech_area_time_sec_entry.set_text('(时间盲注时)')
 
-    _row2.pack_start(self._tech_area_time_sec_ckbtn, False, True, 0)
-    _row2.pack_end(self._tech_area_time_sec_entry, False, True, 0)
+    _row2.pack_start(self._tech_area_time_sec_ckbtn, False, True, 5)
+    _row2.pack_end(self._tech_area_time_sec_entry, False, True, 5)
     _tech_area_opts.add(_row2)
 
     # 行3
@@ -227,8 +267,8 @@ class UI_Window(g.Window):
     self._tech_area_union_col_entry = g.Entry()
     self._tech_area_union_col_entry.set_text('(union查询时)')
 
-    _row3.pack_start(self._tech_area_union_col_ckbtn, False, True, 0)
-    _row3.pack_end(self._tech_area_union_col_entry, False, True, 0)
+    _row3.pack_start(self._tech_area_union_col_ckbtn, False, True, 5)
+    _row3.pack_end(self._tech_area_union_col_entry, False, True, 5)
     _tech_area_opts.add(_row3)
 
     # 行4
@@ -239,8 +279,8 @@ class UI_Window(g.Window):
     self._tech_area_union_chr_entry = g.Entry()
     self._tech_area_union_chr_entry.set_text('(union查询时)')
 
-    _row4.pack_start(self._tech_area_union_chr_ckbtn, False, True, 0)
-    _row4.pack_end(self._tech_area_union_chr_entry, False, True, 0)
+    _row4.pack_start(self._tech_area_union_chr_ckbtn, False, True, 5)
+    _row4.pack_end(self._tech_area_union_chr_entry, False, True, 5)
     _tech_area_opts.add(_row4)
 
     # 行5
@@ -251,8 +291,8 @@ class UI_Window(g.Window):
     self._tech_area_union_table_entry = g.Entry()
     self._tech_area_union_table_entry.set_text('(union查询时)')
 
-    _row5.pack_start(self._tech_area_union_table_ckbtn, False, True, 0)
-    _row5.pack_end(self._tech_area_union_table_entry, False, True, 0)
+    _row5.pack_start(self._tech_area_union_table_ckbtn, False, True, 5)
+    _row5.pack_end(self._tech_area_union_table_entry, False, True, 5)
     _tech_area_opts.add(_row5)
 
     # 行6
@@ -263,8 +303,8 @@ class UI_Window(g.Window):
     self._tech_area_dns_entry = g.Entry()
     self._tech_area_dns_entry.set_text('(DNS exfiltration)')
 
-    _row6.pack_start(self._tech_area_dns_ckbtn, True, True, 0)
-    _row6.pack_end(self._tech_area_dns_entry, True, True, 0)
+    _row6.pack_start(self._tech_area_dns_ckbtn, True, True, 5)
+    _row6.pack_end(self._tech_area_dns_entry, True, True, 5)
     _tech_area_opts.add(_row6)
 
     # 行7
@@ -274,8 +314,8 @@ class UI_Window(g.Window):
     self._tech_area_second_url_ckbtn = g.CheckButton('指定二阶响应的url')
     self._tech_area_second_url_entry = g.Entry()
 
-    _row7.pack_start(self._tech_area_second_url_ckbtn, True, True, 0)
-    _row7.pack_end(self._tech_area_second_url_entry, True, True, 0)
+    _row7.pack_start(self._tech_area_second_url_ckbtn, True, True, 5)
+    _row7.pack_end(self._tech_area_second_url_entry, True, True, 5)
     _tech_area_opts.add(_row7)
 
     # 行8
@@ -285,8 +325,8 @@ class UI_Window(g.Window):
     self._tech_area_second_req_url_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件')
     self._tech_area_second_req_url_entry = g.Entry()
 
-    _row8.pack_start(self._tech_area_second_req_url_ckbtn, True, True, 0)
-    _row8.pack_end(self._tech_area_second_req_url_entry, True, True, 0)
+    _row8.pack_start(self._tech_area_second_req_url_ckbtn, True, True, 5)
+    _row8.pack_end(self._tech_area_second_req_url_entry, True, True, 5)
     _tech_area_opts.add(_row8)
 
     self._tech_area.add(_tech_area_opts)
@@ -294,7 +334,7 @@ class UI_Window(g.Window):
   def _build_page1_setting_detection(self):
     self._detection_area = g.Frame.new('探测选项')
 
-    _detection_area_opts = g.ListBox()
+    _detection_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
     # 行1
     _row1 = g.Box()
@@ -315,9 +355,9 @@ class UI_Window(g.Window):
     self._detection_area_text_only_ckbtn = g.CheckButton('仅对比文本')
     self._detection_area_text_only_ckbtn.set_tooltip_text('--text-only')
 
-    _row1.pack_start(self._detection_area_level_ckbtn, False, True, 0)
+    _row1.pack_start(self._detection_area_level_ckbtn, False, True, 5)
     _row1.pack_start(self._detection_area_level_combobox, True, False, 10)
-    _row1.pack_start(self._detection_area_text_only_ckbtn, False, True, 0)
+    _row1.pack_start(self._detection_area_text_only_ckbtn, False, True, 5)
     _detection_area_opts.add(_row1)
 
     # 行2
@@ -337,9 +377,9 @@ class UI_Window(g.Window):
     self._detection_area_titles_ckbtn = g.CheckButton('仅对比title')
     self._detection_area_titles_ckbtn.set_tooltip_text('--titles')
 
-    _row2.pack_start(self._detection_area_risk_ckbtn, False, True, 0)
+    _row2.pack_start(self._detection_area_risk_ckbtn, False, True, 5)
     _row2.pack_start(self._detection_area_risk_combobox, True, False, 10)
-    _row2.pack_start(self._detection_area_titles_ckbtn, False, True, 0)
+    _row2.pack_start(self._detection_area_titles_ckbtn, False, True, 5)
     _detection_area_opts.add(_row2)
 
     # 行3
@@ -350,7 +390,7 @@ class UI_Window(g.Window):
     self._detection_area_str_entry = g.Entry()
     self._detection_area_str_entry.set_text('(查询为真时的)')
 
-    _row3.pack_start(self._detection_area_str_ckbtn, False, True, 0)
+    _row3.pack_start(self._detection_area_str_ckbtn, False, True, 5)
     _row3.pack_end(self._detection_area_str_entry, True, True, 5)
     _detection_area_opts.add(_row3)
 
@@ -362,7 +402,7 @@ class UI_Window(g.Window):
     self._detection_area_re_entry = g.Entry()
     self._detection_area_re_entry.set_text('(查询为真时的)')
 
-    _row4.pack_start(self._detection_area_re_ckbtn, False, True, 0)
+    _row4.pack_start(self._detection_area_re_ckbtn, False, True, 5)
     _row4.pack_end(self._detection_area_re_entry, True, True, 5)
     _detection_area_opts.add(_row4)
 
@@ -374,7 +414,7 @@ class UI_Window(g.Window):
     self._detection_area_code_entry = g.Entry()
     self._detection_area_code_entry.set_text('(查询为真时的)')
 
-    _row5.pack_start(self._detection_area_code_ckbtn, False, True, 0)
+    _row5.pack_start(self._detection_area_code_ckbtn, False, True, 5)
     _row5.pack_end(self._detection_area_code_entry, True, True, 5)
     _detection_area_opts.add(_row5)
 
@@ -383,61 +423,81 @@ class UI_Window(g.Window):
   def _build_page1_setting_general(self):
     self._general_area = g.Frame.new('通用选项')
 
-    _general_area_opts = g.ListBox()
+    _general_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
+    _row1 = g.Box()
     self._general_area_finger_ckbtn = g.CheckButton('执行宽泛的DB版本检测')
     self._general_area_finger_ckbtn.set_tooltip_text('--fingerprint')
+
+    _row1.pack_start(self._general_area_finger_ckbtn, False, True, 5)
+    _general_area_opts.add(_row1)
+
+    _row2 = g.Box()
     self._general_area_batch_ckbtn = g.CheckButton('非交互模式, 一切皆默认')
     self._general_area_batch_ckbtn.set_tooltip_text('--batch')
+
+    _row2.pack_start(self._general_area_batch_ckbtn, False, True, 5)
+    _general_area_opts.add(_row2)
+
+    _row3 = g.Box()
     self._general_area_hex_ckbtn = g.CheckButton('获取数据时使用hex转换')
     self._general_area_hex_ckbtn.set_tooltip_text('--hex')
 
-    _general_area_opts.add(self._general_area_finger_ckbtn)
-    _general_area_opts.add(self._general_area_batch_ckbtn)
-    _general_area_opts.add(self._general_area_hex_ckbtn)
+    _row3.pack_start(self._general_area_hex_ckbtn, False, True, 5)
+    _general_area_opts.add(_row3)
 
-    _detail_vv_row = g.Box()
-    _detail_vv_row.set_tooltip_text('-v 默认为1')
+    _row4 = g.Box()
+    _row4.set_tooltip_text('-v 默认为1')
 
     self._general_area_verbose_ckbtn = g.CheckButton('输出详细程度')
 
     self._detail_vv_entry = g.Entry()
     self._detail_vv_entry.set_text('(0-6)')
 
-    _detail_vv_row.pack_start(self._general_area_verbose_ckbtn, False, True, 0)
-    _detail_vv_row.pack_start(self._detail_vv_entry, True, True, 5)
-
-    _general_area_opts.add(_detail_vv_row)
+    _row4.pack_start(self._general_area_verbose_ckbtn, False, True, 5)
+    _row4.pack_start(self._detail_vv_entry, True, True, 5)
+    _general_area_opts.add(_row4)
 
     self._general_area.add(_general_area_opts)
 
   def _build_page1_setting_optimize(self):
     self._optimize_area = g.Frame.new('性能优化')
 
-    _optimize_area_opts = g.ListBox()
+    _optimize_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
+    _row1 = g.Box()
     self._optimize_area_turn_all_ckbtn = g.CheckButton('启用所有优化选项')
     self._optimize_area_turn_all_ckbtn.connect('clicked', self._handlers.optimize_area_controller)
     self._optimize_area_turn_all_ckbtn.set_tooltip_text('-o')
-    _optimize_area_opts.add(self._optimize_area_turn_all_ckbtn)
 
+    _row1.pack_start(self._optimize_area_turn_all_ckbtn, False, True, 5)
+    _optimize_area_opts.add(_row1)
+
+    _row2 = g.Box()
     self._optimize_area_predict_ckbtn = g.CheckButton('预测通常的查询结果')
     self._optimize_area_predict_ckbtn.set_tooltip_text('--predict-output')
-    _optimize_area_opts.add(self._optimize_area_predict_ckbtn)
 
+    _row2.pack_start(self._optimize_area_predict_ckbtn, False, True, 5)
+    _optimize_area_opts.add(_row2)
+
+    _row3 = g.Box()
     self._optimize_area_keep_alive_ckbtn = g.CheckButton('http连接使用keep-alive')
     self._optimize_area_keep_alive_ckbtn.set_tooltip_text('--keep-alive')
-    _optimize_area_opts.add(self._optimize_area_keep_alive_ckbtn)
 
+    _row3.pack_start(self._optimize_area_keep_alive_ckbtn, False, True, 5)
+    _optimize_area_opts.add(_row3)
+
+    _row4 = g.Box()
     self._optimize_area_null_connect_ckbtn = g.CheckButton('只用页面长度报头来比较, 不去获取实际的响应体')
     self._optimize_area_null_connect_ckbtn.set_tooltip_text('--null-connection')
-    _optimize_area_opts.add(self._optimize_area_null_connect_ckbtn)
 
-    _thread_num_row = g.Box()
-    _thread_num_row.set_tooltip_text('--threads=默认为1')
+    _row4.pack_start(self._optimize_area_null_connect_ckbtn, False, True, 5)
+    _optimize_area_opts.add(_row4)
+
+    _row5 = g.Box()
+    _row5.set_tooltip_text('--threads=默认为1')
 
     self._optimize_area_thread_num_ckbtn = g.CheckButton('启用多线程(数量):')
-    _thread_num_row.pack_start(self._optimize_area_thread_num_ckbtn, False, True, 0)
 
     _thread_num_store = g.ListStore(int, str)
     _thread_num_store.append([1, "2"])
@@ -446,9 +506,10 @@ class UI_Window(g.Window):
     # set_entry_text_column(0)会出现段错误~~, NB!
     self._optimize_area_thread_num_combobox.set_entry_text_column(1)
 
-    _thread_num_row.pack_end(self._optimize_area_thread_num_combobox, False, True, 0)
+    _row5.pack_start(self._optimize_area_thread_num_ckbtn, False, True, 5)
+    _row5.pack_end(self._optimize_area_thread_num_combobox, False, True, 5)
 
-    _optimize_area_opts.add(_thread_num_row)
+    _optimize_area_opts.add(_row5)
 
     self._optimize_area.add(_optimize_area_opts)
 
@@ -475,41 +536,47 @@ class UI_Window(g.Window):
   def _build_page1_setting_inject(self):
     self._inject_area = g.Frame.new('注入选项')
 
-    _inject_area_opts = g.ListBox()
+    _inject_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
-    # 行1
     _row1 = g.Box()
-    _row1.set_tooltip_text('-p')
+    _row1.set_tooltip_text('-p TESTPARAMETER\tTestable parameter(s)')
     self._inject_area_param_ckbtn = g.CheckButton('可测试的参数')
     self._inject_area_param_entry = g.Entry()
     self._inject_area_param_entry.set_text('id')
 
-    _row1.pack_start(self._inject_area_param_ckbtn, True, True, 0)
-    _row1.pack_end(self._inject_area_param_entry, True, True, 0)
+    _row1.pack_start(self._inject_area_param_ckbtn, True, True, 5)
+    _row1.pack_end(self._inject_area_param_entry, True, True, 5)
     _inject_area_opts.add(_row1)
 
-    # 行2
     _row2 = g.Box()
-    _row2.set_tooltip_text('--skip=...,...')
+    _row2.set_tooltip_text('--skip=...,...\tSkip testing for given parameter(s)')
     self._inject_area_skip_ckbtn = g.CheckButton('排除参数')
     self._inject_area_skip_entry = g.Entry()
 
-    _row2.pack_start(self._inject_area_skip_ckbtn, True, True, 0)
-    _row2.pack_end(self._inject_area_skip_entry, True, True, 0)
+    _row2.pack_start(self._inject_area_skip_ckbtn, True, True, 5)
+    _row2.pack_end(self._inject_area_skip_entry, True, True, 5)
     _inject_area_opts.add(_row2)
 
-    # 行3
     _row3 = g.Box()
-    _row3.set_tooltip_text('--skip-static')
+    _row3.set_tooltip_text('--skip-static\tSkip testing parameters that not appear to be dynamic')
 
     self._inject_area_skip_static_ckbtn = g.CheckButton('跳过无动态特性的参数')
 
-    _row3.pack_start(self._inject_area_skip_static_ckbtn, True, True, 0)
+    _row3.pack_start(self._inject_area_skip_static_ckbtn, True, True, 5)
     _inject_area_opts.add(_row3)
 
-    # 行4
     _row4 = g.Box()
-    _row4.set_tooltip_text('--dbms=')
+    _row4.set_tooltip_text('--param-exclude=.. Regexp to exclude parameters from testing')
+
+    self._param_exclude_ckbtn = g.CheckButton('排除参数(正则)')
+    self._param_exclude_entry = g.Entry()
+
+    _row4.pack_start(self._param_exclude_ckbtn, True, True, 5)
+    _row4.pack_end(self._param_exclude_entry, True, True, 5)
+    _inject_area_opts.add(_row4)
+
+    _row5 = g.Box()
+    _row5.set_tooltip_text('--dbms=DBMS\tForce back-end DBMS to provided value')
 
     _db_store = g.ListStore(int, str)
     _db_store.append([1, "mysql"])
@@ -521,70 +588,64 @@ class UI_Window(g.Window):
       _db_store)
     self._inject_area_dbms_combobox.set_entry_text_column(1)
 
-    _row4.pack_start(self._inject_area_dbms_ckbtn, True, True, 0)
-    _row4.pack_end(self._inject_area_dbms_combobox, True, True, 0)
-    _inject_area_opts.add(_row4)
+    _row5.pack_start(self._inject_area_dbms_ckbtn, True, True, 5)
+    _row5.pack_end(self._inject_area_dbms_combobox, True, True, 5)
+    _inject_area_opts.add(_row5)
 
-    # 行5
-    _row5 = g.Box()
-    _row5.set_tooltip_text('--os=')
+    _row6 = g.Box()
+    _row6.set_tooltip_text('--os=OS\tForce back-end DBMS operating system to provided value')
 
     self._inject_area_os_ckbtn = g.CheckButton('固定OS为')
     self._inject_area_os_entry = g.Entry()
 
-    _row5.pack_start(self._inject_area_os_ckbtn, True, True, 0)
-    _row5.pack_end(self._inject_area_os_entry, True, True, 0)
-    _inject_area_opts.add(_row5)
+    _row6.pack_start(self._inject_area_os_ckbtn, True, True, 5)
+    _row6.pack_end(self._inject_area_os_entry, True, True, 5)
+    _inject_area_opts.add(_row6)
 
-    # 行6
-    _row6 = g.Box()
-    _row6.set_tooltip_text('--invalid-logical')
+    _row7 = g.Box()
+    _row7.set_tooltip_text('--invalid-logical\tUse logical operations for invalidating values')
 
     self._inject_area_logic_ckbtn = g.CheckButton('对payload中的废值使用逻辑运算符')
 
-    _row6.pack_start(self._inject_area_logic_ckbtn, True, True, 0)
-    _inject_area_opts.add(_row6)
+    _row7.pack_start(self._inject_area_logic_ckbtn, True, True, 5)
+    _inject_area_opts.add(_row7)
 
-    # 行7
-    _row7 = g.Box()
-    _row7.set_tooltip_text('--no-cast')
+    _row8 = g.Box()
+    _row8.set_tooltip_text('--no-cast\tTurn off payload casting mechanism')
 
     self._inject_area_no_cast_ckbtn = g.CheckButton('关掉payload变形机制')
 
-    _row7.pack_start(self._inject_area_no_cast_ckbtn, True, True, 0)
-    _inject_area_opts.add(_row7)
+    _row8.pack_start(self._inject_area_no_cast_ckbtn, True, True, 5)
+    _inject_area_opts.add(_row8)
 
-    # 行8
-    _row8 = g.Box()
-    _row8.set_tooltip_text('--no-escape')
+    _row9 = g.Box()
+    _row9.set_tooltip_text('--no-escape\tTurn off string escaping mechanism')
 
     self._inject_area_no_escape_ckbtn = g.CheckButton('关掉string转义')
 
-    _row8.pack_start(self._inject_area_no_escape_ckbtn, True, True, 0)
-    _inject_area_opts.add(_row8)
+    _row9.pack_start(self._inject_area_no_escape_ckbtn, True, True, 5)
+    _inject_area_opts.add(_row9)
 
-    # 行9
-    _row9 = g.Box()
-    _row9.set_tooltip_text('--prefix=')
+    _row10 = g.Box()
+    _row10.set_tooltip_text('--prefix=PREFIX\tInjection payload prefix string')
 
     self._inject_area_prefix_ckbtn = g.CheckButton('payload前缀')
     self._inject_area_prefix_entry = g.Entry()
     self._inject_area_prefix_entry.set_text('用于闭合')
 
-    _row9.pack_start(self._inject_area_prefix_ckbtn, True, True, 0)
-    _row9.pack_end(self._inject_area_prefix_entry, True, True, 0)
-    _inject_area_opts.add(_row9)
+    _row10.pack_start(self._inject_area_prefix_ckbtn, True, True, 5)
+    _row10.pack_end(self._inject_area_prefix_entry, True, True, 5)
+    _inject_area_opts.add(_row10)
 
-    # 行10
-    _row10 = g.Box()
-    _row10.set_tooltip_text('--suffix=')
+    _row11 = g.Box()
+    _row11.set_tooltip_text('--suffix=SUFFIX\tInjection payload suffix string')
 
     self._inject_area_suffix_ckbtn = g.CheckButton('payload后缀')
     self._inject_area_suffix_entry = g.Entry()
 
-    _row10.pack_start(self._inject_area_suffix_ckbtn, True, True, 0)
-    _row10.pack_end(self._inject_area_suffix_entry, True, True, 0)
-    _inject_area_opts.add(_row10)
+    _row11.pack_start(self._inject_area_suffix_ckbtn, True, True, 5)
+    _row11.pack_end(self._inject_area_suffix_entry, True, True, 5)
+    _inject_area_opts.add(_row11)
 
     self._inject_area.add(_inject_area_opts)
 

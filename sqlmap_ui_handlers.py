@@ -162,12 +162,21 @@ class Singal_Handlers(object):
 
   def _target_builder(self):
     ui = self._w
-    if ui._target_notbook.get_current_page() is 0:
+    current_page_num = ui._target_notbook.get_current_page()
+    if current_page_num is 0:
       return " -u '" + ui._url_combobox.get_child().get_text() + "'"
-    elif ui._target_notbook.get_current_page() is 1:
+    elif current_page_num is 1:
       return " -l '" + ui._burp_logfile.get_text() + "'"
-    elif ui._target_notbook.get_current_page() is 2:
+    elif current_page_num is 2:
       return " -r '" + ui._request_file.get_text() + "'"
+    elif current_page_num is 3:
+      return " -x '" + ui._sitemap_url.get_text() + "'"
+    elif current_page_num is 4:
+      return " -m '" + ui._bulkfile.get_text() + "'"
+    elif current_page_num is 5:
+      return " -g '" + ui._google_dork.get_text() + "'"
+    elif current_page_num is 6:
+      return " -c '" + ui._configfile.get_text() + "'"
 
   def _file_dest_builder(self):
     ''' --file-dest=DFILE   Back-end DBMS absolute filepath to write to '''
