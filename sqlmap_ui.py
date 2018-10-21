@@ -169,7 +169,7 @@ class UI_Window(g.Window):
     self._build_page1_file()
     self._build_page1_other()
 
-    _notebook.append_page(self.page1_setting, g.Label.new_with_mnemonic('设置(_1)'))
+    _notebook.append_page(self.page1_setting, g.Label.new_with_mnemonic('测试(_1)'))
     _notebook.append_page(self.page1_request, g.Label.new_with_mnemonic('请求(_2)'))
     _notebook.append_page(self.page1_enumeration, g.Label.new_with_mnemonic('枚举(_3)'))
     _notebook.append_page(self.page1_file, g.Label.new_with_mnemonic('文件(_4)'))
@@ -409,15 +409,9 @@ class UI_Window(g.Window):
     _row9.pack_start(self._page1_general_test_skip_ckbtn, False, True, 5)
     _row9.pack_start(self._page1_general_test_skip_entry, True, True, 5)
 
-    _page1_other_general_opts.add(_row1)
-    _page1_other_general_opts.add(_row2)
-    _page1_other_general_opts.add(_row3)
-    _page1_other_general_opts.add(_row4)
-    _page1_other_general_opts.add(_row5)
-    _page1_other_general_opts.add(_row6)
-    _page1_other_general_opts.add(_row7)
-    _page1_other_general_opts.add(_row8)
-    _page1_other_general_opts.add(_row9)
+    # 添加行: _row1 - _row9
+    for _i in range(1, 10):
+      _page1_other_general_opts.add(locals()[''.join(('_row', str(_i)))])
     self.page1_other_general_area.add(_page1_other_general_opts)
 
   def _build_page1_setting(self):
@@ -462,7 +456,6 @@ class UI_Window(g.Window):
 
     _row1.pack_start(self._tech_area_tech_ckbtn, False, True, 5)
     _row1.pack_end(self._tech_area_tech_entry, False, True, 5)
-    _tech_area_opts.add(_row1)
 
     _row2 = g.Box()
     _row2.set_tooltip_text('--time-sec=默认为5')
@@ -473,7 +466,6 @@ class UI_Window(g.Window):
 
     _row2.pack_start(self._tech_area_time_sec_ckbtn, False, True, 5)
     _row2.pack_end(self._tech_area_time_sec_entry, False, True, 5)
-    _tech_area_opts.add(_row2)
 
     _row3 = g.Box()
     _row3.set_tooltip_text('--union-cols=')
@@ -484,7 +476,6 @@ class UI_Window(g.Window):
 
     _row3.pack_start(self._tech_area_union_col_ckbtn, False, True, 5)
     _row3.pack_end(self._tech_area_union_col_entry, False, True, 5)
-    _tech_area_opts.add(_row3)
 
     _row4 = g.Box()
     _row4.set_tooltip_text('--union-char=')
@@ -495,7 +486,6 @@ class UI_Window(g.Window):
 
     _row4.pack_start(self._tech_area_union_chr_ckbtn, False, True, 5)
     _row4.pack_end(self._tech_area_union_chr_entry, False, True, 5)
-    _tech_area_opts.add(_row4)
 
     _row5 = g.Box()
     _row5.set_tooltip_text('--union-from=')
@@ -506,7 +496,6 @@ class UI_Window(g.Window):
 
     _row5.pack_start(self._tech_area_union_table_ckbtn, False, True, 5)
     _row5.pack_end(self._tech_area_union_table_entry, False, True, 5)
-    _tech_area_opts.add(_row5)
 
     _row6 = g.Box()
     _row6.set_tooltip_text('--dns-domain=')
@@ -517,7 +506,6 @@ class UI_Window(g.Window):
 
     _row6.pack_start(self._tech_area_dns_ckbtn, True, True, 5)
     _row6.pack_end(self._tech_area_dns_entry, True, True, 5)
-    _tech_area_opts.add(_row6)
 
     _row7 = g.Box()
     _row7.set_tooltip_text('--second-url=')
@@ -527,7 +515,6 @@ class UI_Window(g.Window):
 
     _row7.pack_start(self._tech_area_second_url_ckbtn, True, True, 5)
     _row7.pack_end(self._tech_area_second_url_entry, True, True, 5)
-    _tech_area_opts.add(_row7)
 
     _row8 = g.Box()
     _row8.set_tooltip_text('--second-req=')
@@ -537,8 +524,10 @@ class UI_Window(g.Window):
 
     _row8.pack_start(self._tech_area_second_req_url_ckbtn, True, True, 5)
     _row8.pack_end(self._tech_area_second_req_url_entry, True, True, 5)
-    _tech_area_opts.add(_row8)
 
+    # 添加行: _row1 - _row8
+    for _i in range(1, 9):
+      _tech_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._tech_area.add(_tech_area_opts)
 
   def _build_page1_setting_detection(self):
@@ -873,8 +862,8 @@ class UI_Window(g.Window):
 
     _inject_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
     # 添加行: _row1 - _row14
-    for i in range(1, 15):
-      _inject_area_opts.add(locals()[''.join(('_row', str(i)))])
+    for _i in range(1, 15):
+      _inject_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._inject_area.add(_inject_area_opts)
 
   def _build_page1_request(self):
