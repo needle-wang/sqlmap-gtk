@@ -1,5 +1,5 @@
 ## SQLMAP-UI
-sqlmap 简易 ui, using PyGObject(gtk+3) 
+sqlmap ui, using PyGObject(gtk+3) 
 
 
 #### SCREENSHORT
@@ -15,6 +15,10 @@ sqlmap 简易 ui, using PyGObject(gtk+3)
   - `git clone https://github.com/needle-wang/sqlmap-ui.git`
 3. **RUN**  
   - `./sqlmap_ui.py`
+
+#### TODO
+1. UI重新排版, 细节优化(margin, padding啥的)  
+2. 代码重构, 划分为多模块形式, 将tooltip与条目合并的一个字典!  
 
 #### ABOUT
 1. VERSION: 0.1  

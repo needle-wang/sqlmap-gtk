@@ -181,23 +181,23 @@ class Singal_Handlers(object):
   def _file_dest_builder(self):
     ''' --file-dest=DFILE   Back-end DBMS absolute filepath to write to '''
     ui = self._w
-    if ui._file_write_area_file_dest_ckbtn.get_active():
-      return " --file-dest='" + ui._file_write_area_file_dest_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._file_write_area_file_dest_ckbtn,
+                                     " --file-dest='",
+                                     ui._file_write_area_file_dest_entry)
 
   def _file_write_builder(self):
     ''' --file-write=WFILE  Write a local file on the back-end DBMS file system '''
     ui = self._w
-    if ui._file_write_area_file_write_ckbtn.get_active():
-      return " --file-write='" + ui._file_write_area_file_write_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._file_write_area_file_write_ckbtn,
+                                     " --file-write='",
+                                     ui._file_write_area_file_write_entry)
 
   def _shared_lib_builder(self):
     ''' --shared-lib=SHLIB  Local path of the shared library '''
     ui = self._w
-    if ui._file_write_area_shared_lib_ckbtn.get_active():
-      return " --shared-lib='" + ui._file_write_area_shared_lib_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._file_write_area_shared_lib_ckbtn,
+                                     " --shared-lib='",
+                                     ui._file_write_area_shared_lib_entry)
 
   def _udf_builder(self):
     ''' --udf-inject        Inject custom user-defined functions '''
@@ -209,37 +209,37 @@ class Singal_Handlers(object):
   def _where_clause_builder(self):
     ''' --where=DUMPWHERE   Use WHERE condition while table dumping '''
     ui = self._w
-    if ui._meta_area_where_ckbtn.get_active():
-      return " --where='" + ui._meta_area_where_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._meta_area_where_ckbtn,
+                                     " --where='",
+                                     ui._meta_area_where_entry)
 
   def _second_req_builder(self):
     ''' --second-req=SEC..  Load second-order HTTP request from file '''
     ui = self._w
-    if ui._tech_area_second_req_url_ckbtn.get_active():
-      return " --second-req='" + ui._tech_area_second_req_url_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_second_req_url_ckbtn,
+                                     " --second-req='",
+                                     ui._tech_area_second_req_url_entry)
 
   def _second_url_builder(self):
     ''' --second-url=SEC..  Resulting page URL searched for second-order response '''
     ui = self._w
-    if ui._tech_area_second_url_ckbtn.get_active():
-      return " --second-url='" + ui._tech_area_second_url_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_second_url_ckbtn,
+                                     " --second-url='",
+                                     ui._tech_area_second_url_entry)
 
   def _dns_domain_builder(self):
     ''' --dns-domain=DNS..  Domain name used for DNS exfiltration attack '''
     ui = self._w
-    if ui._tech_area_dns_ckbtn.get_active():
-      return " --dns-domain='" + ui._tech_area_dns_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_dns_ckbtn,
+                                     " --dns-domain='",
+                                     ui._tech_area_dns_entry)
 
   def _union_from_builder(self):
     ''' --union-from=UFROM  Table to use in FROM part of UNION query SQL injection '''
     ui = self._w
-    if ui._tech_area_union_table_ckbtn.get_active():
-      return " --union-from='" + ui._tech_area_union_table_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_union_table_ckbtn,
+                                     " --union-from='",
+                                     ui._tech_area_union_table_entry)
 
   def _no_escape_builder(self):
     ''' --no-escape         Turn off string escaping mechanism '''
@@ -258,7 +258,7 @@ class Singal_Handlers(object):
   def _invalid_logic_builder(self):
     ''' --invalid-logical   Use logical operations for invalidating values '''
     ui = self._w
-    if ui._inject_area_logic_ckbtn.get_active():
+    if ui._inject_area_invalid_logic_ckbtn.get_active():
       return ' --invalid-logical'
     return ''
 
@@ -286,55 +286,55 @@ class Singal_Handlers(object):
   def _last_builder(self):
     ''' --last=LASTCHAR     Last query output word character to retrieve '''
     ui = self._w
-    if ui._blind_area_last_ckbtn.get_active():
-      return ' --last=' + ui._blind_area_last_entry.get_text()
-    return ''
+    return self._get_text_from_entry(ui._blind_area_last_ckbtn,
+                                     " --last='",
+                                     ui._blind_area_last_entry)
 
   def _first_builder(self):
     ''' --first=FIRSTCHAR   First query output word character to retrieve '''
     ui = self._w
-    if ui._blind_area_first_ckbtn.get_active():
-      return ' --first=' + ui._blind_area_first_entry.get_text()
-    return ''
+    return self._get_text_from_entry(ui._blind_area_first_ckbtn,
+                                     " --first='",
+                                     ui._blind_area_first_entry)
 
   def _stop_builder(self):
     ''' --stop=LIMITSTOP    Last dump table entry to retrieve '''
     ui = self._w
-    if ui._limit_area_stop_ckbtn.get_active():
-      return ' --stop=' + ui._limit_area_stop_entry.get_text()
-    return ''
+    return self._get_text_from_entry(ui._limit_area_stop_ckbtn,
+                                     " --stop='",
+                                     ui._limit_area_stop_entry)
 
   def _start_builder(self):
     ''' --start=LIMITSTART  First dump table entry to retrieve '''
     ui = self._w
-    if ui._limit_area_start_ckbtn.get_active():
-      return ' --start=' + ui._limit_area_start_entry.get_text()
-    return ''
+    return self._get_text_from_entry(ui._limit_area_start_ckbtn,
+                                     " --start='",
+                                     ui._limit_area_start_entry)
 
   def _C_builder(self):
     ''' -C COL              DBMS database table column(s) to enumerate '''
     ui = self._w
-    if ui._meta_area_C_ckbtn.get_active():
-      return " -C '" + ui._meta_area_C_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._meta_area_C_ckbtn,
+                                     " -C '",
+                                     ui._meta_area_C_entry)
 
   def _T_builder(self):
     '''
     -T TBL              DBMS database table(s) to enumerate
     '''
     ui = self._w
-    if ui._meta_area_T_ckbtn.get_active():
-      return " -T '" + ui._meta_area_T_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._meta_area_T_ckbtn,
+                                     " -T '",
+                                     ui._meta_area_T_entry)
 
   def _D_builder(self):
     '''
     -D DB               DBMS database to enumerate
     '''
     ui = self._w
-    if ui._meta_area_D_ckbtn.get_active():
-      return " -D '" + ui._meta_area_D_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._meta_area_D_ckbtn,
+                                     " -D '",
+                                     ui._meta_area_D_entry)
 
   def _no_sys_db_builder(self):
     ''' --exclude-sysdbs    Exclude DBMS system databases when enumerating tables '''
@@ -472,65 +472,65 @@ class Singal_Handlers(object):
   def _skip_builder(self):
     ''' --skip=SKIP         Skip testing for given parameter(s) '''
     ui = self._w
-    if ui._inject_area_skip_ckbtn.get_active():
-      return " --skip='" + ui._inject_area_skip_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._inject_area_skip_ckbtn,
+                                     " --skip='",
+                                     ui._inject_area_skip_entry)
 
   def _os_builder(self):
     ''' --os=OS             Force back-end DBMS operating system to provided value '''
     ui = self._w
-    if ui._inject_area_os_ckbtn.get_active():
-      return " --os='" + ui._inject_area_os_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._inject_area_os_ckbtn,
+                                     " --os='",
+                                     ui._inject_area_os_entry)
 
   def _suffix_builder(self):
     ''' --suffix=SUFFIX     Injection payload suffix string '''
     ui = self._w
-    if ui._inject_area_suffix_ckbtn.get_active():
-      return " --suffix='" + ui._inject_area_suffix_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._inject_area_suffix_ckbtn,
+                                     " --suffix='",
+                                     ui._inject_area_suffix_entry)
 
   def _prefix_builder(self):
     ''' --prefix=PREFIX     Injection payload prefix string '''
     ui = self._w
-    if ui._inject_area_prefix_ckbtn.get_active():
-      return " --prefix='" + ui._inject_area_prefix_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._inject_area_prefix_ckbtn,
+                                     " --prefix='",
+                                     ui._inject_area_prefix_entry)
 
   def _cookie_builder(self):
     ''' --cookie=COOKIE     HTTP Cookie header value '''
     ui = self._w
-    if ui._request_area_cookie_ckbtn.get_active():
-      return " --cookie='" + ui._request_area_cookie_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._request_area_cookie_ckbtn,
+                                     " --cookie='",
+                                     ui._request_area_cookie_entry)
 
   def _union_chr_builder(self):
     ''' --union-char=UCHAR  Character to use for bruteforcing number of columns '''
     ui = self._w
-    if ui._tech_area_union_chr_ckbtn.get_active():
-      return " --union-char='" + ui._tech_area_union_chr_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_union_chr_ckbtn,
+                                     " --union-char='",
+                                     ui._tech_area_union_chr_entry)
 
   def _union_col_builder(self):
     ''' --union-cols=UCOLS  Range of columns to test for UNION query SQL injection '''
     ui = self._w
-    if ui._tech_area_union_col_ckbtn.get_active():
-      return " --union-cols='" + ui._tech_area_union_col_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_union_col_ckbtn,
+                                     " --union-cols='",
+                                     ui._tech_area_union_col_entry)
 
   def _dbms_builder(self):
     ''' --dbms=DBMS         Force back-end DBMS to provided value '''
     ui = self._w
-    if ui._inject_area_dbms_ckbtn.get_active():
-      return " --dbms='" + ui._inject_area_dbms_combobox.get_child().get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._inject_area_dbms_ckbtn,
+                                     " --dbms='",
+                                     ui._inject_area_dbms_combobox.get_child())
 
   def _thread_num_builder(self):
     ''' --threads=THREADS   Max number of concurrent HTTP(s) requests (default 1) '''
     ui = self._w
-    if ui._optimize_area_thread_num_ckbtn.get_active():
-      return " --threads='" + ui._optimize_area_thread_num_combobox.get_child().get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._optimize_area_thread_num_ckbtn,
+                                     " --threads='",
+                                     ui._optimize_area_thread_num_combobox.get_child())
 
   def _null_connect_builder(self):
     ''' --null-connection   Retrieve page length without actual HTTP response body '''
@@ -563,37 +563,37 @@ class Singal_Handlers(object):
   def _tech_builder(self):
     ''' --technique=TECH    SQL injection techniques to use (default "BEUSTQ") '''
     ui = self._w
-    if ui._tech_area_tech_ckbtn.get_active():
-      return " --technique='" + ui._tech_area_tech_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_tech_ckbtn,
+                                     " --technique='",
+                                     ui._tech_area_tech_entry)
 
   def _time_sec_builder(self):
     ''' --time-sec=TIMESEC  Seconds to delay the DBMS response (default 5) '''
     ui = self._w
-    if ui._tech_area_time_sec_ckbtn.get_active():
-      return " --time-sec='" + ui._tech_area_time_sec_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._tech_area_time_sec_ckbtn,
+                                     " --time-sec='",
+                                     ui._tech_area_time_sec_entry)
 
   def _str_builder(self):
     ''' --string=STRING     String to match when query is evaluated to True '''
     ui = self._w
-    if ui._detection_area_str_ckbtn.get_active():
-      return " --string='" + ui._detection_area_str_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._detection_area_str_ckbtn,
+                                     " --string='",
+                                     ui._detection_area_str_entry)
 
   def _re_builder(self):
     ''' --regexp=REGEXP     Regexp to match when query is evaluated to True '''
     ui = self._w
-    if ui._detection_area_re_ckbtn.get_active():
-      return " --regexp='" + ui._detection_area_re_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._detection_area_re_ckbtn,
+                                     " --regexp='",
+                                     ui._detection_area_re_entry)
 
   def _code_builder(self):
     ''' --code=CODE         HTTP code to match when query is evaluated to True '''
     ui = self._w
-    if ui._detection_area_code_ckbtn.get_active():
-      return ' --code="' + ui._detection_area_code_entry.get_text() + '"'
-    return ''
+    return self._get_text_from_entry(ui._detection_area_code_ckbtn,
+                                     " --code='",
+                                     ui._detection_area_code_entry)
 
   def _text_only_builder(self):
     ''' --text-only         Compare pages based only on the textual content '''
@@ -619,37 +619,37 @@ class Singal_Handlers(object):
   def _risk_builder(self):
     ''' --risk=RISK         Risk of tests to perform (1-3, default 1) '''
     ui = self._w
-    if ui._detection_area_risk_ckbtn.get_active():
-      return " --risk='" + ui._detection_area_risk_combobox.get_child().get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._detection_area_risk_ckbtn,
+                                     " --risk='",
+                                     ui._detection_area_risk_combobox.get_child())
 
   def _level_builder(self):
     ''' --level=LEVEL       Level of tests to perform (1-5, default 1) '''
     ui = self._w
-    if ui._detection_area_level_ckbtn.get_active():
-      return " --level='" + ui._detection_area_level_combobox.get_child().get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._detection_area_level_ckbtn,
+                                     " --level='",
+                                     ui._detection_area_level_combobox.get_child())
 
   def _post_builder(self):
     ''' --data=DATA         Data string to be sent through POST '''
     ui = self._w
-    if ui._request_area_post_ckbtn.get_active():
-      return " --data='" + ui._request_area_post_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._request_area_post_ckbtn,
+                                     " --data='",
+                                     ui._request_area_post_entry)
 
   def _sql_query_builder(self):
     ''' --sql-query=QUERY   SQL statement to be executed '''
     ui = self._w
-    if ui._runsql_area_runsql_ckbtn.get_active():
-      return " --sql-query='" + ui._runsql_area_runsql_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._runsql_area_sql_query_ckbtn,
+                                     " --sql-query='",
+                                     ui._runsql_area_sql_query_entry)
 
   def _read_file_builder(self):
     ''' --file-read=RFILE   Read a file from the back-end DBMS file system '''
     ui = self._w
-    if ui._file_read_area_file_read_ckbtn.get_active():
-      return " --file-read='" + ui._file_read_area_file_read_entry.get_text() + "'"
-    return ''
+    return self._get_text_from_entry(ui._file_read_area_file_read_ckbtn,
+                                     " --file-read='",
+                                     ui._file_read_area_file_read_entry)
 
   def _tamper_builder(self):
     ''' --tamper=TAMPER     Use given script(s) for tampering injection data '''
@@ -669,8 +669,13 @@ class Singal_Handlers(object):
   def _param_builder(self):
     ''' -p TESTPARAMETER    Testable parameter(s) '''
     ui = self._w
-    if ui._inject_area_param_ckbtn.get_active():
-      return " -p '" + ui._inject_area_param_entry.get_text() + "'"
+    return self._get_text_from_entry(ui._inject_area_param_ckbtn,
+                                     " -p '",
+                                     ui._inject_area_param_entry)
+
+  def _get_text_from_entry(self, ckbtn, opt_str, entry):
+    if ckbtn.get_active() and entry.get_text():
+      return opt_str + entry.get_text() + "'"
     return ''
 
 
