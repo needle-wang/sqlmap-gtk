@@ -24,8 +24,8 @@ sqlmap ui, using PyGObject(gtk+3)
 5. 将管道流集成到UI里?
 
 #### ABOUT
-1. VERSION: 0.2
-   2018年 10月 22日 星期一 16:24:05 CST
+1. VERSION: 0.2  
+   2018年 10月 22日 星期一 16:24:05 CST  
    VERSION: 0.1  
    2018年 09月 03日 星期一 03:34:31 CST  
    作者: needle wang ( needlewang2011@gmail.com )
