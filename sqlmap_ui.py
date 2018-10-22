@@ -490,12 +490,12 @@ class UI_Window(g.Window):
     _row5 = g.Box()
     _row5.set_tooltip_text('--union-from=')
 
-    self._tech_area_union_table_ckbtn = g.CheckButton('指定枚举列数时from的表名')
-    self._tech_area_union_table_entry = g.Entry()
-    self._tech_area_union_table_entry.set_text('(union查询时)')
+    self._tech_area_union_from_ckbtn = g.CheckButton('指定枚举列数时from的表名')
+    self._tech_area_union_from_entry = g.Entry()
+    self._tech_area_union_from_entry.set_text('(union查询时)')
 
-    _row5.pack_start(self._tech_area_union_table_ckbtn, False, True, 5)
-    _row5.pack_end(self._tech_area_union_table_entry, False, True, 5)
+    _row5.pack_start(self._tech_area_union_from_ckbtn, False, True, 5)
+    _row5.pack_end(self._tech_area_union_from_entry, False, True, 5)
 
     _row6 = g.Box()
     _row6.set_tooltip_text('--dns-domain=')
@@ -519,11 +519,11 @@ class UI_Window(g.Window):
     _row8 = g.Box()
     _row8.set_tooltip_text('--second-req=')
 
-    self._tech_area_second_req_url_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件')
-    self._tech_area_second_req_url_entry = g.Entry()
+    self._tech_area_second_req_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件')
+    self._tech_area_second_req_entry = g.Entry()
 
-    _row8.pack_start(self._tech_area_second_req_url_ckbtn, True, True, 5)
-    _row8.pack_end(self._tech_area_second_req_url_entry, True, True, 5)
+    _row8.pack_start(self._tech_area_second_req_ckbtn, True, True, 5)
+    _row8.pack_end(self._tech_area_second_req_entry, True, True, 5)
 
     # 添加行: _row1 - _row8
     for _i in range(1, 9):
@@ -624,19 +624,18 @@ class UI_Window(g.Window):
     self._detection_area.add(_detection_area_opts)
 
   def _build_page1_setting_general(self):
-    self._general_area = g.Frame.new('通用选项')
+    self._general_area = g.Frame.new('常用选项')
     _general_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
     _row1 = g.Box()
     _row1.set_tooltip_text('-v 默认为1')
 
     self._general_area_verbose_ckbtn = g.CheckButton('输出详细程度')
-
-    self._detail_vv_entry = g.Entry()
-    self._detail_vv_entry.set_text('(0-6)')
+    self._general_area_verbose_entry = g.Entry()
+    self._general_area_verbose_entry.set_text('(0-6)')
 
     _row1.pack_start(self._general_area_verbose_ckbtn, False, True, 5)
-    _row1.pack_start(self._detail_vv_entry, True, True, 5)
+    _row1.pack_start(self._general_area_verbose_entry, True, True, 5)
 
     _row2 = g.Box()
     self._general_area_finger_ckbtn = g.CheckButton('执行宽泛的DB版本检测')
@@ -766,11 +765,11 @@ class UI_Window(g.Window):
     _row4 = g.Box()
     _row4.set_tooltip_text('--param-exclude=.. Regexp to exclude parameters from testing')
 
-    self._param_exclude_ckbtn = g.CheckButton('排除参数(正则)')
-    self._param_exclude_entry = g.Entry()
+    self._inject_area_param_exclude_ckbtn = g.CheckButton('排除参数(正则)')
+    self._inject_area_param_exclude_entry = g.Entry()
 
-    _row4.pack_start(self._param_exclude_ckbtn, True, True, 5)
-    _row4.pack_end(self._param_exclude_entry, True, True, 5)
+    _row4.pack_start(self._inject_area_param_exclude_ckbtn, True, True, 5)
+    _row4.pack_end(self._inject_area_param_exclude_entry, True, True, 5)
 
     _row5 = g.Box()
     _row5.set_tooltip_text('--dbms=DBMS\tForce back-end DBMS to provided value')
@@ -1467,7 +1466,6 @@ class UI_Window(g.Window):
 
     _row2.pack_start(self._file_os_registry_reg_key_ckbtn, False, True, 5)
     _row2.pack_start(self._file_os_registry_reg_key_entry, True, True, 5)
-
     _row2.pack_start(self._file_os_registry_reg_value_ckbtn, False, True, 5)
     _row2.pack_start(self._file_os_registry_reg_value_entry, True, True, 5)
 
@@ -1686,7 +1684,7 @@ class UI_Window(g.Window):
 
     _about_str = '''
     1. VERSION: 0.2
-       2018年 10月 22日 星期一 03:06:36 CST
+       2018年 10月 22日 星期一 16:24:05 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n

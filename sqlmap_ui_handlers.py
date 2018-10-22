@@ -19,52 +19,22 @@ class Singal_Handlers(object):
   def __init__(self, w):
     '''
     w: sqlmap_ui.UI_Window
-    还不能用注解, 会互相import
+    还不能用注解, 会相互import
     '''
     self._w = w
 
   def build_all(self, button):
     ui = self._w
-    _agent = '--random-agent'
 
-    _final_line = ''.join((
-      _agent, self._target_builder(), self._param_builder(),
-      self._tamper_builder(), self._read_file_builder(),
-      self._sql_query_builder(), self._post_builder(),
-      self._level_builder(), self._risk_builder(),
-      self._titles_builder(), self._hex_builder(),
-      self._text_only_builder(), self._code_builder(),
-      self._re_builder(), self._str_builder(),
-      self._time_sec_builder(), self._tech_builder(),
-      self._opti_turn_all_builder(), self._predict_builder(),
-      self._keep_alive_builder(), self._null_connect_builder(),
-      self._thread_num_builder(), self._dbms_builder(),
-      self._union_col_builder(), self._union_chr_builder(),
-      self._cookie_builder(), self._prefix_builder(),
-      self._suffix_builder(), self._os_builder(),
-      self._skip_builder(), self._batch_builder(),
-      self._banner_builder(), self._cur_user_builder(),
-      self._cur_db_builder(), self._hostname_builder(),
-      self._is_dba_builder(), self._users_builder(),
-      self._passwds_builder(), self._priv_builder(),
-      self._roles_builder(), self._dbs_builder(),
-      self._tables_builder(), self._columns_builder(),
-      self._schema_builder(), self._count_builder(),
-      self._dump_builder(), self._dump_all_builder(),
-      self._search_builder(), self._D_builder(),
-      self._T_builder(), self._C_builder(),
-      self._no_sys_db_builder(), self._start_builder(),
-      self._stop_builder(), self._first_builder(),
-      self._last_builder(), self._verbose_builder(),
-      self._finger_builder(), self._skip_static_builder(),
-      self._invalid_logic_builder(), self._no_case_builder(),
-      self._no_escape_builder(), self._union_from_builder(),
-      self._dns_domain_builder(), self._second_url_builder(),
-      self._second_req_builder(), self._where_clause_builder(),
-      self._udf_builder(), self._shared_lib_builder(),
-      self._file_write_builder(), self._file_dest_builder(),
-    ))
+    _target = self._get_target()
+    self._collect_opts()
 
+    _opts_list = (
+      self._setting_opts + self._request_opts +
+      self._enumeration_opts + self._file_opts + self._other_opts
+    )
+
+    _final_line = _target + ''.join(_opts_list)
     ui._cmd_entry.set_text(_final_line)
 
   def run_cmdline(self, button):
@@ -160,7 +130,7 @@ class Singal_Handlers(object):
       _dumped_file_path = _base_dir / 'files' / _load_file.replace(os.sep, '_')
       self._log_view_insert(_dumped_file_path)
 
-  def _target_builder(self):
+  def _get_target(self):
     ui = self._w
     current_page_num = ui._target_notbook.get_current_page()
     if current_page_num is 0:
@@ -178,480 +148,464 @@ class Singal_Handlers(object):
     elif current_page_num is 6:
       return " -c '" + ui._configfile.get_text() + "'"
 
-  def _file_dest_builder(self):
-    ''' --file-dest=DFILE   Back-end DBMS absolute filepath to write to '''
-    ui = self._w
-    return self._get_text_from_entry(ui._file_write_area_file_dest_ckbtn,
-                                     " --file-dest='",
-                                     ui._file_write_area_file_dest_entry)
-
-  def _file_write_builder(self):
-    ''' --file-write=WFILE  Write a local file on the back-end DBMS file system '''
-    ui = self._w
-    return self._get_text_from_entry(ui._file_write_area_file_write_ckbtn,
-                                     " --file-write='",
-                                     ui._file_write_area_file_write_entry)
-
-  def _shared_lib_builder(self):
-    ''' --shared-lib=SHLIB  Local path of the shared library '''
-    ui = self._w
-    return self._get_text_from_entry(ui._file_write_area_shared_lib_ckbtn,
-                                     " --shared-lib='",
-                                     ui._file_write_area_shared_lib_entry)
-
-  def _udf_builder(self):
-    ''' --udf-inject        Inject custom user-defined functions '''
-    ui = self._w
-    if ui._file_write_area_udf_ckbtn.get_active():
-      return ' --udf-inject'
-    return ''
-
-  def _where_clause_builder(self):
-    ''' --where=DUMPWHERE   Use WHERE condition while table dumping '''
-    ui = self._w
-    return self._get_text_from_entry(ui._meta_area_where_ckbtn,
-                                     " --where='",
-                                     ui._meta_area_where_entry)
-
-  def _second_req_builder(self):
-    ''' --second-req=SEC..  Load second-order HTTP request from file '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_second_req_url_ckbtn,
-                                     " --second-req='",
-                                     ui._tech_area_second_req_url_entry)
-
-  def _second_url_builder(self):
-    ''' --second-url=SEC..  Resulting page URL searched for second-order response '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_second_url_ckbtn,
-                                     " --second-url='",
-                                     ui._tech_area_second_url_entry)
-
-  def _dns_domain_builder(self):
-    ''' --dns-domain=DNS..  Domain name used for DNS exfiltration attack '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_dns_ckbtn,
-                                     " --dns-domain='",
-                                     ui._tech_area_dns_entry)
-
-  def _union_from_builder(self):
-    ''' --union-from=UFROM  Table to use in FROM part of UNION query SQL injection '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_union_table_ckbtn,
-                                     " --union-from='",
-                                     ui._tech_area_union_table_entry)
-
-  def _no_escape_builder(self):
-    ''' --no-escape         Turn off string escaping mechanism '''
-    ui = self._w
-    if ui._inject_area_no_escape_ckbtn.get_active():
-      return ' --no-escape'
-    return ''
-
-  def _no_case_builder(self):
-    ''' --no-cast           Turn off payload casting mechanism '''
-    ui = self._w
-    if ui._inject_area_no_cast_ckbtn.get_active():
-      return ' --no-cast'
-    return ''
-
-  def _invalid_logic_builder(self):
-    ''' --invalid-logical   Use logical operations for invalidating values '''
-    ui = self._w
-    if ui._inject_area_invalid_logic_ckbtn.get_active():
-      return ' --invalid-logical'
-    return ''
-
-  def _skip_static_builder(self):
-    ''' --skip-static       Skip testing parameters that not appear to be dynamic '''
-    ui = self._w
-    if ui._inject_area_skip_static_ckbtn.get_active():
-      return ' --skip-static'
-    return ''
-
-  def _finger_builder(self):
-    ''' -f, --fingerprint   Perform an extensive DBMS version fingerprint '''
-    ui = self._w
-    if ui._general_area_finger_ckbtn.get_active():
-      return ' --fingerprint'
-    return ''
-
-  def _verbose_builder(self):
-    ''' -v VERBOSE            Verbosity level: 0-6 (default 1) '''
-    ui = self._w
-    if ui._general_area_verbose_ckbtn.get_active():
-      return ' -v ' + ui._detail_vv_entry.get_text()
-    return ''
-
-  def _last_builder(self):
-    ''' --last=LASTCHAR     Last query output word character to retrieve '''
-    ui = self._w
-    return self._get_text_from_entry(ui._blind_area_last_ckbtn,
-                                     " --last='",
-                                     ui._blind_area_last_entry)
-
-  def _first_builder(self):
-    ''' --first=FIRSTCHAR   First query output word character to retrieve '''
-    ui = self._w
-    return self._get_text_from_entry(ui._blind_area_first_ckbtn,
-                                     " --first='",
-                                     ui._blind_area_first_entry)
-
-  def _stop_builder(self):
-    ''' --stop=LIMITSTOP    Last dump table entry to retrieve '''
-    ui = self._w
-    return self._get_text_from_entry(ui._limit_area_stop_ckbtn,
-                                     " --stop='",
-                                     ui._limit_area_stop_entry)
-
-  def _start_builder(self):
-    ''' --start=LIMITSTART  First dump table entry to retrieve '''
-    ui = self._w
-    return self._get_text_from_entry(ui._limit_area_start_ckbtn,
-                                     " --start='",
-                                     ui._limit_area_start_entry)
-
-  def _C_builder(self):
-    ''' -C COL              DBMS database table column(s) to enumerate '''
-    ui = self._w
-    return self._get_text_from_entry(ui._meta_area_C_ckbtn,
-                                     " -C '",
-                                     ui._meta_area_C_entry)
-
-  def _T_builder(self):
-    '''
-    -T TBL              DBMS database table(s) to enumerate
-    '''
-    ui = self._w
-    return self._get_text_from_entry(ui._meta_area_T_ckbtn,
-                                     " -T '",
-                                     ui._meta_area_T_entry)
-
-  def _D_builder(self):
-    '''
-    -D DB               DBMS database to enumerate
-    '''
-    ui = self._w
-    return self._get_text_from_entry(ui._meta_area_D_ckbtn,
-                                     " -D '",
-                                     ui._meta_area_D_entry)
-
-  def _no_sys_db_builder(self):
-    ''' --exclude-sysdbs    Exclude DBMS system databases when enumerating tables '''
-    ui = self._w
-    if ui._dump_area_no_sys_db_ckbtn.get_active():
-      return ' --exclude-sysdb'
-    return ''
-
-  def _search_builder(self):
-    ''' --search            Search column(s), table(s) and/or database name(s) '''
-    ui = self._w
-    if ui._dump_area_search_ckbtn.get_active():
-      return ' --search'
-    return ''
-
-  def _dump_all_builder(self):
-    ''' --dump-all          Dump all DBMS databases tables entries '''
-    ui = self._w
-    if ui._dump_area_dump_all_ckbtn.get_active():
-      return ' --dump-all'
-    return ''
-
-  def _dump_builder(self):
-    ''' --dump              Dump DBMS database table entries '''
-    ui = self._w
-    if ui._dump_area_dump_ckbtn.get_active():
-      return ' --dump'
-    return ''
-
-  def _count_builder(self):
-    ''' --count             Retrieve number of entries for table(s) '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[2][3].get_active():
-      return ' --count'
-    return ''
-
-  def _schema_builder(self):
-    ''' --schema            Enumerate DBMS schema '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[2][2].get_active():
-      return ' --schema'
-    return ''
-
-  def _columns_builder(self):
-    ''' --columns           Enumerate DBMS database table columns '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[2][1].get_active():
-      return ' --columns'
-    return ''
-
-  def _tables_builder(self):
-    ''' --tables            Enumerate DBMS database tables '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[2][0].get_active():
-      return ' --tables'
-    return ''
-
-  def _dbs_builder(self):
-    ''' --dbs               Enumerate DBMS databases '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[1][4].get_active():
-      return ' --dbs'
-    return ''
-
-  def _roles_builder(self):
-    ''' --roles             Enumerate DBMS users roles '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[1][3].get_active():
-      return ' --roles'
-    return ''
-
-  def _priv_builder(self):
-    ''' --privileges        Enumerate DBMS users privileges '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[1][2].get_active():
-      return ' --privileges'
-    return ''
-
-  def _passwds_builder(self):
-    ''' --passwords         Enumerate DBMS users password hashes '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[1][1].get_active():
-      return ' --passwords'
-    return ''
-
-  def _users_builder(self):
-    ''' --users             Enumerate DBMS users '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[1][0].get_active():
-      return ' --users'
-    return ''
-
-  def _is_dba_builder(self):
-    ''' --is-dba            Detect if the DBMS current user is DBA '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[0][4].get_active():
-      return ' --is-dba'
-    return ''
-
-  def _hostname_builder(self):
-    ''' --hostname          Retrieve DBMS server hostname '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[0][3].get_active():
-      return ' --hostname'
-    return ''
-
-  def _cur_db_builder(self):
-    ''' --current-db        Retrieve DBMS current database '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[0][2].get_active():
-      return ' --current-db'
-    return ''
-
-  def _cur_user_builder(self):
-    ''' --current-user      Retrieve DBMS current user '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[0][1].get_active():
-      return ' --current-user'
-    return ''
-
-  def _banner_builder(self):
-    ''' -b, --banner        Retrieve DBMS banner '''
-    ui = self._w
-    if ui._enum_area_opts_ckbtns[0][0].get_active():
-      return ' --banner'
-    return ''
-
-  def _batch_builder(self):
-    ''' --batch             Never ask for user input, use the default behavior '''
-    ui = self._w
-    if ui._general_area_batch_ckbtn.get_active():
-      return ' --batch'
-    return ''
-
-  def _skip_builder(self):
-    ''' --skip=SKIP         Skip testing for given parameter(s) '''
-    ui = self._w
-    return self._get_text_from_entry(ui._inject_area_skip_ckbtn,
-                                     " --skip='",
-                                     ui._inject_area_skip_entry)
-
-  def _os_builder(self):
-    ''' --os=OS             Force back-end DBMS operating system to provided value '''
-    ui = self._w
-    return self._get_text_from_entry(ui._inject_area_os_ckbtn,
-                                     " --os='",
-                                     ui._inject_area_os_entry)
-
-  def _suffix_builder(self):
-    ''' --suffix=SUFFIX     Injection payload suffix string '''
-    ui = self._w
-    return self._get_text_from_entry(ui._inject_area_suffix_ckbtn,
-                                     " --suffix='",
-                                     ui._inject_area_suffix_entry)
-
-  def _prefix_builder(self):
-    ''' --prefix=PREFIX     Injection payload prefix string '''
-    ui = self._w
-    return self._get_text_from_entry(ui._inject_area_prefix_ckbtn,
-                                     " --prefix='",
-                                     ui._inject_area_prefix_entry)
-
-  def _cookie_builder(self):
-    ''' --cookie=COOKIE     HTTP Cookie header value '''
-    ui = self._w
-    return self._get_text_from_entry(ui._request_area_cookie_ckbtn,
-                                     " --cookie='",
-                                     ui._request_area_cookie_entry)
-
-  def _union_chr_builder(self):
-    ''' --union-char=UCHAR  Character to use for bruteforcing number of columns '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_union_chr_ckbtn,
-                                     " --union-char='",
-                                     ui._tech_area_union_chr_entry)
-
-  def _union_col_builder(self):
-    ''' --union-cols=UCOLS  Range of columns to test for UNION query SQL injection '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_union_col_ckbtn,
-                                     " --union-cols='",
-                                     ui._tech_area_union_col_entry)
-
-  def _dbms_builder(self):
-    ''' --dbms=DBMS         Force back-end DBMS to provided value '''
-    ui = self._w
-    return self._get_text_from_entry(ui._inject_area_dbms_ckbtn,
-                                     " --dbms='",
-                                     ui._inject_area_dbms_combobox.get_child())
-
-  def _thread_num_builder(self):
-    ''' --threads=THREADS   Max number of concurrent HTTP(s) requests (default 1) '''
-    ui = self._w
-    return self._get_text_from_entry(ui._optimize_area_thread_num_ckbtn,
-                                     " --threads='",
-                                     ui._optimize_area_thread_num_combobox.get_child())
-
-  def _null_connect_builder(self):
-    ''' --null-connection   Retrieve page length without actual HTTP response body '''
-    ui = self._w
-    if ui._optimize_area_null_connect_ckbtn.get_active():
-      return ' --null-connection'
-    return ''
-
-  def _keep_alive_builder(self):
-    ''' --keep-alive        Use persistent HTTP(s) connections '''
-    ui = self._w
-    if ui._optimize_area_keep_alive_ckbtn.get_active():
-      return ' --keep-alive'
-    return ''
-
-  def _predict_builder(self):
-    ''' --predict-output    Predict common queries output '''
-    ui = self._w
-    if ui._optimize_area_predict_ckbtn.get_active():
-      return ' --predict-output'
-    return ''
-
-  def _opti_turn_all_builder(self):
-    ''' -o                  Turn on all optimization switches '''
-    ui = self._w
-    if ui._optimize_area_turn_all_ckbtn.get_active():
-      return ' -o'
-    return ''
-
-  def _tech_builder(self):
-    ''' --technique=TECH    SQL injection techniques to use (default "BEUSTQ") '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_tech_ckbtn,
-                                     " --technique='",
-                                     ui._tech_area_tech_entry)
-
-  def _time_sec_builder(self):
-    ''' --time-sec=TIMESEC  Seconds to delay the DBMS response (default 5) '''
-    ui = self._w
-    return self._get_text_from_entry(ui._tech_area_time_sec_ckbtn,
-                                     " --time-sec='",
-                                     ui._tech_area_time_sec_entry)
-
-  def _str_builder(self):
-    ''' --string=STRING     String to match when query is evaluated to True '''
-    ui = self._w
-    return self._get_text_from_entry(ui._detection_area_str_ckbtn,
-                                     " --string='",
-                                     ui._detection_area_str_entry)
-
-  def _re_builder(self):
-    ''' --regexp=REGEXP     Regexp to match when query is evaluated to True '''
-    ui = self._w
-    return self._get_text_from_entry(ui._detection_area_re_ckbtn,
-                                     " --regexp='",
-                                     ui._detection_area_re_entry)
-
-  def _code_builder(self):
-    ''' --code=CODE         HTTP code to match when query is evaluated to True '''
-    ui = self._w
-    return self._get_text_from_entry(ui._detection_area_code_ckbtn,
-                                     " --code='",
-                                     ui._detection_area_code_entry)
-
-  def _text_only_builder(self):
-    ''' --text-only         Compare pages based only on the textual content '''
-    ui = self._w
-    if ui._detection_area_text_only_ckbtn.get_active():
-      return ' --text-only'
-    return ''
-
-  def _hex_builder(self):
-    ''' --hex               Use hex conversion during data retrieval '''
-    ui = self._w
-    if ui._general_area_hex_ckbtn.get_active():
-      return ' --hex'
-    return ''
-
-  def _titles_builder(self):
-    ''' --titles            Compare pages based only on their titles '''
-    ui = self._w
-    if ui._detection_area_titles_ckbtn.get_active():
-      return ' --titles'
-    return ''
-
-  def _risk_builder(self):
-    ''' --risk=RISK         Risk of tests to perform (1-3, default 1) '''
-    ui = self._w
-    return self._get_text_from_entry(ui._detection_area_risk_ckbtn,
-                                     " --risk='",
-                                     ui._detection_area_risk_combobox.get_child())
-
-  def _level_builder(self):
-    ''' --level=LEVEL       Level of tests to perform (1-5, default 1) '''
-    ui = self._w
-    return self._get_text_from_entry(ui._detection_area_level_ckbtn,
-                                     " --level='",
-                                     ui._detection_area_level_combobox.get_child())
-
-  def _post_builder(self):
-    ''' --data=DATA         Data string to be sent through POST '''
-    ui = self._w
-    return self._get_text_from_entry(ui._request_area_post_ckbtn,
-                                     " --data='",
-                                     ui._request_area_post_entry)
-
-  def _sql_query_builder(self):
-    ''' --sql-query=QUERY   SQL statement to be executed '''
-    ui = self._w
-    return self._get_text_from_entry(ui._runsql_area_sql_query_ckbtn,
-                                     " --sql-query='",
-                                     ui._runsql_area_sql_query_entry)
-
-  def _read_file_builder(self):
-    ''' --file-read=RFILE   Read a file from the back-end DBMS file system '''
-    ui = self._w
-    return self._get_text_from_entry(ui._file_read_area_file_read_ckbtn,
-                                     " --file-read='",
-                                     ui._file_read_area_file_read_entry)
-
-  def _tamper_builder(self):
+  def _collect_opts(self):
+    ui = self._w
+
+    self._other_opts = [
+      self._get_text_only_ckbtn(" --check-internet",
+                                ui._page1_general_check_internet_ckbtn),
+      self._get_text_only_ckbtn(" --fresh-queries",
+                                ui._page1_general_fresh_queries_ckbtn),
+      self._get_text_only_ckbtn(" --flush-session",
+                                ui._page1_general_flush_session_ckbtn),
+      self._get_text_only_ckbtn(" --eta",
+                                ui._page1_general_eta_ckbtn),
+      self._get_text_from_entry(" --binary-fields='",
+                                ui._page1_general_binary_fields_ckbtn,
+                                ui._page1_general_binary_fields_entry),
+      self._get_text_only_ckbtn(" --forms",
+                                ui._page1_general_forms_ckbtn),
+      self._get_text_only_ckbtn(" --parse-errors",
+                                ui._page1_general_parse_errors_ckbtn),
+      self._get_text_only_ckbtn(" --cleanup",
+                                ui._page1_misc_cleanup_ckbtn),
+      self._get_text_from_entry(" --crawl='",
+                                ui._page1_general_crawl_ckbtn,
+                                ui._page1_general_crawl_entry),
+      self._get_text_from_entry(" --crawl-exclude='",
+                                ui._page1_general_crawl_exclude_ckbtn,
+                                ui._page1_general_crawl_exclude_entry),
+      self._get_text_from_entry(" --charset='",
+                                ui._page1_general_charset_ckbtn,
+                                ui._page1_general_charset_entry),
+      self._get_text_from_entry(" --encoding='",
+                                ui._page1_general_encoding_ckbtn,
+                                ui._page1_general_encoding_entry),
+      self._get_text_from_entry(" -s '",
+                                ui._page1_general_session_file_ckbtn,
+                                ui._page1_general_session_file_entry),
+      self._get_text_from_entry(" --output-dir='",
+                                ui._page1_general_output_dir_ckbtn,
+                                ui._page1_general_output_dir_entry),
+      self._get_text_from_entry(" --dump-format='",
+                                ui._page1_general_dump_format_ckbtn,
+                                ui._page1_general_dump_format_entry),
+      self._get_text_from_entry(" --csv-del='",
+                                ui._page1_general_csv_del_ckbtn,
+                                ui._page1_general_csv_del_entry),
+      self._get_text_from_entry(" -t '",
+                                ui._page1_general_traffic_file_ckbtn,
+                                ui._page1_general_traffic_file_entry),
+      self._get_text_from_entry(" --har='",
+                                ui._page1_general_har_ckbtn,
+                                ui._page1_general_har_entry),
+      self._get_text_from_entry(" --save='",
+                                ui._page1_general_save_ckbtn,
+                                ui._page1_general_save_entry),
+      self._get_text_from_entry(" --scope='",
+                                ui._page1_general_scope_ckbtn,
+                                ui._page1_general_scope_entry),
+      self._get_text_from_entry(" --test-filter='",
+                                ui._page1_general_test_filter_ckbtn,
+                                ui._page1_general_test_filter_entry),
+      self._get_text_from_entry(" --test-skip='",
+                                ui._page1_general_test_skip_ckbtn,
+                                ui._page1_general_test_skip_entry),
+      self._get_text_from_entry(" --web-root='",
+                                ui._page1_misc_web_root_ckbtn,
+                                ui._page1_misc_web_root_entry),
+      self._get_text_from_entry(" --tmp-dir='",
+                                ui._page1_misc_tmp_dir_ckbtn,
+                                ui._page1_misc_tmp_dir_entry),
+      self._get_text_only_ckbtn(" --identify-waf",
+                                ui._page1_misc_identify_waf_ckbtn),
+      self._get_text_only_ckbtn(" --skip-waf",
+                                ui._page1_misc_skip_waf_ckbtn),
+      self._get_text_only_ckbtn(" --smart",
+                                ui._page1_misc_smart_ckbtn),
+      self._get_text_only_ckbtn(" --list-tampers",
+                                ui._page1_misc_list_tampers_ckbtn),
+      self._get_text_only_ckbtn(" --disable-coloring",
+                                ui._page1_misc_disable_color_ckbtn),
+      self._get_text_only_ckbtn(" --offline",
+                                ui._page1_misc_offline_ckbtn),
+      self._get_text_only_ckbtn(" --mobile",
+                                ui._page1_misc_mobile_ckbtn),
+      self._get_text_only_ckbtn(" --beep",
+                                ui._page1_misc_beep_ckbtn),
+      self._get_text_only_ckbtn(" --purge",
+                                ui._page1_misc_purge_ckbtn),
+      self._get_text_only_ckbtn(" --dependencies",
+                                ui._page1_misc_dependencies_ckbtn),
+      self._get_text_only_ckbtn(" --update",
+                                ui._page1_general_update_ckbtn),
+      self._get_text_from_entry(" --answers='",
+                                ui._page1_misc_answers_ckbtn,
+                                ui._page1_misc_answers_entry),
+      self._get_text_from_entry(" --alert='",
+                                ui._page1_misc_alert_ckbtn,
+                                ui._page1_misc_alert_entry),
+      self._get_text_from_entry(" --gpage='",
+                                ui._page1_misc_gpage_ckbtn,
+                                ui._page1_misc_gpage_entry),
+      self._get_text_from_entry(" -z '",
+                                ui._page1_misc_z_ckbtn,
+                                ui._page1_misc_z_entry),
+    ]
+
+    self._file_opts = [
+      self._get_text_from_entry(" --file-read='",
+                                ui._file_read_area_file_read_ckbtn,
+                                ui._file_read_area_file_read_entry),
+      self._get_text_only_ckbtn(" --udf-inject",
+                                ui._file_write_area_udf_ckbtn),
+      self._get_text_from_entry(" --shared-lib='",
+                                ui._file_write_area_shared_lib_ckbtn,
+                                ui._file_write_area_shared_lib_entry),
+      self._get_text_from_entry(" --file-write='",
+                                ui._file_write_area_file_write_ckbtn,
+                                ui._file_write_area_file_write_entry),
+      self._get_text_from_entry(" --file-dest='",
+                                ui._file_write_area_file_dest_ckbtn,
+                                ui._file_write_area_file_dest_entry),
+      self._get_text_from_entry(" --os-cmd='",
+                                ui._file_os_access_os_cmd_ckbtn,
+                                ui._file_os_access_os_cmd_entry),
+      self._get_text_only_ckbtn(" --os-shell",
+                                ui._file_os_access_os_shell_ckbtn),
+      self._get_text_only_ckbtn(" --os-pwn",
+                                ui._file_os_access_os_pwn_ckbtn),
+      self._get_text_only_ckbtn(" --os-smbrelay",
+                                ui._file_os_access_os_smbrelay_ckbtn),
+      self._get_text_only_ckbtn(" --os-bof",
+                                ui._file_os_access_os_bof_ckbtn),
+      self._get_text_only_ckbtn(" --priv-esc",
+                                ui._file_os_access_priv_esc_ckbtn),
+      self._get_text_from_entry(" --msf-path='",
+                                ui._file_os_access_msf_path_ckbtn,
+                                ui._file_os_access_msf_path_entry),
+      self._get_text_from_entry(" --tmp-path='",
+                                ui._file_os_access_tmp_path_ckbtn,
+                                ui._file_os_access_tmp_path_entry),
+      self._get_text_only_ckbtn(" --reg-read",
+                                ui._file_os_registry_reg_read_ckbtn),
+      self._get_text_only_ckbtn(" --reg-add",
+                                ui._file_os_registry_reg_add_ckbtn),
+      self._get_text_only_ckbtn(" --reg-del",
+                                ui._file_os_registry_reg_del_ckbtn),
+      self._get_text_from_entry(" --reg-key='",
+                                ui._file_os_registry_reg_key_ckbtn,
+                                ui._file_os_registry_reg_key_entry),
+      self._get_text_from_entry(" --reg-value='",
+                                ui._file_os_registry_reg_value_ckbtn,
+                                ui._file_os_registry_reg_value_entry),
+      self._get_text_from_entry(" --reg-data='",
+                                ui._file_os_registry_reg_data_ckbtn,
+                                ui._file_os_registry_reg_data_entry),
+      self._get_text_from_entry(" --reg-type='",
+                                ui._file_os_registry_reg_type_ckbtn,
+                                ui._file_os_registry_reg_type_entry),
+    ]
+
+    self._enumeration_opts = [
+      self._get_text_only_ckbtn(" -b",
+                                ui._enum_area_opts_ckbtns[0][0]),
+      self._get_text_only_ckbtn(" --current-user",
+                                ui._enum_area_opts_ckbtns[0][1]),
+      self._get_text_only_ckbtn(" --current-db",
+                                ui._enum_area_opts_ckbtns[0][2]),
+      self._get_text_only_ckbtn(" --hostname",
+                                ui._enum_area_opts_ckbtns[0][3]),
+      self._get_text_only_ckbtn(" --is-dba",
+                                ui._enum_area_opts_ckbtns[0][4]),
+      self._get_text_only_ckbtn(" --users",
+                                ui._enum_area_opts_ckbtns[1][0]),
+      self._get_text_only_ckbtn(" --passwords",
+                                ui._enum_area_opts_ckbtns[1][1]),
+      self._get_text_only_ckbtn(" --privileges",
+                                ui._enum_area_opts_ckbtns[1][2]),
+      self._get_text_only_ckbtn(" --roles",
+                                ui._enum_area_opts_ckbtns[1][3]),
+      self._get_text_only_ckbtn(" --dbs",
+                                ui._enum_area_opts_ckbtns[1][4]),
+      self._get_text_only_ckbtn(" --tables",
+                                ui._enum_area_opts_ckbtns[2][0]),
+      self._get_text_only_ckbtn(" --columns",
+                                ui._enum_area_opts_ckbtns[2][1]),
+      self._get_text_only_ckbtn(" --schema",
+                                ui._enum_area_opts_ckbtns[2][2]),
+      self._get_text_only_ckbtn(" --count",
+                                ui._enum_area_opts_ckbtns[2][3]),
+      self._get_text_only_ckbtn(" --comments",
+                                ui._enum_area_opts_ckbtns[2][4]),
+      self._get_text_only_ckbtn(" --dump",
+                                ui._dump_area_dump_ckbtn),
+      self._get_text_only_ckbtn(" --dump-all",
+                                ui._dump_area_dump_all_ckbtn),
+      self._get_text_only_ckbtn(" --search",
+                                ui._dump_area_search_ckbtn),
+      self._get_text_only_ckbtn(" --exclude-sysdb",
+                                ui._dump_area_no_sys_db_ckbtn),
+      self._get_text_from_entry(" --start='",
+                                ui._limit_area_start_ckbtn,
+                                ui._limit_area_start_entry),
+      self._get_text_from_entry(" --stop='",
+                                ui._limit_area_stop_ckbtn,
+                                ui._limit_area_stop_entry),
+      self._get_text_from_entry(" --first='",
+                                ui._blind_area_first_ckbtn,
+                                ui._blind_area_first_entry),
+      self._get_text_from_entry(" --last='",
+                                ui._blind_area_last_ckbtn,
+                                ui._blind_area_last_ckbtn),
+      self._get_text_from_entry(" -D '",
+                                ui._meta_area_D_ckbtn,
+                                ui._meta_area_D_entry),
+      self._get_text_from_entry(" -T '",
+                                ui._meta_area_T_ckbtn,
+                                ui._meta_area_T_entry),
+      self._get_text_from_entry(" -C '",
+                                ui._meta_area_C_ckbtn,
+                                ui._meta_area_C_entry),
+      self._get_text_from_entry(" -U '",
+                                ui._meta_area_U_ckbtn,
+                                ui._meta_area_U_entry),
+      self._get_text_from_entry(" -X '",
+                                ui._meta_area_X_ckbtn,
+                                ui._meta_area_X_entry),
+      self._get_text_from_entry(" --pivot-column='",
+                                ui._meta_area_pivot_ckbtn,
+                                ui._meta_area_pivot_entry),
+      self._get_text_from_entry(" --where='",
+                                ui._meta_area_where_ckbtn,
+                                ui._meta_area_where_entry),
+      self._get_text_from_entry(" --sql-query='",
+                                ui._runsql_area_sql_query_ckbtn,
+                                ui._runsql_area_sql_query_entry),
+      self._get_text_from_entry(" --sql-file='",
+                                ui._runsql_area_sql_file_ckbtn,
+                                ui._runsql_area_sql_file_entry),
+      self._get_text_only_ckbtn(" --common-tables",
+                                ui._brute_force_area_common_tables_ckbtn),
+      self._get_text_only_ckbtn(" --common-columns",
+                                ui._brute_force_area_common_columns_ckbtn),
+    ]
+
+    self._request_opts = [
+      self._get_text_only_ckbtn(" --random-agent",
+                                ui._request_area_random_agent_ckbtn),
+      self._get_text_from_entry(" --user-agent='",
+                                ui._request_area_user_agent_ckbtn,
+                                ui._request_area_user_agent_entry),
+      self._get_text_from_entry(" --host='",
+                                ui._request_area_host_ckbtn,
+                                ui._request_area_host_entry),
+      self._get_text_from_entry(" --referer='",
+                                ui._request_area_referer_ckbtn,
+                                ui._request_area_referer_entry),
+      self._get_text_from_entry(" --header='",
+                                ui._request_area_header_ckbtn,
+                                ui._request_area_header_entry),
+      self._get_text_from_entry(" --headers='",
+                                ui._request_area_headers_ckbtn,
+                                ui._request_area_headers_entry),
+      self._get_text_from_entry(" --method='",
+                                ui._request_area_method_ckbtn,
+                                ui._request_area_method_entry),
+      self._get_text_from_entry(" --param-del='",
+                                ui._request_area_param_del_ckbtn,
+                                ui._request_area_param_del_entry),
+      self._get_text_from_entry(" --data='",
+                                ui._request_area_post_ckbtn,
+                                ui._request_area_post_entry),
+      self._get_text_from_entry(" --cookie='",
+                                ui._request_area_cookie_ckbtn,
+                                ui._request_area_cookie_entry),
+      self._get_text_from_entry(" --cookie-del='",
+                                ui._request_area_cookie_del_ckbtn,
+                                ui._request_area_cookie_del_entry),
+      self._get_text_from_entry(" --load-cookies='",
+                                ui._request_area_load_cookie_ckbtn,
+                                ui._request_area_load_cookie_entry),
+      self._get_text_from_entry(" --auth-type='",
+                                ui._request_area_auth_type_ckbtn,
+                                ui._request_area_auth_type_entry),
+      self._get_text_from_entry(" --auth-cred='",
+                                ui._request_area_auth_cred_ckbtn,
+                                ui._request_area_auth_cred_entry),
+      self._get_text_from_entry(" --auth-file='",
+                                ui._request_area_auth_file_ckbtn,
+                                ui._request_area_auth_file_entry),
+      self._get_text_from_entry(" --csrf-token='",
+                                ui._request_area_csrf_token_ckbtn,
+                                ui._request_area_csrf_token_entry),
+      self._get_text_from_entry(" --csrf-url='",
+                                ui._request_area_csrf_url_ckbtn,
+                                ui._request_area_csrf_url_entry),
+      self._get_text_only_ckbtn(" --ignore-redirects",
+                                ui._request_area_ignore_redirects_ckbtn),
+      self._get_text_only_ckbtn(" --ignore-timeouts",
+                                ui._request_area_ignore_timeouts_ckbtn),
+      self._get_text_from_entry(" --ignore-code='",
+                                ui._request_area_ignore_code_ckbtn,
+                                ui._request_area_ignore_code_entry),
+      self._get_text_only_ckbtn(" --skip-urlencode",
+                                ui._request_area_skip_urlencode_ckbtn),
+      self._get_text_only_ckbtn(" --force-ssl",
+                                ui._request_area_force_ssl_ckbtn),
+      self._get_text_only_ckbtn(" --hpp",
+                                ui._request_area_hpp_ckbtn),
+      self._get_text_from_entry(" --delay='",
+                                ui._request_area_delay_ckbtn,
+                                ui._request_area_delay_entry),
+      self._get_text_from_entry(" --timeout='",
+                                ui._request_area_timeout_ckbtn,
+                                ui._request_area_timeout_entry),
+      self._get_text_from_entry(" --retries='",
+                                ui._request_area_retries_ckbtn,
+                                ui._request_area_retries_entry),
+      self._get_text_from_entry(" --eval='",
+                                ui._request_area_eval_ckbtn,
+                                ui._request_area_eval_entry),
+      self._get_text_from_entry(" --safe-url='",
+                                ui._request_area_safe_url_ckbtn,
+                                ui._request_area_safe_url_entry),
+      self._get_text_from_entry(" --safe-post='",
+                                ui._request_area_safe_post_ckbtn,
+                                ui._request_area_safe_post_entry),
+      self._get_text_from_entry(" --safe-req='",
+                                ui._request_area_safe_req_ckbtn,
+                                ui._request_area_safe_req_entry),
+      self._get_text_from_entry(" --safe-freq='",
+                                ui._request_area_safe_freq_ckbtn,
+                                ui._request_area_safe_freq_entry),
+      self._get_text_only_ckbtn(" --ignore-proxy",
+                                ui._request_area_ignore_proxy_ckbtn),
+      self._get_text_only_ckbtn(" --proxy='",
+                                ui._request_area_proxy_ckbtn),
+      self._get_text_from_entry(" --proxy-cred='",
+                                ui._request_area_proxy_cred_ckbtn,
+                                ui._request_area_proxy_cred_entry),
+      self._get_text_from_entry(" --proxy-file='",
+                                ui._request_area_proxy_file_ckbtn,
+                                ui._request_area_proxy_file_entry),
+      self._get_text_only_ckbtn(" --tor",
+                                ui._request_area_tor_ckbtn),
+      self._get_text_from_entry(" --tor-port='",
+                                ui._request_area_tor_port_ckbtn,
+                                ui._request_area_tor_port_entry),
+      self._get_text_from_entry(" --tor-type='",
+                                ui._request_area_tor_type_ckbtn,
+                                ui._request_area_tor_type_entry),
+      self._get_text_only_ckbtn(" --check-tor",
+                                ui._request_area_check_tor_ckbtn),
+    ]
+
+    self._setting_opts = [
+      self._get_text_from_entry(" -p '",
+                                ui._inject_area_param_ckbtn,
+                                ui._inject_area_param_entry),
+      self._get_text_only_ckbtn(" --skip-static",
+                                ui._inject_area_skip_static_ckbtn),
+      self._get_text_from_entry(" --skip='",
+                                ui._inject_area_skip_ckbtn,
+                                ui._inject_area_skip_entry),
+      self._get_text_from_entry(" --para-exclude='",
+                                ui._inject_area_param_exclude_ckbtn,
+                                ui._inject_area_param_exclude_entry),
+      self._get_text_from_entry(" --dbms='",
+                                ui._inject_area_dbms_ckbtn,
+                                ui._inject_area_dbms_combobox.get_child()),
+      self._get_text_from_entry(" --dbms-cred='",
+                                ui._inject_area_dbms_cred_ckbtn,
+                                ui._inject_area_dbms_cred_entry),
+      self._get_text_from_entry(" --os='",
+                                ui._inject_area_os_ckbtn,
+                                ui._inject_area_os_entry),
+      self._get_text_only_ckbtn(" --invalid-bignum",
+                                ui._inject_area_invalid_bignum_ckbtn),
+      self._get_text_only_ckbtn(" --invalid-logic",
+                                ui._inject_area_invalid_logic_ckbtn),
+      self._get_text_only_ckbtn(" --invalid-str",
+                                ui._inject_area_invalid_str_ckbtn),
+      self._get_text_only_ckbtn(" --no-cast",
+                                ui._inject_area_no_cast_ckbtn),
+      self._get_text_only_ckbtn(" --no-escape",
+                                ui._inject_area_no_escape_ckbtn),
+      self._get_text_from_entry(" --prefix='",
+                                ui._inject_area_prefix_ckbtn,
+                                ui._inject_area_prefix_entry),
+      self._get_text_from_entry(" --suffix='",
+                                ui._inject_area_suffix_ckbtn,
+                                ui._inject_area_suffix_entry),
+      self._get_text_from_entry(" --level='",
+                                ui._detection_area_level_ckbtn,
+                                ui._detection_area_level_combobox.get_child()),
+      self._get_text_only_ckbtn(" --text-only",
+                                ui._detection_area_text_only_ckbtn),
+      self._get_text_from_entry(" --risk='",
+                                ui._detection_area_risk_ckbtn,
+                                ui._detection_area_risk_combobox.get_child()),
+      self._get_text_from_entry(" --string='",
+                                ui._detection_area_str_ckbtn,
+                                ui._detection_area_str_entry),
+      self._get_text_from_entry(" --not-string='",
+                                ui._detection_area_not_str_ckbtn,
+                                ui._detection_area_not_str_entry),
+      self._get_text_from_entry(" --regexp='",
+                                ui._detection_area_re_ckbtn,
+                                ui._detection_area_re_entry),
+      self._get_text_from_entry(" --code='",
+                                ui._detection_area_code_ckbtn,
+                                ui._detection_area_code_entry),
+      self._get_text_from_entry(" --technique='",
+                                ui._tech_area_tech_ckbtn,
+                                ui._tech_area_tech_entry),
+      self._get_text_from_entry(" --time-sec='",
+                                ui._tech_area_time_sec_ckbtn,
+                                ui._tech_area_time_sec_entry),
+      self._get_text_from_entry(" --union-cols='",
+                                ui._tech_area_union_col_ckbtn,
+                                ui._tech_area_union_col_entry),
+      self._get_text_from_entry(" --union-char='",
+                                ui._tech_area_union_chr_ckbtn,
+                                ui._tech_area_union_chr_entry),
+      self._get_text_from_entry(" --union-from='",
+                                ui._tech_area_union_from_ckbtn,
+                                ui._tech_area_union_from_entry),
+      self._get_text_from_entry(" --dns-domain='",
+                                ui._tech_area_dns_ckbtn,
+                                ui._tech_area_dns_entry),
+      self._get_text_from_entry(" --second-url='",
+                                ui._tech_area_second_url_ckbtn,
+                                ui._tech_area_second_url_entry),
+      self._get_text_from_entry(" --second-req='",
+                                ui._tech_area_second_req_ckbtn,
+                                ui._tech_area_second_req_entry),
+      self._get_text_only_ckbtn(" -o",
+                                ui._optimize_area_turn_all_ckbtn),
+      self._get_text_only_ckbtn(" --predict-output",
+                                ui._optimize_area_predict_ckbtn),
+      self._get_text_only_ckbtn(" --keep-alive",
+                                ui._optimize_area_keep_alive_ckbtn),
+      self._get_text_only_ckbtn(" --null-connection",
+                                ui._optimize_area_null_connect_ckbtn),
+      self._get_text_from_entry(" --threads='",
+                                ui._optimize_area_thread_num_ckbtn,
+                                ui._optimize_area_thread_num_combobox.get_child()),
+      self._get_text_from_entry(" -v '",
+                                ui._general_area_verbose_ckbtn,
+                                ui._general_area_verbose_entry),
+      self._get_text_only_ckbtn(" --fingerprint",
+                                ui._general_area_finger_ckbtn),
+      self._get_text_only_ckbtn(" --hex",
+                                ui._general_area_hex_ckbtn),
+      self._get_text_only_ckbtn(" --batch",
+                                ui._general_area_batch_ckbtn),
+      self._get_tampers(),
+    ]
+
+  def _get_tampers(self):
     ''' --tamper=TAMPER     Use given script(s) for tampering injection data '''
     ui = self._w
     _tampers = ''
@@ -666,14 +620,12 @@ class Singal_Handlers(object):
       return " --tamper='" + _tampers.rstrip(',') + "'"
     return ''
 
-  def _param_builder(self):
-    ''' -p TESTPARAMETER    Testable parameter(s) '''
-    ui = self._w
-    return self._get_text_from_entry(ui._inject_area_param_ckbtn,
-                                     " -p '",
-                                     ui._inject_area_param_entry)
+  def _get_text_only_ckbtn(self, opt_str, ckbtn):
+    if ckbtn.get_active():
+      return opt_str
+    return ''
 
-  def _get_text_from_entry(self, ckbtn, opt_str, entry):
+  def _get_text_from_entry(self, opt_str, ckbtn, entry):
     if ckbtn.get_active() and entry.get_text():
       return opt_str + entry.get_text() + "'"
     return ''
