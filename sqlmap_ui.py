@@ -85,8 +85,6 @@ class UI_Window(g.Window):
 
     self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
     self._url_combobox.set_entry_text_column(1)
-    self._url_combobox.set_tooltip_text(
-      '必填项, 从 目标url/burp日志/HTTP请求... 任选一项')
     self._url_combobox.get_child().set_placeholder_text(
       '必填项, 从 目标url/burp日志/HTTP请求... 任选一项')
 
@@ -95,8 +93,6 @@ class UI_Window(g.Window):
     _burp_area = g.Box()
 
     self._burp_logfile = g.Entry()
-    self._burp_logfile.set_tooltip_text(
-      '-l: Burp或WebScarab代理的日志文件路径(用来解析目标)')
     self._burp_logfile.set_placeholder_text(
       '-l: Burp或WebScarab代理的日志文件路径(用来解析目标)')
 
@@ -113,8 +109,6 @@ class UI_Window(g.Window):
     _request_area = g.Box()
 
     self._request_file = g.Entry()
-    self._request_file.set_tooltip_text(
-      '-r: 包含HTTP请求的的文件路径(如从fiddler中得来的)')
     self._request_file.set_placeholder_text(
       '-r: 包含HTTP请求的的文件路径(如从fiddler中得来的)')
 
@@ -131,8 +125,6 @@ class UI_Window(g.Window):
     _bulkfile_area = g.Box()
 
     self._bulkfile = g.Entry()
-    self._bulkfile.set_tooltip_text(
-      '-m: 给定一个包含多个目标的文本路径')
     self._bulkfile.set_placeholder_text(
       '-m: 给定一个包含多个目标的文本路径')
 
@@ -149,8 +141,6 @@ class UI_Window(g.Window):
     _configfile_area = g.Box()
 
     self._configfile = g.Entry()
-    self._configfile.set_tooltip_text(
-      '-c: 从一个本地ini配置文件载入选项')
     self._configfile.set_placeholder_text(
       '-c: 从一个本地ini配置文件载入选项')
 
@@ -167,8 +157,6 @@ class UI_Window(g.Window):
     _sitemap_url_area = g.Box()
 
     self._sitemap_url = g.Entry()
-    self._sitemap_url.set_tooltip_text(
-      '-x: 远程sitemap(.xml)文件的url(用来解析目标)')
     self._sitemap_url.set_placeholder_text(
       '-x: 远程sitemap(.xml)文件的url(用来解析目标)')
 
@@ -177,8 +165,6 @@ class UI_Window(g.Window):
     _google_dork_area = g.Box()
 
     self._google_dork = g.Entry()
-    self._google_dork.set_tooltip_text(
-      '-g: 将google dork的结果作为目标url')
     self._google_dork.set_placeholder_text(
       '-g: 将google dork的结果作为目标url')
 
@@ -1365,7 +1351,6 @@ class UI_Window(g.Window):
 
     self._meta_area_pivot_ckbtn = g.CheckButton('指定Pivot列名')
     self._meta_area_pivot_entry = g.Entry()
-    self._meta_area_pivot_ckbtn.set_tooltip_text()
 
     _col2.pack_start(self._meta_area_pivot_ckbtn, False, True, 10)
     _col2.pack_start(self._meta_area_pivot_entry, True, True, 10)
@@ -1665,7 +1650,6 @@ class UI_Window(g.Window):
     self._file_read_area_file_read_entry = g.Entry()
     self._file_read_area_file_read_entry.set_text('/etc/passwd')
     self._file_read_area_file_btn = g.Button('查看')
-    self._file_read_area_file_btn.set_tooltip_text('只能查看已下载到本地的文件')
     self._file_read_area_file_btn.connect('clicked', self._handlers.read_dumped_file)
 
     _row1.pack_start(self._file_read_area_file_read_ckbtn, False, True, 10)
@@ -1694,21 +1678,20 @@ class UI_Window(g.Window):
     _row1.add(_scrolled)
 
     _row2 = g.Box()
-    self._page3_read_target_btn = g.Button('查看target文件')
-    self._page3_read_target_btn.connect('clicked', self._handlers.read_target_file)
+    self._page2_read_target_btn = g.Button('查看target文件')
+    self._page2_read_target_btn.connect('clicked', self._handlers.read_target_file)
 
-    _row2.pack_start(self._page3_read_target_btn, True, False, 0)
+    _row2.pack_start(self._page2_read_target_btn, True, False, 0)
 
-    self._page3_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
-    self._page3_clear_btn.set_tooltip_text('不会动实际的文件')
-    self._page3_clear_btn.connect('clicked', self._handlers.clear_buffer)
+    self._page2_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
+    self._page2_clear_btn.connect('clicked', self._handlers.clear_buffer)
 
-    _row2.pack_start(self._page3_clear_btn, True, False, 0)
+    _row2.pack_start(self._page2_clear_btn, True, False, 0)
 
-    self._page3_read_log_btn = g.Button('查看log文件')
-    self._page3_read_log_btn.connect('clicked', self._handlers.read_log_file)
+    self._page2_read_log_btn = g.Button('查看log文件')
+    self._page2_read_log_btn.connect('clicked', self._handlers.read_log_file)
 
-    _row2.pack_start(self._page3_read_log_btn, True, False, 0)
+    _row2.pack_start(self._page2_read_log_btn, True, False, 0)
 
     self.page2.pack_start(_row1, True, True, 5)
     self.page2.pack_end(_row2, False, True, 0)

@@ -14,6 +14,22 @@ class Widget_Mesg(object):
   def set_all_tooltips(self):
     ui = self._w
 
+    # 一、选项区(page1)
+    # 0.target区
+    self._set_tooltip('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
+                      ui._url_combobox)
+    self._set_tooltip('-l: Burp或WebScarab代理的日志文件路径(用来解析目标)',
+                      ui._burp_logfile)
+    self._set_tooltip('-r: 包含HTTP请求的的文件路径(如从fiddler中得来的)',
+                      ui._request_file)
+    self._set_tooltip('-m: 给定一个包含多个目标的文本路径',
+                      ui._bulkfile)
+    self._set_tooltip('-c: 从一个本地ini配置文件载入选项',
+                      ui._configfile)
+    self._set_tooltip('-x: 远程sitemap(.xml)文件的url(用来解析目标)',
+                      ui._sitemap_url)
+    self._set_tooltip('-g: 将google dork的结果作为目标url',
+                      ui._google_dork)
     # 1.测试页面
     self._set_tooltip('-p TESTPARAMETER\tTestable parameter(s)',
                       ui._inject_area_param_ckbtn,
@@ -325,6 +341,8 @@ class Widget_Mesg(object):
     self._set_tooltip('远程DB所在服务器上的文件路径',
                       ui._file_read_area_file_read_ckbtn,
                       ui._file_read_area_file_read_entry)
+    self._set_tooltip('只能查看已下载到本地的文件',
+                      ui._file_read_area_file_btn)
     self._set_tooltip('--udf-inject',
                       ui._file_write_area_udf_ckbtn)
     self._set_tooltip('与--udf-inject配套使用, 可选',
@@ -474,6 +492,9 @@ class Widget_Mesg(object):
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
                       ui._page1_misc_z_ckbtn,
                       ui._page1_misc_z_entry)
+    # 二、显示区(page2)
+    self._set_tooltip('不会动实际的文件',
+                      ui._page2_clear_btn)
 
   def _set_tooltip(self, tooltip, *widgets):
     for _widget in widgets:
