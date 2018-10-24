@@ -15,7 +15,7 @@ from gtk3_header import Gdk as d
 from gtk3_header import GLib
 from gtk3_header import Gtk as g
 from sqlmap_ui_handlers import Singal_Handlers as Handlers
-from sqlmap_ui_tooltips import Widget_Mesg as Mesg
+from sqlmap_ui_tooltips import Widget_Mesg as Init_Mesg
 
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
@@ -28,28 +28,28 @@ class UI_Window(g.Window):
 
     self._handlers = Handlers(self)
 
-    self.main_box = g.Box.new(orientation = g.Orientation.VERTICAL, spacing = 0)
-    self.add(self.main_box)
+    _main_box = g.Box.new(orientation = g.Orientation.VERTICAL, spacing = 0)
 
     self._build_page_target()
 
-    self.main_box.pack_start(self._target_notbook, False, True, 0)
+    _main_box.pack_start(self._target_notbook, False, True, 0)
 
-    self.notebook = g.Notebook()
-
+    _notebook = g.Notebook()
     self._build_page1()
     self._build_page2()
     self._build_page3()
     self._build_page4()
 
-    self.notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_Q)'))
-    self.notebook.append_page(self.page2, g.Label.new_with_mnemonic('显示区(_W)'))
-    self.notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
-    self.notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
+    _notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_Q)'))
+    _notebook.append_page(self.page2, g.Label.new_with_mnemonic('显示区(_W)'))
+    _notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
+    _notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
 
-    self.main_box.pack_start(self.notebook, True, True, 0)
+    _main_box.pack_start(_notebook, True, True, 0)
+    self.add(_main_box)
 
-    Mesg(self).set_all_tooltips()
+    # 添加tooltips, placeholders等
+    Init_Mesg(self)
 
   def unselect_all_ckbtn(self, button):
     for _i in dir(self):
@@ -85,18 +85,14 @@ class UI_Window(g.Window):
 
     self._url_combobox = g.ComboBox.new_with_model_and_entry(name_store)
     self._url_combobox.set_entry_text_column(1)
-    self._url_combobox.get_child().set_placeholder_text(
-      '必填项, 从 目标url/burp日志/HTTP请求... 任选一项')
 
     _url_area.pack_start(self._url_combobox, True, True, 0)
 
     _burp_area = g.Box()
 
     self._burp_logfile = g.Entry()
-    self._burp_logfile.set_placeholder_text(
-      '-l: Burp或WebScarab代理的日志文件路径(用来解析目标)')
-
     self._burp_logfile_chooser = g.FileChooserButton()
+
     self._burp_logfile_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
@@ -109,10 +105,8 @@ class UI_Window(g.Window):
     _request_area = g.Box()
 
     self._request_file = g.Entry()
-    self._request_file.set_placeholder_text(
-      '-r: 包含HTTP请求的的文件路径(如从fiddler中得来的)')
-
     self._request_file_chooser = g.FileChooserButton()
+
     self._request_file_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
@@ -125,10 +119,8 @@ class UI_Window(g.Window):
     _bulkfile_area = g.Box()
 
     self._bulkfile = g.Entry()
-    self._bulkfile.set_placeholder_text(
-      '-m: 给定一个包含多个目标的文本路径')
-
     self._bulkfile_chooser = g.FileChooserButton()
+
     self._bulkfile_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
@@ -141,10 +133,8 @@ class UI_Window(g.Window):
     _configfile_area = g.Box()
 
     self._configfile = g.Entry()
-    self._configfile.set_placeholder_text(
-      '-c: 从一个本地ini配置文件载入选项')
-
     self._configfile_chooser = g.FileChooserButton()
+
     self._configfile_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
@@ -157,16 +147,12 @@ class UI_Window(g.Window):
     _sitemap_url_area = g.Box()
 
     self._sitemap_url = g.Entry()
-    self._sitemap_url.set_placeholder_text(
-      '-x: 远程sitemap(.xml)文件的url(用来解析目标)')
 
     _sitemap_url_area.pack_start(self._sitemap_url, True, True, 0)
 
     _google_dork_area = g.Box()
 
     self._google_dork = g.Entry()
-    self._google_dork.set_placeholder_text(
-      '-g: 将google dork的结果作为目标url')
 
     _google_dork_area.pack_start(self._google_dork, True, True, 0)
 
@@ -254,12 +240,11 @@ class UI_Window(g.Window):
     _row1 = g.Box()
     self._page1_misc_web_root_ckbtn = g.CheckButton('远程web的root目录')
     self._page1_misc_web_root_entry = g.Entry()
-    self._page1_misc_web_root_entry.set_placeholder_text('/var/www')
     self._page1_misc_tmp_dir_ckbtn = g.CheckButton('本地临时目录')
     self._page1_misc_tmp_dir_entry = g.Entry()
     self._page1_misc_tmp_dir_chooser = g.FileChooserButton()
 
-    # TODO, 应该选择目录
+    # TODO, 应该选择目录, 而不是文件
     self._page1_misc_tmp_dir_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
@@ -308,14 +293,14 @@ class UI_Window(g.Window):
     self._page1_misc_alert_ckbtn = g.CheckButton('当发现注入时运行OS命令:')
     self._page1_misc_alert_entry = g.Entry()
     self._page1_misc_gpage_ckbtn = g.CheckButton('GOOGLEDORK时的页码')
-    self._page1_misc_gpage_entry = g.Entry()
+    self._page1_misc_gpage_spinbtn = g.SpinButton.new_with_range(1, 100, 1)
 
     _row4.pack_start(self._page1_misc_answers_ckbtn, False, True, 5)
     _row4.pack_start(self._page1_misc_answers_entry, True, True, 5)
     _row4.pack_start(self._page1_misc_alert_ckbtn, False, True, 5)
     _row4.pack_start(self._page1_misc_alert_entry, True, True, 5)
     _row4.pack_start(self._page1_misc_gpage_ckbtn, False, True, 5)
-    _row4.pack_start(self._page1_misc_gpage_entry, False, True, 5)
+    _row4.pack_start(self._page1_misc_gpage_spinbtn, False, True, 5)
 
     _row5 = g.Box()
     self._page1_misc_z_ckbtn = g.CheckButton('使用短的助记符')
@@ -417,15 +402,13 @@ class UI_Window(g.Window):
     _row6 = g.Box()
     self._page1_general_dump_format_ckbtn = g.CheckButton('dump结果的文件格式')
     self._page1_general_dump_format_entry = g.Entry()
-    self._page1_general_dump_format_entry.set_placeholder_text(
-      'CSV (default), HTML or SQLITE')
-
+    self._page1_general_dump_format_entry.set_max_width_chars(40)
     self._page1_general_csv_del_ckbtn = g.CheckButton('(csv文件的)分隔符')
     self._page1_general_csv_del_entry = g.Entry()
     self._page1_general_csv_del_entry.set_text(',')
 
     _row6.pack_start(self._page1_general_dump_format_ckbtn, False, True, 5)
-    _row6.pack_start(self._page1_general_dump_format_entry, True, True, 5)
+    _row6.pack_start(self._page1_general_dump_format_entry, False, True, 5)
     _row6.pack_start(self._page1_general_csv_del_ckbtn, False, True, 5)
     _row6.pack_start(self._page1_general_csv_del_entry, False, True, 5)
 
@@ -488,10 +471,8 @@ class UI_Window(g.Window):
     _row9 = g.Box()
     self._page1_general_test_filter_ckbtn = g.CheckButton('测试过滤器(从payload/title选择)')
     self._page1_general_test_filter_entry = g.Entry()
-    self._page1_general_test_filter_entry.set_placeholder_text('ROW')
     self._page1_general_test_skip_ckbtn = g.CheckButton('测试跳过(从payload/title选择)')
     self._page1_general_test_skip_entry = g.Entry()
-    self._page1_general_test_skip_entry.set_placeholder_text('BENCHMARK')
 
     _row9.pack_start(self._page1_general_test_filter_ckbtn, False, True, 5)
     _row9.pack_start(self._page1_general_test_filter_entry, True, True, 5)
@@ -511,21 +492,21 @@ class UI_Window(g.Window):
     self._build_page1_setting_detection()
     self._build_page1_setting_tech()
 
-    _row1.pack_start(self._inject_area, False, True, 0)
-    _row1.pack_start(self._detection_area, False, True, 0)
-    _row1.pack_start(self._tech_area, False, True, 0)
+    _row1.pack_start(self._inject_area, False, True, 5)
+    _row1.pack_start(self._detection_area, True, True, 5)
+    _row1.pack_start(self._tech_area, False, True, 5)
 
     _row2 = g.Box()
     self._build_page1_setting_tamper()
     self._build_page1_setting_optimize()
     self._build_page1_setting_general()
 
-    _row2.pack_start(self._tamper_area, False, True, 0)
-    _row2.pack_start(self._optimize_area, False, True, 0)
-    _row2.pack_start(self._general_area, False, True, 0)
+    _row2.pack_start(self._tamper_area, False, True, 5)
+    _row2.pack_start(self._optimize_area, False, True, 5)
+    _row2.pack_start(self._general_area, False, True, 5)
 
-    _page1_setting.pack_start(_row1, True, True, 0)
-    _page1_setting.pack_start(_row2, True, True, 0)
+    _page1_setting.pack_start(_row1, True, True, 5)
+    _page1_setting.pack_start(_row2, True, True, 5)
 
     self.page1_setting = g.ScrolledWindow()
     self.page1_setting.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
@@ -539,7 +520,6 @@ class UI_Window(g.Window):
     _row1 = g.Box()
     self._tech_area_tech_ckbtn = g.CheckButton('注入技术')
     self._tech_area_tech_entry = g.Entry()
-    self._tech_area_tech_entry.set_placeholder_text('BEUSTQ')
 
     _row1.pack_start(self._tech_area_tech_ckbtn, False, True, 5)
     _row1.pack_end(self._tech_area_tech_entry, False, True, 5)
@@ -547,7 +527,6 @@ class UI_Window(g.Window):
     _row2 = g.Box()
     self._tech_area_time_sec_ckbtn = g.CheckButton('指定DB延迟多少秒响应')
     self._tech_area_time_sec_entry = g.Entry()
-    self._tech_area_time_sec_entry.set_placeholder_text('时间盲注时')
 
     _row2.pack_start(self._tech_area_time_sec_ckbtn, False, True, 5)
     _row2.pack_end(self._tech_area_time_sec_entry, False, True, 5)
@@ -555,7 +534,6 @@ class UI_Window(g.Window):
     _row3 = g.Box()
     self._tech_area_union_col_ckbtn = g.CheckButton('指定最大union列数')
     self._tech_area_union_col_entry = g.Entry()
-    self._tech_area_union_col_entry.set_placeholder_text('union查询时')
 
     _row3.pack_start(self._tech_area_union_col_ckbtn, False, True, 5)
     _row3.pack_end(self._tech_area_union_col_entry, False, True, 5)
@@ -563,7 +541,6 @@ class UI_Window(g.Window):
     _row4 = g.Box()
     self._tech_area_union_chr_ckbtn = g.CheckButton('指定枚举列数时所用字符')
     self._tech_area_union_chr_entry = g.Entry()
-    self._tech_area_union_chr_entry.set_placeholder_text('union查询时')
 
     _row4.pack_start(self._tech_area_union_chr_ckbtn, False, True, 5)
     _row4.pack_end(self._tech_area_union_chr_entry, False, True, 5)
@@ -571,7 +548,6 @@ class UI_Window(g.Window):
     _row5 = g.Box()
     self._tech_area_union_from_ckbtn = g.CheckButton('指定枚举列数时from的表名')
     self._tech_area_union_from_entry = g.Entry()
-    self._tech_area_union_from_entry.set_placeholder_text('union查询时')
 
     _row5.pack_start(self._tech_area_union_from_ckbtn, False, True, 5)
     _row5.pack_end(self._tech_area_union_from_entry, False, True, 5)
@@ -579,7 +555,6 @@ class UI_Window(g.Window):
     _row6 = g.Box()
     self._tech_area_dns_ckbtn = g.CheckButton('指定DNS')
     self._tech_area_dns_entry = g.Entry()
-    self._tech_area_dns_entry.set_placeholder_text('DNS exfiltration')
 
     _row6.pack_start(self._tech_area_dns_ckbtn, True, True, 5)
     _row6.pack_end(self._tech_area_dns_entry, True, True, 5)
@@ -609,45 +584,28 @@ class UI_Window(g.Window):
     _detection_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
 
     _row1 = g.Box()
-    _level_store = g.ListStore(int, str)
-    _level_store.append([1, "1"])
-    _level_store.append([2, "2"])
-    _level_store.append([3, "3"])
-    _level_store.append([4, "4"])
-    _level_store.append([5, "5"])
-
     self._detection_area_level_ckbtn = g.CheckButton('探测等级(范围)')
-    self._detection_area_level_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
-    self._detection_area_level_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
-    self._detection_area_level_combobox.set_active(0)
+    self._detection_area_level_scale = g.Scale.new_with_range(g.Orientation.HORIZONTAL, 1, 5, 1)
 
     self._detection_area_text_only_ckbtn = g.CheckButton('仅对比文本')
 
     _row1.pack_start(self._detection_area_level_ckbtn, False, True, 5)
-    _row1.pack_start(self._detection_area_level_combobox, True, False, 10)
-    _row1.pack_start(self._detection_area_text_only_ckbtn, False, True, 5)
+    _row1.pack_start(self._detection_area_level_scale, True, True, 5)
+    _row1.pack_end(self._detection_area_text_only_ckbtn, False, True, 5)
 
     _row2 = g.Box()
-    _level_store = g.ListStore(int, str)
-    _level_store.append([1, "1"])
-    _level_store.append([2, "2"])
-    _level_store.append([3, "3"])
-
     self._detection_area_risk_ckbtn = g.CheckButton('payload危险等级')
-    self._detection_area_risk_combobox = g.ComboBox.new_with_model_and_entry(_level_store)
-    self._detection_area_risk_combobox.set_entry_text_column(1)  # 设成0, 会出现段错误~~, NB!
-    self._detection_area_risk_combobox.set_active(0)
+    self._detection_area_risk_scale = g.Scale.new_with_range(g.Orientation.HORIZONTAL, 1, 3, 1)
 
     self._detection_area_titles_ckbtn = g.CheckButton('仅对比title')
 
     _row2.pack_start(self._detection_area_risk_ckbtn, False, True, 5)
-    _row2.pack_start(self._detection_area_risk_combobox, True, False, 10)
+    _row2.pack_start(self._detection_area_risk_scale, True, True, 10)
     _row2.pack_start(self._detection_area_titles_ckbtn, False, True, 5)
 
     _row3 = g.Box()
     self._detection_area_str_ckbtn = g.CheckButton('指定字符串')
     self._detection_area_str_entry = g.Entry()
-    self._detection_area_str_entry.set_placeholder_text('查询为真时页面出现的字串')
 
     _row3.pack_start(self._detection_area_str_ckbtn, False, True, 5)
     _row3.pack_end(self._detection_area_str_entry, True, True, 5)
@@ -655,7 +613,6 @@ class UI_Window(g.Window):
     _row4 = g.Box()
     self._detection_area_not_str_ckbtn = g.CheckButton('指定字符串')
     self._detection_area_not_str_entry = g.Entry()
-    self._detection_area_not_str_entry.set_placeholder_text('查询为假时的')
 
     _row4.pack_start(self._detection_area_not_str_ckbtn, False, True, 5)
     _row4.pack_end(self._detection_area_not_str_entry, True, True, 5)
@@ -663,7 +620,6 @@ class UI_Window(g.Window):
     _row5 = g.Box()
     self._detection_area_re_ckbtn = g.CheckButton('指定正则')
     self._detection_area_re_entry = g.Entry()
-    self._detection_area_re_entry.set_placeholder_text('正则匹配查询为真时的字串')
 
     _row5.pack_start(self._detection_area_re_ckbtn, False, True, 5)
     _row5.pack_end(self._detection_area_re_entry, True, True, 5)
@@ -671,17 +627,13 @@ class UI_Window(g.Window):
     _row6 = g.Box()
     self._detection_area_code_ckbtn = g.CheckButton('指定http状态码')
     self._detection_area_code_entry = g.Entry()
-    self._detection_area_code_entry.set_placeholder_text('查询为真时的状态码')
 
     _row6.pack_start(self._detection_area_code_ckbtn, False, True, 5)
     _row6.pack_end(self._detection_area_code_entry, True, True, 5)
 
-    _detection_area_opts.add(_row1)
-    _detection_area_opts.add(_row2)
-    _detection_area_opts.add(_row3)
-    _detection_area_opts.add(_row4)
-    _detection_area_opts.add(_row5)
-    _detection_area_opts.add(_row6)
+    # 添加行: _row1 - _row6
+    for _i in range(1, 7):
+      _detection_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._detection_area.add(_detection_area_opts)
 
   def _build_page1_setting_general(self):
@@ -690,11 +642,11 @@ class UI_Window(g.Window):
 
     _row1 = g.Box()
     self._general_area_verbose_ckbtn = g.CheckButton('输出详细程度')
-    self._general_area_verbose_entry = g.Entry()
-    self._general_area_verbose_entry.set_placeholder_text('0-6')
+    self._general_area_verbose_scale = g.Scale.new_with_range(g.Orientation.HORIZONTAL, 0, 6, 1)
+    self._general_area_verbose_scale.set_value(1.0)
 
     _row1.pack_start(self._general_area_verbose_ckbtn, False, True, 5)
-    _row1.pack_start(self._general_area_verbose_entry, True, True, 5)
+    _row1.pack_start(self._general_area_verbose_scale, True, True, 5)
 
     _row2 = g.Box()
     self._general_area_finger_ckbtn = g.CheckButton('执行宽泛的DB版本检测')
@@ -730,20 +682,10 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._optimize_area_thread_num_ckbtn = g.CheckButton('使用线程数:')
-
-    _thread_num_store = g.ListStore(int, str)
-    _thread_num_store.append([1, "2"])
-    _thread_num_store.append([2, "3"])
-    _thread_num_store.append([3, "5"])
-    _thread_num_store.append([4, "7"])
-    _thread_num_store.append([5, "11"])
-    self._optimize_area_thread_num_combobox = g.ComboBox.new_with_model_and_entry(_thread_num_store)
-    # set_entry_text_column(0)会出现段错误~~, NB!
-    self._optimize_area_thread_num_combobox.set_entry_text_column(1)
-    self._optimize_area_thread_num_combobox.set_active(0)
+    self._optimize_area_thread_num_spinbtn = g.SpinButton.new_with_range(2, 1000, 2)
 
     _row2.pack_start(self._optimize_area_thread_num_ckbtn, False, True, 5)
-    _row2.pack_end(self._optimize_area_thread_num_combobox, False, True, 5)
+    _row2.pack_start(self._optimize_area_thread_num_spinbtn, True, True, 5)
 
     _row3 = g.Box()
     self._optimize_area_predict_ckbtn = g.CheckButton('预测通常的查询结果')
@@ -760,11 +702,9 @@ class UI_Window(g.Window):
 
     _row5.pack_start(self._optimize_area_null_connect_ckbtn, False, True, 5)
 
-    _optimize_area_opts.add(_row1)
-    _optimize_area_opts.add(_row2)
-    _optimize_area_opts.add(_row3)
-    _optimize_area_opts.add(_row4)
-    _optimize_area_opts.add(_row5)
+    # 添加行: _row1 - _row5
+    for _i in range(1, 6):
+      _optimize_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._optimize_area.add(_optimize_area_opts)
 
   def _build_page1_setting_tamper(self):
@@ -790,10 +730,9 @@ class UI_Window(g.Window):
     _row1 = g.Box()
     self._inject_area_param_ckbtn = g.CheckButton('可测试的参数')
     self._inject_area_param_entry = g.Entry()
-    self._inject_area_param_entry.set_placeholder_text('id')
 
-    _row1.pack_start(self._inject_area_param_ckbtn, True, True, 5)
-    _row1.pack_end(self._inject_area_param_entry, True, True, 5)
+    _row1.pack_start(self._inject_area_param_ckbtn, False, True, 5)
+    _row1.pack_start(self._inject_area_param_entry, True, True, 5)
 
     _row2 = g.Box()
     self._inject_area_skip_static_ckbtn = g.CheckButton('跳过无动态特性的参数')
@@ -802,20 +741,34 @@ class UI_Window(g.Window):
     _row2.pack_start(self._inject_area_skip_static_ckbtn, True, True, 5)
 
     _row3 = g.Box()
+    self._inject_area_prefix_ckbtn = g.CheckButton('payload前缀')
+    self._inject_area_prefix_entry = g.Entry()
+
+    _row3.pack_start(self._inject_area_prefix_ckbtn, False, True, 5)
+    _row3.pack_start(self._inject_area_prefix_entry, True, True, 5)
+
+    _row4 = g.Box()
+    self._inject_area_suffix_ckbtn = g.CheckButton('payload后缀')
+    self._inject_area_suffix_entry = g.Entry()
+
+    _row4.pack_start(self._inject_area_suffix_ckbtn, False, True, 5)
+    _row4.pack_start(self._inject_area_suffix_entry, True, True, 5)
+
+    _row5 = g.Box()
     self._inject_area_skip_ckbtn = g.CheckButton('排除参数')
     self._inject_area_skip_entry = g.Entry()
 
-    _row3.pack_start(self._inject_area_skip_ckbtn, True, True, 5)
-    _row3.pack_end(self._inject_area_skip_entry, True, True, 5)
+    _row5.pack_start(self._inject_area_skip_ckbtn, False, True, 5)
+    _row5.pack_start(self._inject_area_skip_entry, True, True, 5)
 
-    _row4 = g.Box()
+    _row6 = g.Box()
     self._inject_area_param_exclude_ckbtn = g.CheckButton('排除参数(正则)')
     self._inject_area_param_exclude_entry = g.Entry()
 
-    _row4.pack_start(self._inject_area_param_exclude_ckbtn, True, True, 5)
-    _row4.pack_end(self._inject_area_param_exclude_entry, True, True, 5)
+    _row6.pack_start(self._inject_area_param_exclude_ckbtn, False, True, 5)
+    _row6.pack_start(self._inject_area_param_exclude_entry, True, True, 5)
 
-    _row5 = g.Box()
+    _row7 = g.Box()
     _db_store = g.ListStore(int, str)
     _db_store.append([1, "mysql"])
     _db_store.append([2, "sqlite"])
@@ -826,82 +779,77 @@ class UI_Window(g.Window):
       _db_store)
     self._inject_area_dbms_combobox.set_entry_text_column(1)
 
-    _row5.pack_start(self._inject_area_dbms_ckbtn, True, True, 5)
-    _row5.pack_end(self._inject_area_dbms_combobox, True, True, 5)
+    _row7.pack_start(self._inject_area_dbms_ckbtn, False, True, 5)
+    _row7.pack_start(self._inject_area_dbms_combobox, True, True, 5)
 
-    _row6 = g.Box()
+    _row8 = g.Box()
     self._inject_area_dbms_cred_ckbtn = g.CheckButton('DB认证')
     self._inject_area_dbms_cred_entry = g.Entry()
-    self._inject_area_dbms_cred_entry.set_placeholder_text('user:password')
 
-    _row6.pack_start(self._inject_area_dbms_cred_ckbtn, True, True, 5)
-    _row6.pack_end(self._inject_area_dbms_cred_entry, True, True, 5)
+    _row8.pack_start(self._inject_area_dbms_cred_ckbtn, False, True, 5)
+    _row8.pack_start(self._inject_area_dbms_cred_entry, True, True, 5)
 
-    _row7 = g.Box()
+    _row9 = g.Box()
     self._inject_area_os_ckbtn = g.CheckButton('固定OS为')
     self._inject_area_os_entry = g.Entry()
 
-    _row7.pack_start(self._inject_area_os_ckbtn, True, True, 5)
-    _row7.pack_end(self._inject_area_os_entry, True, True, 5)
-
-    _row8 = g.Box()
-    self._inject_area_invalid_bignum_ckbtn = g.CheckButton('对payload中的废值使用大数')
-
-    _row8.pack_start(self._inject_area_invalid_bignum_ckbtn, True, True, 5)
-
-    _row9 = g.Box()
-    self._inject_area_invalid_logic_ckbtn = g.CheckButton('对payload中的废值使用逻辑运算符')
-
-    _row9.pack_start(self._inject_area_invalid_logic_ckbtn, True, True, 5)
+    _row9.pack_start(self._inject_area_os_ckbtn, False, True, 5)
+    _row9.pack_start(self._inject_area_os_entry, True, True, 5)
 
     _row10 = g.Box()
-    self._inject_area_invalid_str_ckbtn = g.CheckButton('对payload中的废值使用随机字串')
-
-    _row10.pack_start(self._inject_area_invalid_str_ckbtn, True, True, 5)
-
-    _row11 = g.Box()
     self._inject_area_no_cast_ckbtn = g.CheckButton('关掉payload变形机制')
-
-    _row11.pack_start(self._inject_area_no_cast_ckbtn, True, True, 5)
-
-    _row12 = g.Box()
     self._inject_area_no_escape_ckbtn = g.CheckButton('关掉string转义')
 
-    _row12.pack_start(self._inject_area_no_escape_ckbtn, True, True, 5)
+    _row10.pack_start(self._inject_area_no_cast_ckbtn, False, True, 5)
+    _row10.pack_start(self._inject_area_no_escape_ckbtn, False, True, 5)
 
-    _row13 = g.Box()
-    self._inject_area_prefix_ckbtn = g.CheckButton('payload前缀')
-    self._inject_area_prefix_entry = g.Entry()
-    self._inject_area_prefix_entry.set_placeholder_text('用于闭合')
+    _row11 = g.Box()
+    _invalid_label = g.Label('对payload中的废值:')
+    self._inject_area_invalid_logic_ckbtn = g.CheckButton('使用逻辑运算符')
 
-    _row13.pack_start(self._inject_area_prefix_ckbtn, True, True, 5)
-    _row13.pack_end(self._inject_area_prefix_entry, True, True, 5)
+    _row11.pack_start(_invalid_label, False, True, 5)
+    _row11.pack_end(self._inject_area_invalid_logic_ckbtn, False, True, 5)
 
-    _row14 = g.Box()
-    self._inject_area_suffix_ckbtn = g.CheckButton('payload后缀')
-    self._inject_area_suffix_entry = g.Entry()
+    _row12 = g.Box()
+    self._inject_area_invalid_bignum_ckbtn = g.CheckButton('使用大数')
+    self._inject_area_invalid_str_ckbtn = g.CheckButton('使用随机字符串')
 
-    _row14.pack_start(self._inject_area_suffix_ckbtn, True, True, 5)
-    _row14.pack_end(self._inject_area_suffix_entry, True, True, 5)
+    _row12.pack_end(self._inject_area_invalid_str_ckbtn, False, True, 5)
+    _row12.pack_end(self._inject_area_invalid_bignum_ckbtn, False, True, 5)
 
     _inject_area_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing=6)
-    # 添加行: _row1 - _row14
-    for _i in range(1, 15):
+    # 添加行: _row1 - _row12
+    for _i in range(1, 13):
       _inject_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._inject_area.add(_inject_area_opts)
 
   def _build_page1_request(self):
     _page1_request = g.Box(orientation=g.Orientation.VERTICAL)
 
+    _row1 = g.Box()
     self._build_page1_request_header()
+
+    _row1.pack_start(self._request_header_area, True, True, 5)
+
+    _row2 = g.Box()
     self._build_page1_request_data()
+
+    _row2.pack_start(self._request_data_area, True, True, 5)
+
+    _row3 = g.Box()
     self._build_page1_request_custom()
+
+    _row3.pack_start(self._request_custom_area, True, True, 5)
+
+    _row4 = g.Box()
     self._build_page1_request_proxy()
 
-    _page1_request.pack_start(self._request_header_area, False, True, 5)
-    _page1_request.pack_start(self._request_data_area, False, True, 5)
-    _page1_request.pack_start(self._request_custom_area, False, True, 5)
-    _page1_request.pack_start(self._request_proxy_area, False, True, 5)
+    _row4.pack_start(self._request_proxy_area, True, True, 5)
+
+    _page1_request.pack_start(_row1, False, True, 5)
+    _page1_request.pack_start(_row2, False, True, 5)
+    _page1_request.pack_start(_row3, False, True, 5)
+    _page1_request.pack_start(_row4, False, True, 5)
 
     self.page1_request = g.ScrolledWindow()
     self.page1_request.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
@@ -909,7 +857,7 @@ class UI_Window(g.Window):
 
   def _build_page1_request_proxy(self):
     self._request_proxy_area = g.Frame.new('隐匿/代理')
-    _request_proxy_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 6)
+    _request_proxy_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 5)
 
     _row1 = g.Box()
     self._request_area_safe_url_ckbtn = g.CheckButton('顺便掺杂地访问一个安全url')
@@ -942,7 +890,9 @@ class UI_Window(g.Window):
     _row2.pack_start(self._request_area_safe_freq_ckbtn, False, True, 5)
     _row2.pack_start(self._request_area_safe_freq_entry, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = g.Separator.new(g.Orientation.HORIZONTAL)
+
+    _row4 = g.Box()
     self._request_area_ignore_proxy_ckbtn = g.CheckButton('忽略系统默认代理')
     self._request_area_proxy_ckbtn = g.CheckButton('使用代理')
     self._request_area_proxy_file_ckbtn = g.CheckButton('代理列表文件')
@@ -955,13 +905,13 @@ class UI_Window(g.Window):
       self._request_area_proxy_file_entry
     )
 
-    _row3.pack_start(self._request_area_ignore_proxy_ckbtn, False, True, 5)
-    _row3.pack_start(self._request_area_proxy_ckbtn, False, True, 5)
-    _row3.pack_start(self._request_area_proxy_file_ckbtn, False, True, 5)
-    _row3.pack_start(self._request_area_proxy_file_entry, True, True, 0)
-    _row3.pack_start(self._request_area_proxy_file_chooser, False, True, 5)
+    _row4.pack_start(self._request_area_ignore_proxy_ckbtn, False, True, 5)
+    _row4.pack_start(self._request_area_proxy_ckbtn, False, True, 5)
+    _row4.pack_start(self._request_area_proxy_file_ckbtn, False, True, 5)
+    _row4.pack_start(self._request_area_proxy_file_entry, True, True, 0)
+    _row4.pack_start(self._request_area_proxy_file_chooser, False, True, 5)
 
-    _row4 = g.Box()
+    _row5 = g.Box()
     self._request_area_proxy_ip_label = g.Label('IP:')
     self._request_area_proxy_ip_entry = g.Entry()
     self._request_area_proxy_port_label = g.Label('PORT:')
@@ -972,16 +922,16 @@ class UI_Window(g.Window):
     self._request_area_proxy_password_label = g.Label('password:')
     self._request_area_proxy_password_entry = g.Entry()
 
-    _row4.pack_start(self._request_area_proxy_ip_label, False, True, 5)
-    _row4.pack_start(self._request_area_proxy_ip_entry, True, True, 5)
-    _row4.pack_start(self._request_area_proxy_port_label, False, True, 5)
-    _row4.pack_start(self._request_area_proxy_port_entry, False, True, 5)
-    _row4.pack_start(self._request_area_proxy_username_label, False, True, 5)
-    _row4.pack_start(self._request_area_proxy_username_entry, True, True, 5)
-    _row4.pack_start(self._request_area_proxy_password_label, False, True, 5)
-    _row4.pack_start(self._request_area_proxy_password_entry, True, True, 5)
+    _row5.pack_start(self._request_area_proxy_ip_label, False, True, 5)
+    _row5.pack_start(self._request_area_proxy_ip_entry, True, True, 5)
+    _row5.pack_start(self._request_area_proxy_port_label, False, True, 5)
+    _row5.pack_start(self._request_area_proxy_port_entry, False, True, 5)
+    _row5.pack_start(self._request_area_proxy_username_label, False, True, 5)
+    _row5.pack_start(self._request_area_proxy_username_entry, True, True, 5)
+    _row5.pack_start(self._request_area_proxy_password_label, False, True, 5)
+    _row5.pack_start(self._request_area_proxy_password_entry, True, True, 5)
 
-    _row5 = g.Box()
+    _row6 = g.Box()
     self._request_area_tor_ckbtn = g.CheckButton('使用Tor匿名网络')
     self._request_area_tor_port_ckbtn = g.CheckButton('Tor端口')
     self._request_area_tor_port_entry = g.Entry()
@@ -989,24 +939,21 @@ class UI_Window(g.Window):
     self._request_area_tor_type_entry = g.Entry()
     self._request_area_check_tor_ckbtn = g.CheckButton('检查Tor连接')
 
-    _row5.pack_start(self._request_area_tor_ckbtn, False, True, 5)
-    _row5.pack_start(self._request_area_tor_port_ckbtn, False, True, 5)
-    _row5.pack_start(self._request_area_tor_port_entry, False, True, 5)
-    _row5.pack_start(self._request_area_tor_type_ckbtn, False, True, 5)
-    _row5.pack_start(self._request_area_tor_type_entry, False, True, 5)
-    _row5.pack_start(self._request_area_check_tor_ckbtn, False, True, 5)
+    _row6.pack_start(self._request_area_tor_ckbtn, False, True, 5)
+    _row6.pack_start(self._request_area_tor_port_ckbtn, False, True, 5)
+    _row6.pack_start(self._request_area_tor_port_entry, False, True, 5)
+    _row6.pack_start(self._request_area_tor_type_ckbtn, False, True, 5)
+    _row6.pack_start(self._request_area_tor_type_entry, False, True, 5)
+    _row6.pack_start(self._request_area_check_tor_ckbtn, False, True, 5)
 
-    _request_proxy_opts.add(_row1)
-    _request_proxy_opts.add(_row2)
-    _request_proxy_opts.add(g.Separator.new(g.Orientation.HORIZONTAL))
-    _request_proxy_opts.add(_row3)
-    _request_proxy_opts.add(_row4)
-    _request_proxy_opts.add(_row5)
+    # 添加行: _row1 - _row6
+    for _i in range(1, 7):
+      _request_proxy_opts.add(locals()[''.join(('_row', str(_i)))])
     self._request_proxy_area.add(_request_proxy_opts)
 
   def _build_page1_request_custom(self):
     self._request_custom_area = g.Frame.new('request定制')
-    _request_custom_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 6)
+    _request_custom_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 5)
 
     _row1 = g.Box()
     self._request_area_ignore_redirects_ckbtn = g.CheckButton('忽略重定向')
@@ -1021,7 +968,7 @@ class UI_Window(g.Window):
     _row1.pack_start(self._request_area_ignore_redirects_ckbtn, False, True, 5)
     _row1.pack_start(self._request_area_ignore_timeouts_ckbtn, False, True, 5)
     _row1.pack_start(self._request_area_ignore_code_ckbtn, False, True, 5)
-    _row1.pack_start(self._request_area_ignore_code_entry, False, True, 5)
+    _row1.pack_start(self._request_area_ignore_code_entry, True, True, 5)
     _row1.pack_start(self._request_area_skip_urlencode_ckbtn, False, True, 5)
     _row1.pack_start(self._request_area_force_ssl_ckbtn, False, True, 5)
     _row1.pack_start(self._request_area_hpp_ckbtn, False, True, 5)
@@ -1045,13 +992,11 @@ class UI_Window(g.Window):
     _row2.pack_start(self._request_area_retries_ckbtn, False, True, 5)
     _row2.pack_start(self._request_area_retries_entry, False, True, 5)
     _row2.pack_start(self._request_area_randomize_ckbtn, False, True, 5)
-    _row2.pack_start(self._request_area_randomize_entry, False, True, 5)
+    _row2.pack_start(self._request_area_randomize_entry, True, True, 5)
 
     _row3 = g.Box()
     self._request_area_eval_ckbtn = g.CheckButton('--eval=')
     self._request_area_eval_entry = g.Entry()
-    self._request_area_eval_entry.set_placeholder_text(
-      'import hashlib;id2=hashlib.md5(id).hexdigest()')
 
     _row3.pack_start(self._request_area_eval_ckbtn, False, True, 5)
     _row3.pack_start(self._request_area_eval_entry, True, True, 5)
@@ -1063,12 +1008,11 @@ class UI_Window(g.Window):
 
   def _build_page1_request_data(self):
     self._request_data_area = g.Frame.new('HTTP data')
-    _request_data_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 6)
+    _request_data_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 5)
 
     _row1 = g.Box()
     self._request_area_method_ckbtn = g.CheckButton('HTTP请求方式')
     self._request_area_method_entry = g.Entry()
-    self._request_area_method_entry.set_placeholder_text('post')
     self._request_area_param_del_ckbtn = g.CheckButton('指定分隔data参数值的字符')
     self._request_area_param_del_entry = g.Entry()
 
@@ -1083,18 +1027,20 @@ class UI_Window(g.Window):
     _row2.pack_start(self._request_area_post_ckbtn, False, True, 5)
     _row2.pack_start(self._request_area_post_entry, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = g.Separator.new(g.Orientation.HORIZONTAL)
+
+    _row4 = g.Box()
     self._request_area_cookie_ckbtn = g.CheckButton('请求中要包含的Cookie:')
     self._request_area_cookie_entry = g.Entry()
     self._request_area_cookie_del_ckbtn = g.CheckButton('指定cookie分隔符')
     self._request_area_cookie_del_entry = g.Entry()
 
-    _row3.pack_start(self._request_area_cookie_ckbtn, False, True, 5)
-    _row3.pack_start(self._request_area_cookie_entry, True, True, 5)
-    _row3.pack_start(self._request_area_cookie_del_ckbtn, False, True, 5)
-    _row3.pack_start(self._request_area_cookie_del_entry, False, True, 5)
+    _row4.pack_start(self._request_area_cookie_ckbtn, False, True, 5)
+    _row4.pack_start(self._request_area_cookie_entry, True, True, 5)
+    _row4.pack_start(self._request_area_cookie_del_ckbtn, False, True, 5)
+    _row4.pack_start(self._request_area_cookie_del_entry, False, True, 5)
 
-    _row4 = g.Box()
+    _row5 = g.Box()
     self._request_area_load_cookies_ckbtn = g.CheckButton('本地Cookie文件')
     self._request_area_load_cookies_entry = g.Entry()
     self._request_area_load_cookies_chooser = g.FileChooserButton()
@@ -1105,22 +1051,22 @@ class UI_Window(g.Window):
     )
     self._request_area_drop_set_cookie_ckbtn = g.CheckButton('丢弃Set-Cookie头')
 
-    _row4.pack_start(self._request_area_load_cookies_ckbtn, False, True, 10)
-    _row4.pack_start(self._request_area_load_cookies_entry, True, True, 0)
-    _row4.pack_start(self._request_area_load_cookies_chooser, False, True, 0)
-    _row4.pack_start(self._request_area_drop_set_cookie_ckbtn, False, True, 10)
+    _row5.pack_start(self._request_area_load_cookies_ckbtn, False, True, 10)
+    _row5.pack_start(self._request_area_load_cookies_entry, True, True, 0)
+    _row5.pack_start(self._request_area_load_cookies_chooser, False, True, 0)
+    _row5.pack_start(self._request_area_drop_set_cookie_ckbtn, False, True, 10)
 
-    _row5 = g.Box()
+    _row6 = g.Separator.new(g.Orientation.HORIZONTAL)
+
+    _row7 = g.Box()
     self._request_area_auth_type_ckbtn = g.CheckButton('http认证类型')
     self._request_area_auth_type_entry = g.Entry()
-    self._request_area_auth_type_entry.set_placeholder_text('Basic, Digest, NTLM or PKI')
+    self._request_area_auth_type_entry.set_max_width_chars(25)
     self._request_area_auth_cred_ckbtn = g.CheckButton('http认证账密')
     self._request_area_auth_cred_entry = g.Entry()
-    self._request_area_auth_cred_entry.set_placeholder_text('name:password')
     self._request_area_auth_file_ckbtn = g.CheckButton('http认证文件')
     self._request_area_auth_file_entry = g.Entry()
-    self._request_area_auth_file_entry.set_placeholder_text(
-      'PEM cert/private key file')
+    self._request_area_auth_file_entry.set_max_width_chars(25)
     self._request_area_auth_file_chooser = g.FileChooserButton()
 
     self._request_area_auth_file_chooser.connect(
@@ -1129,38 +1075,33 @@ class UI_Window(g.Window):
       self._request_area_auth_file_entry
     )
 
-    _row5.pack_start(self._request_area_auth_type_ckbtn, False, True, 5)
-    _row5.pack_start(self._request_area_auth_type_entry, True, True, 5)
-    _row5.pack_start(self._request_area_auth_cred_ckbtn, False, True, 5)
-    _row5.pack_start(self._request_area_auth_cred_entry, True, True, 5)
-    _row5.pack_start(self._request_area_auth_file_ckbtn, False, True, 5)
-    _row5.pack_start(self._request_area_auth_file_entry, True, True, 0)
-    _row5.pack_start(self._request_area_auth_file_chooser, False, True, 5)
+    _row7.pack_start(self._request_area_auth_type_ckbtn, False, True, 5)
+    _row7.pack_start(self._request_area_auth_type_entry, True, True, 5)
+    _row7.pack_start(self._request_area_auth_cred_ckbtn, False, True, 5)
+    _row7.pack_start(self._request_area_auth_cred_entry, True, True, 5)
+    _row7.pack_start(self._request_area_auth_file_ckbtn, False, True, 5)
+    _row7.pack_start(self._request_area_auth_file_entry, True, True, 0)
+    _row7.pack_start(self._request_area_auth_file_chooser, False, True, 5)
 
-    _row6 = g.Box()
+    _row8 = g.Box()
     self._request_area_csrf_token_ckbtn = g.CheckButton('csrf_token')
     self._request_area_csrf_token_entry = g.Entry()
     self._request_area_csrf_url_ckbtn = g.CheckButton('获取csrf_token的url')
     self._request_area_csrf_url_entry = g.Entry()
 
-    _row6.pack_start(self._request_area_csrf_token_ckbtn, False, True, 5)
-    _row6.pack_start(self._request_area_csrf_token_entry, True, True, 5)
-    _row6.pack_start(self._request_area_csrf_url_ckbtn, False, True, 5)
-    _row6.pack_start(self._request_area_csrf_url_entry, True, True, 5)
+    _row8.pack_start(self._request_area_csrf_token_ckbtn, False, True, 5)
+    _row8.pack_start(self._request_area_csrf_token_entry, True, True, 5)
+    _row8.pack_start(self._request_area_csrf_url_ckbtn, False, True, 5)
+    _row8.pack_start(self._request_area_csrf_url_entry, True, True, 5)
 
-    _request_data_opts.add(_row1)
-    _request_data_opts.add(_row2)
-    _request_data_opts.add(g.Separator.new(g.Orientation.HORIZONTAL))
-    _request_data_opts.add(_row3)
-    _request_data_opts.add(_row4)
-    _request_data_opts.add(g.Separator.new(g.Orientation.HORIZONTAL))
-    _request_data_opts.add(_row5)
-    _request_data_opts.add(_row6)
+    # 添加行: _row1 - _row8
+    for _i in range(1, 9):
+      _request_data_opts.add(locals()[''.join(('_row', str(_i)))])
     self._request_data_area.add(_request_data_opts)
 
   def _build_page1_request_header(self):
     self._request_header_area = g.Frame.new('HTTP header')
-    _request_header_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 6)
+    _request_header_opts = g.Box(orientation=g.Orientation.VERTICAL, spacing = 5)
 
     _row1 = g.Box()
     self._request_area_random_agent_ckbtn = g.CheckButton('随机User-Agent头')
@@ -1186,10 +1127,8 @@ class UI_Window(g.Window):
     _row3 = g.Box()
     self._request_area_header_ckbtn = g.CheckButton('额外的header(-H)')
     self._request_area_header_entry = g.Entry()
-    self._request_area_header_entry.set_placeholder_text('X-Forwarded-For: 127.0.0.1')
     self._request_area_headers_ckbtn = g.CheckButton('额外的headers')
     self._request_area_headers_entry = g.Entry()
-    self._request_area_headers_entry.set_placeholder_text('Accept-Language: fr\\nETag: 123')
 
     _row3.pack_start(self._request_area_header_ckbtn, False, True, 5)
     _row3.pack_start(self._request_area_header_entry, True, True, 5)
@@ -1509,36 +1448,36 @@ class UI_Window(g.Window):
     _file_os_registry_opts = g.Box(orientation=g.Orientation.VERTICAL)
 
     _row1 = g.Box()
-    # TODO, 改成下拉选择的方式, 因为一次只能有用一个
-    self._file_os_registry_reg_read_ckbtn = g.CheckButton('读取一个键值')
-    self._file_os_registry_reg_add_ckbtn = g.CheckButton('添加一个键值')
-    self._file_os_registry_reg_del_ckbtn = g.CheckButton('删除一个键值')
+    self._file_os_registry_reg_ckbtn = g.CheckButton('键值操作:')
+    self._file_os_registry_reg_combobox = g.ComboBoxText.new()
+    self._file_os_registry_reg_combobox.append('--reg-read', '读取')
+    self._file_os_registry_reg_combobox.append('--reg-add', '新增')
+    self._file_os_registry_reg_combobox.append('--reg-del', '删除')
+    self._file_os_registry_reg_combobox.set_active(0)
 
-    _row1.pack_start(self._file_os_registry_reg_read_ckbtn, False, True, 5)
-    _row1.pack_start(self._file_os_registry_reg_add_ckbtn, False, True, 5)
-    _row1.pack_start(self._file_os_registry_reg_del_ckbtn, False, True, 5)
+    _row1.pack_start(self._file_os_registry_reg_ckbtn, False, True, 5)
+    _row1.pack_start(self._file_os_registry_reg_combobox, False, True, 5)
 
     _row2 = g.Box()
-    self._file_os_registry_reg_key_ckbtn = g.CheckButton('键')
+    self._file_os_registry_reg_key_label = g.Label('键')
     self._file_os_registry_reg_key_entry = g.Entry()
-    self._file_os_registry_reg_value_ckbtn = g.CheckButton('值')
+    self._file_os_registry_reg_value_label = g.Label('值')
     self._file_os_registry_reg_value_entry = g.Entry()
 
-    _row2.pack_start(self._file_os_registry_reg_key_ckbtn, False, True, 5)
+    _row2.pack_start(self._file_os_registry_reg_key_label, False, True, 5)
     _row2.pack_start(self._file_os_registry_reg_key_entry, True, True, 5)
-    _row2.pack_start(self._file_os_registry_reg_value_ckbtn, False, True, 5)
+    _row2.pack_start(self._file_os_registry_reg_value_label, False, True, 5)
     _row2.pack_start(self._file_os_registry_reg_value_entry, True, True, 5)
 
     _row3 = g.Box()
-    self._file_os_registry_reg_data_ckbtn = g.CheckButton('数据')
+    self._file_os_registry_reg_data_label = g.Label('数据')
     self._file_os_registry_reg_data_entry = g.Entry()
-    self._file_os_registry_reg_type_ckbtn = g.CheckButton('类型')
+    self._file_os_registry_reg_type_label = g.Label('类型')
     self._file_os_registry_reg_type_entry = g.Entry()
 
-    _row3.pack_start(self._file_os_registry_reg_data_ckbtn, False, True, 5)
+    _row3.pack_start(self._file_os_registry_reg_data_label, False, True, 5)
     _row3.pack_start(self._file_os_registry_reg_data_entry, True, True, 5)
-
-    _row3.pack_start(self._file_os_registry_reg_type_ckbtn, False, True, 5)
+    _row3.pack_start(self._file_os_registry_reg_type_label, False, True, 5)
     _row3.pack_start(self._file_os_registry_reg_type_entry, True, True, 5)
 
     _file_os_registry_opts.add(_row1)
@@ -1608,10 +1547,18 @@ class UI_Window(g.Window):
 
     self._file_write_area_shared_lib_ckbtn = g.CheckButton('本地共享库路径(--shared-lib=)')
     self._file_write_area_shared_lib_entry = g.Entry()
+    self._file_write_area_shared_lib_chooser = g.FileChooserButton()
+
+    self._file_write_area_shared_lib_chooser.connect(
+      'file-set',
+      self._handlers.set_file_entry_text,
+      self._file_write_area_shared_lib_entry
+    )
 
     _row1.pack_start(self._file_write_area_udf_ckbtn, False, True, 5)
     _row1.pack_start(self._file_write_area_shared_lib_ckbtn, False, True, 5)
-    _row1.pack_start(self._file_write_area_shared_lib_entry, True, True, 5)
+    _row1.pack_start(self._file_write_area_shared_lib_entry, True, True, 0)
+    _row1.pack_start(self._file_write_area_shared_lib_chooser, False, True, 5)
 
     _row2 = g.Box()
     self._file_write_area_file_write_ckbtn = g.CheckButton('本地文件路径(--file-write=)')

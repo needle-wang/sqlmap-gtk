@@ -9,12 +9,79 @@ class Widget_Mesg(object):
     '''
     w: sqlmap_ui.UI_Window
     '''
-    self._w = w
+    self.set_all_tooltips(w)
+    self.set_all_placeholders(w)
 
-  def set_all_tooltips(self):
-    ui = self._w
-
+  def set_all_placeholders(self, ui):
+    # 0.target区
+    self._set_placeholder('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
+                          ui._url_combobox.get_child())
+    self._set_placeholder('-l: Burp或WebScarab代理的日志文件路径(用来解析目标)',
+                          ui._burp_logfile)
+    self._set_placeholder('-r: 包含HTTP请求的的文件路径(如从fiddler中得来的)',
+                          ui._request_file)
+    self._set_placeholder('-m: 给定一个包含多个目标的文本路径',
+                          ui._bulkfile)
+    self._set_placeholder('-c: 从一个本地ini配置文件载入选项',
+                          ui._configfile)
+    self._set_placeholder('-x: 远程sitemap(.xml)文件的url(用来解析目标)',
+                          ui._sitemap_url)
+    self._set_placeholder('-g: 将google dork的结果作为目标url',
+                          ui._google_dork)
     # 一、选项区(page1)
+    # 1.测试页面
+    self._set_placeholder('id',
+                          ui._inject_area_param_entry)
+    self._set_placeholder('用于闭合',
+                          ui._inject_area_prefix_entry)
+    self._set_placeholder('user:password',
+                          ui._inject_area_dbms_cred_entry)
+    self._set_placeholder('查询为真时页面出现的字串',
+                          ui._detection_area_str_entry)
+    self._set_placeholder('查询为假时的',
+                          ui._detection_area_not_str_entry)
+    self._set_placeholder('正则匹配查询为真时的字串',
+                          ui._detection_area_re_entry)
+    self._set_placeholder('查询为真时的状态码',
+                          ui._detection_area_code_entry)
+    self._set_placeholder('BEUSTQ',
+                          ui._tech_area_tech_entry)
+    self._set_placeholder('时间盲注时',
+                          ui._tech_area_time_sec_entry)
+    self._set_placeholder('union查询时',
+                          ui._tech_area_union_col_entry,
+                          ui._tech_area_union_chr_entry,
+                          ui._tech_area_union_from_entry)
+    self._set_placeholder('DNS exfiltration',
+                          ui._tech_area_dns_entry)
+    # 2.请求页面
+    self._set_placeholder('X-Forwarded-For: 127.0.0.1',
+                          ui._request_area_header_entry)
+    self._set_placeholder('Accept-Language: fr\\nETag: 123',
+                          ui._request_area_headers_entry)
+    self._set_placeholder('post',
+                          ui._request_area_method_entry)
+    self._set_placeholder('Basic, Digest, NTLM or PKI',
+                          ui._request_area_auth_type_entry)
+    self._set_placeholder('name:password',
+                          ui._request_area_auth_cred_entry)
+    self._set_placeholder('PEM cert/private key file',
+                          ui._request_area_auth_file_entry)
+    self._set_placeholder('import hashlib;id2=hashlib.md5(id).hexdigest()',
+                          ui._request_area_eval_entry)
+    # 3.枚举页面
+    # 4.文件页面
+    # 5.其他页面
+    self._set_placeholder('CSV (default), HTML or SQLITE',
+                          ui._page1_general_dump_format_entry)
+    self._set_placeholder('ROW',
+                          ui._page1_general_test_filter_entry)
+    self._set_placeholder('BENCHMARK',
+                          ui._page1_general_test_skip_entry)
+    self._set_placeholder('/var/www',
+                          ui._page1_misc_web_root_entry)
+
+  def set_all_tooltips(self, ui):
     # 0.target区
     self._set_tooltip('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
                       ui._url_combobox)
@@ -30,12 +97,19 @@ class Widget_Mesg(object):
                       ui._sitemap_url)
     self._set_tooltip('-g: 将google dork的结果作为目标url',
                       ui._google_dork)
+    # 一、选项区(page1)
     # 1.测试页面
     self._set_tooltip('-p TESTPARAMETER\tTestable parameter(s)',
                       ui._inject_area_param_ckbtn,
                       ui._inject_area_param_entry)
     self._set_tooltip('--skip-static\tSkip testing parameters that not appear to be dynamic',
                       ui._inject_area_skip_static_ckbtn)
+    self._set_tooltip('--prefix=PREFIX\tInjection payload prefix string',
+                      ui._inject_area_prefix_ckbtn,
+                      ui._inject_area_prefix_entry)
+    self._set_tooltip('--suffix=SUFFIX\tInjection payload suffix string',
+                      ui._inject_area_suffix_ckbtn,
+                      ui._inject_area_suffix_entry)
     self._set_tooltip('--skip=...,...\tSkip testing for given parameter(s)',
                       ui._inject_area_skip_ckbtn,
                       ui._inject_area_skip_entry)
@@ -51,30 +125,22 @@ class Widget_Mesg(object):
     self._set_tooltip('--os=OS\tForce back-end DBMS operating system to provided value',
                       ui._inject_area_os_ckbtn,
                       ui._inject_area_os_entry)
-    self._set_tooltip('--invalid-bignum    Use big numbers for invalidating values',
-                      ui._inject_area_invalid_bignum_ckbtn)
-    self._set_tooltip('--invalid-logical\tUse logical operations for invalidating values',
-                      ui._inject_area_invalid_logic_ckbtn)
-    self._set_tooltip('--invalid-string    Use random strings for invalidating values',
-                      ui._inject_area_invalid_str_ckbtn)
     self._set_tooltip('--no-cast\tTurn off payload casting mechanism',
                       ui._inject_area_no_cast_ckbtn)
     self._set_tooltip('--no-escape\tTurn off string escaping mechanism',
                       ui._inject_area_no_escape_ckbtn)
-    self._set_tooltip('--prefix=PREFIX\tInjection payload prefix string',
-                      ui._inject_area_prefix_ckbtn,
-                      ui._inject_area_prefix_entry)
-    self._set_tooltip('--suffix=SUFFIX\tInjection payload suffix string',
-                      ui._inject_area_suffix_ckbtn,
-                      ui._inject_area_suffix_entry)
+    self._set_tooltip('--invalid-logical\tUse logical operations for invalidating values',
+                      ui._inject_area_invalid_logic_ckbtn)
+    self._set_tooltip('--invalid-bignum    Use big numbers for invalidating values',
+                      ui._inject_area_invalid_bignum_ckbtn)
+    self._set_tooltip('--invalid-string    Use random strings for invalidating values',
+                      ui._inject_area_invalid_str_ckbtn)
     self._set_tooltip('--level=默认为1',
-                      ui._detection_area_level_ckbtn,
-                      ui._detection_area_level_combobox)
+                      ui._detection_area_level_ckbtn,)
     self._set_tooltip('--text-only',
                       ui._detection_area_text_only_ckbtn)
     self._set_tooltip('--risk=默认为1',
-                      ui._detection_area_risk_ckbtn,
-                      ui._detection_area_risk_combobox)
+                      ui._detection_area_risk_ckbtn,)
     self._set_tooltip('--titles',
                       ui._detection_area_titles_ckbtn)
     self._set_tooltip('--string=STRING\tString to match when query is evaluated to True',
@@ -118,8 +184,7 @@ class Widget_Mesg(object):
     self._set_tooltip('-o',
                       ui._optimize_area_turn_all_ckbtn)
     self._set_tooltip('--threads=默认为1',
-                      ui._optimize_area_thread_num_ckbtn,
-                      ui._optimize_area_thread_num_combobox)
+                      ui._optimize_area_thread_num_ckbtn)
     self._set_tooltip('--predict-output',
                       ui._optimize_area_predict_ckbtn)
     self._set_tooltip('--keep-alive',
@@ -127,8 +192,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--null-connection',
                       ui._optimize_area_null_connect_ckbtn)
     self._set_tooltip('-v 默认为1',
-                      ui._general_area_verbose_ckbtn,
-                      ui._general_area_verbose_entry)
+                      ui._general_area_verbose_ckbtn)
     self._set_tooltip('--fingerprint',
                       ui._general_area_finger_ckbtn)
     self._set_tooltip('--hex',
@@ -166,8 +230,8 @@ class Widget_Mesg(object):
                       ui._request_area_cookie_ckbtn,
                       ui._request_area_cookie_entry)
     self._set_tooltip('--cookie-del=',
-                      ui._request_area_cookie_ckbtn,
-                      ui._request_area_cookie_entry)
+                      ui._request_area_cookie_del_ckbtn,
+                      ui._request_area_cookie_del_entry)
     self._set_tooltip('--load-cookies=',
                       ui._request_area_load_cookies_ckbtn,
                       ui._request_area_load_cookies_entry)
@@ -374,23 +438,17 @@ class Widget_Mesg(object):
     self._set_tooltip('--tmp-path=TMPPATH Remote absolute path of temporary files directory',
                       ui._file_os_access_tmp_path_ckbtn,
                       ui._file_os_access_tmp_path_entry)
-    self._set_tooltip('--reg-read',
-                      ui._file_os_registry_reg_read_ckbtn)
-    self._set_tooltip('--reg-add',
-                      ui._file_os_registry_reg_add_ckbtn)
-    self._set_tooltip('--reg-del',
-                      ui._file_os_registry_reg_del_ckbtn)
     self._set_tooltip('--reg-key=',
-                      ui._file_os_registry_reg_key_ckbtn,
+                      ui._file_os_registry_reg_key_label,
                       ui._file_os_registry_reg_key_entry)
     self._set_tooltip('--reg-value=',
-                      ui._file_os_registry_reg_value_ckbtn,
+                      ui._file_os_registry_reg_value_label,
                       ui._file_os_registry_reg_value_entry)
     self._set_tooltip('--reg-data=',
-                      ui._file_os_registry_reg_data_ckbtn,
+                      ui._file_os_registry_reg_data_label,
                       ui._file_os_registry_reg_data_entry)
     self._set_tooltip('--reg-type=',
-                      ui._file_os_registry_reg_type_ckbtn,
+                      ui._file_os_registry_reg_type_label,
                       ui._file_os_registry_reg_type_entry)
     # 5.其他页面
     self._set_tooltip('--check-internet',
@@ -487,14 +545,20 @@ class Widget_Mesg(object):
                       ui._page1_misc_alert_ckbtn,
                       ui._page1_misc_alert_entry)
     self._set_tooltip('--gpage=GOOGLEPAGE Use Google dork results from specified page number',
-                      ui._page1_misc_gpage_ckbtn,
-                      ui._page1_misc_gpage_entry)
+                      ui._page1_misc_gpage_ckbtn)
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
                       ui._page1_misc_z_ckbtn,
                       ui._page1_misc_z_entry)
     # 二、显示区(page2)
-    self._set_tooltip('不会动实际的文件',
+    self._set_tooltip('不会修改文件',
                       ui._page2_clear_btn)
+
+  def _set_placeholder(self, placeholder, *widgets):
+    '''
+    widgets: 应该都是entry吧?
+    '''
+    for _widget in widgets:
+      _widget.set_placeholder_text(placeholder)
 
   def _set_tooltip(self, tooltip, *widgets):
     for _widget in widgets:
