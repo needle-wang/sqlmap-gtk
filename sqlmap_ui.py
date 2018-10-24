@@ -1691,7 +1691,7 @@ class UI_Window(g.Window):
 
     _about_str = '''
     1. VERSION: 0.2
-       2018年 10月 22日 星期一 16:24:05 CST
+       2018年 10月 24日 星期三 22:37:55 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n

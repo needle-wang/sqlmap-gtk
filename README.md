@@ -18,14 +18,14 @@ sqlmap ui, using PyGObject(gtk+3)
 
 #### TODO
 1. UI重新排版(ok)
-2. 完善tooltip, 将tooltip与条目合并成一个字典!
-3. 细节优化(margin, padding啥的)
-4. 代码重构, 划分为多模块形式?
+2. 分离并完善tooltip等提示信息(ok)
+3. 细节优化(margin, padding啥的)(ok)
+4. 代码重构(ok), 还能再优化嘛?比如handlers文件
 5. 将管道流集成到UI里?
 
 #### ABOUT
 1. VERSION: 0.2  
-   2018年 10月 22日 星期一 16:24:05 CST  
+   2018年 10月 24日 星期三 22:37:55 CST  
    VERSION: 0.1  
    2018年 09月 03日 星期一 03:34:31 CST  
    作者: needle wang ( needlewang2011@gmail.com )
