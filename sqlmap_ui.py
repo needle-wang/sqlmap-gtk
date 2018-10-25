@@ -573,14 +573,25 @@ class UI_Window(g.Window):
     _row7.pack_end(self._tech_area_second_url_entry, True, True, 5)
 
     _row8 = g.Box()
-    self._tech_area_second_req_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件')
-    self._tech_area_second_req_entry = g.Entry()
+    self._tech_area_second_req_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件:')
 
     _row8.pack_start(self._tech_area_second_req_ckbtn, True, True, 5)
-    _row8.pack_end(self._tech_area_second_req_entry, True, True, 5)
 
-    # 添加行: _row1 - _row8
-    for _i in range(1, 9):
+    _row9 = g.Box()
+    self._tech_area_second_req_entry = g.Entry()
+    self._tech_area_second_req_chooser = g.FileChooserButton()
+
+    self._tech_area_second_req_chooser.connect(
+      'file-set',
+      self._handlers.set_file_entry_text,
+      self._tech_area_second_req_entry
+    )
+
+    _row9.pack_end(self._tech_area_second_req_chooser, False, True, 5)
+    _row9.pack_end(self._tech_area_second_req_entry, True, True, 5)
+
+    # 添加行: _row1 - _row9
+    for _i in range(1, 10):
       _tech_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._tech_area.add(_tech_area_opts)
 
