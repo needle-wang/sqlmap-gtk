@@ -242,9 +242,9 @@ class UI_Window(g.Window):
     self._page1_misc_web_root_entry = g.Entry()
     self._page1_misc_tmp_dir_ckbtn = g.CheckButton('本地临时目录')
     self._page1_misc_tmp_dir_entry = g.Entry()
-    self._page1_misc_tmp_dir_chooser = g.FileChooserButton()
+    self._page1_misc_tmp_dir_chooser = g.FileChooserButton.new(
+      '选择 本地临时目录', g.FileChooserAction.SELECT_FOLDER)
 
-    # TODO, 应该选择目录, 而不是文件
     self._page1_misc_tmp_dir_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
@@ -271,11 +271,16 @@ class UI_Window(g.Window):
     _row2.pack_start(self._page1_misc_disable_color_ckbtn, False, True, 5)
 
     _row3 = g.Box()
+    # self._warning = g.MessageDialog(parent = self,
+    #                                 flags = g.DialogFlags.MODAL,
+    #                                 type = g.MessageType.WARNING,
+    #                                 buttons = g.ButtonsType.OK_CANCEL,
+    #                                 message_format = '这将清除所有记录!')
     self._page1_misc_offline_ckbtn = g.CheckButton('离线模式(只使用保存的会话数据)')
     self._page1_misc_mobile_ckbtn = g.CheckButton('模拟手机请求')
     self._page1_misc_beep_ckbtn = g.CheckButton('响铃')
-    # TODO, 要加个alert嘛?
     self._page1_misc_purge_ckbtn = g.CheckButton('彻底清除所有记录')
+    self._page1_misc_purge_ckbtn.connect('toggled', self._handlers.warning)
     self._page1_misc_dependencies_ckbtn = g.CheckButton('检查丢失的(非核心的)sqlmap依赖')
     self._page1_general_update_ckbtn = g.CheckButton('更新sqlmap')
 
@@ -384,7 +389,8 @@ class UI_Window(g.Window):
 
     self._page1_general_output_dir_ckbtn = g.CheckButton('输出的保存目录')
     self._page1_general_output_dir_entry = g.Entry()
-    self._page1_general_output_dir_chooser = g.FileChooserButton()
+    self._page1_general_output_dir_chooser = g.FileChooserButton.new(
+      '选择 结果保存在哪', g.FileChooserAction.SELECT_FOLDER)
 
     self._page1_general_output_dir_chooser.connect(
       'file-set',
@@ -1514,9 +1520,9 @@ class UI_Window(g.Window):
     _row3 = g.Box()
     self._file_os_access_msf_path_ckbtn = g.CheckButton('本地Metasploit安装路径')
     self._file_os_access_msf_path_entry = g.Entry()
-    self._file_os_access_msf_path_chooser = g.FileChooserButton()
+    self._file_os_access_msf_path_chooser = g.FileChooserButton.new(
+      '选择 本地Metasploit安装目录', g.FileChooserAction.SELECT_FOLDER)
 
-    # TODO, 应该选择目录, 而不是文件
     self._file_os_access_msf_path_chooser.connect(
       'file-set',
       self._handlers.set_file_entry_text,
