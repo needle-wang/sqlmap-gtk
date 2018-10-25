@@ -260,7 +260,7 @@ class UI_Window(g.Window):
     _row2 = g.Box()
     self._page1_misc_identify_waf_ckbtn = g.CheckButton('鉴别WAF')
     self._page1_misc_skip_waf_ckbtn = g.CheckButton('跳过对WAF/IPS保护的启发式侦测')
-    self._page1_misc_smart_ckbtn = g.CheckButton('进行详细测试(当启动正面启发式时)')
+    self._page1_misc_smart_ckbtn = g.CheckButton('只对明显注入点进行详细测试)')
     self._page1_misc_list_tampers_ckbtn = g.CheckButton('显示可用的tamper脚本列表')
     self._page1_misc_disable_color_ckbtn = g.CheckButton('禁用终端输出的颜色')
 
@@ -295,7 +295,7 @@ class UI_Window(g.Window):
     self._page1_misc_answers_ckbtn = g.CheckButton('设置交互时的问题答案:')
     self._page1_misc_answers_entry = g.Entry()
     self._page1_misc_answers_entry.set_text('quit=N,follow=N')
-    self._page1_misc_alert_ckbtn = g.CheckButton('当发现注入时运行OS命令:')
+    self._page1_misc_alert_ckbtn = g.CheckButton('发现注入时运行本地命令:')
     self._page1_misc_alert_entry = g.Entry()
     self._page1_misc_gpage_ckbtn = g.CheckButton('GOOGLEDORK时的页码')
     self._page1_misc_gpage_spinbtn = g.SpinButton.new_with_range(1, 100, 1)
@@ -411,6 +411,7 @@ class UI_Window(g.Window):
     self._page1_general_dump_format_entry.set_max_width_chars(40)
     self._page1_general_csv_del_ckbtn = g.CheckButton('(csv文件的)分隔符')
     self._page1_general_csv_del_entry = g.Entry()
+    self._page1_general_csv_del_entry.set_max_length(1)
     self._page1_general_csv_del_entry.set_text(',')
 
     _row6.pack_start(self._page1_general_dump_format_ckbtn, False, True, 5)
@@ -573,7 +574,7 @@ class UI_Window(g.Window):
     _row7.pack_end(self._tech_area_second_url_entry, True, True, 5)
 
     _row8 = g.Box()
-    self._tech_area_second_req_ckbtn = g.CheckButton('指定含二阶HTTP请求的文件:')
+    self._tech_area_second_req_ckbtn = g.CheckButton('使用含二阶HTTP请求的文件:')
 
     _row8.pack_start(self._tech_area_second_req_ckbtn, True, True, 5)
 
@@ -1032,6 +1033,7 @@ class UI_Window(g.Window):
     self._request_area_method_entry = g.Entry()
     self._request_area_param_del_ckbtn = g.CheckButton('指定分隔data参数值的字符')
     self._request_area_param_del_entry = g.Entry()
+    self._request_area_param_del_entry.set_max_length(1)
 
     _row1.pack_start(self._request_area_method_ckbtn, False, True, 5)
     _row1.pack_start(self._request_area_method_entry, False, True, 5)

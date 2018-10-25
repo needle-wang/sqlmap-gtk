@@ -155,7 +155,12 @@ class Widget_Mesg(object):
     self._set_tooltip('--code=',
                       ui._detection_area_code_ckbtn,
                       ui._detection_area_code_entry)
-    self._set_tooltip('--technique=',
+    self._set_tooltip('--technique=B: Boolean-based blind\n'
+                      '            E: Error-based\n'
+                      '            U: Union query-based\n'
+                      '            S: Stacked queries\n'
+                      '            T: Time-based blind\n'
+                      '            Q: Inline queries',
                       ui._tech_area_tech_ckbtn,
                       ui._tech_area_tech_entry)
     self._set_tooltip('--time-sec=默认为5',
