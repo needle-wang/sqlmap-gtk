@@ -51,6 +51,22 @@ class UI_Window(g.Window):
     # 添加tooltips, placeholders等
     Init_Mesg(self)
 
+  def _show_warn(self, button):
+    # if True:
+    if button.get_active():
+      _warn_dialog = g.MessageDialog(parent = self,
+                                     flags = g.DialogFlags.MODAL,
+                                     type = g.MessageType.WARNING,
+                                     buttons = g.ButtonsType.OK_CANCEL,
+                                     message_format = '这将清除所有记录!')
+      # _warn_dialog.show_all()
+      _response = _warn_dialog.run()
+      # print(_response)
+      if _response in (g.ResponseType.CANCEL, g.ResponseType.DELETE_EVENT):
+        button.set_active(False)
+
+      _warn_dialog.destroy()
+
   def unselect_all_ckbtn(self, button):
     for _i in dir(self):
       if 'ckbtn' in _i:
@@ -271,16 +287,11 @@ class UI_Window(g.Window):
     _row2.pack_start(self._page1_misc_disable_color_ckbtn, False, True, 5)
 
     _row3 = g.Box()
-    # self._warning = g.MessageDialog(parent = self,
-    #                                 flags = g.DialogFlags.MODAL,
-    #                                 type = g.MessageType.WARNING,
-    #                                 buttons = g.ButtonsType.OK_CANCEL,
-    #                                 message_format = '这将清除所有记录!')
     self._page1_misc_offline_ckbtn = g.CheckButton('离线模式(只使用保存的会话数据)')
     self._page1_misc_mobile_ckbtn = g.CheckButton('模拟手机请求')
     self._page1_misc_beep_ckbtn = g.CheckButton('响铃')
     self._page1_misc_purge_ckbtn = g.CheckButton('彻底清除所有记录')
-    self._page1_misc_purge_ckbtn.connect('toggled', self._handlers.warning)
+    self._page1_misc_purge_ckbtn.connect('toggled', self._show_warn)
     self._page1_misc_dependencies_ckbtn = g.CheckButton('检查丢失的(非核心的)sqlmap依赖')
     self._page1_general_update_ckbtn = g.CheckButton('更新sqlmap')
 

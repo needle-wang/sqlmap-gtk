@@ -49,11 +49,6 @@ class Singal_Handlers(object):
       # print(_cmdline_str)
       Popen(_cmdline_str, shell = True)
 
-  def warning(self, button):
-    if button.get_active():
-      # self._w._warning.show()
-      print('这将清除所有记录哦!')
-
   def set_file_entry_text(self, button, entry):
     entry.set_text(button.get_filename())
 
