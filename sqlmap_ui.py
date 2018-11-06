@@ -34,18 +34,18 @@ class UI_Window(g.Window):
 
     _main_box.pack_start(self._target_notbook, False, True, 0)
 
-    _notebook = g.Notebook()
+    self.main_notebook = g.Notebook()
     self._build_page1()
     self._build_page2()
     self._build_page3()
     self._build_page4()
 
-    _notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_Q)'))
-    _notebook.append_page(self.page2, g.Label.new_with_mnemonic('显示区(_W)'))
-    _notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
-    _notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
+    self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_Q)'))
+    self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('显示区(_W)'))
+    self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
+    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
 
-    _main_box.pack_start(_notebook, True, True, 0)
+    _main_box.pack_start(self.main_notebook, True, True, 0)
     self.add(_main_box)
 
     # 添加tooltips, placeholders等
@@ -1704,7 +1704,9 @@ class UI_Window(g.Window):
     '''
     _end_iter = self._manual_view_textbuffer.get_end_iter()
     # _manual_hh = '/home/needle/bin/output_interval.sh'
-    _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
+    # TODO, WIN下不能用此行
+    # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
+    _manual_hh = ['sqlmap', '-hh']
     try:
       _subprocess = Popen(_manual_hh, stdout=PIPE, bufsize=1)
 
