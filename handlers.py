@@ -3,9 +3,9 @@
 #
 # 2018年 08月 29日 星期三 15:34:10 CST
 
-import os
 import time
 
+from os import name as OS_NAME
 # python3.5+
 from pathlib import Path
 from subprocess import Popen
@@ -13,6 +13,11 @@ from urllib.parse import urlparse
 
 # from basis_and_too.logging_needle import get_console_logger
 # logger = get_console_logger()
+
+if OS_NAME == 'posix':
+  QUOTE = "'%s'"
+else:
+  QUOTE = '"%s"'
 
 
 class Singal_Handlers(object):
@@ -25,8 +30,8 @@ class Singal_Handlers(object):
 
   def build_all(self, button):
     _target = self._get_target()
-    self._collect_opts()
 
+    self._collect_opts()
     _opts_list = (
       self._setting_opts + self._request_opts +
       self._enumeration_opts + self._file_opts + self._other_opts
@@ -42,7 +47,7 @@ class Singal_Handlers(object):
 
     # TODO, 还是加个输入框, 指定sqlmap的路径吧
     if _sqlmap_opts:
-      if os.name == 'posix':
+      if OS_NAME == 'posix':
         _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap ', _sqlmap_opts))
       else:
         # msys2
@@ -91,6 +96,7 @@ class Singal_Handlers(object):
   def _log_view_insert(self, file_path):
     '''
     file_path: pathlib.PosixPath
+               sqlmap库中dataToOutFile默认utf8写入
     '''
     ui = self._w
     _end_iter = ui._log_view_textbuffer.get_end_iter()
@@ -142,21 +148,22 @@ class Singal_Handlers(object):
 
   def _get_target(self):
     ui = self._w
+
     current_page_num = ui._target_notbook.get_current_page()
     if current_page_num is 0:
-      return " -u '" + ui._url_combobox.get_child().get_text().strip() + "'"
+      return " -u " + QUOTE % ui._url_combobox.get_child().get_text().strip()
     elif current_page_num is 1:
-      return " -l '" + ui._burp_logfile.get_text().strip() + "'"
+      return " -l " + QUOTE % ui._burp_logfile.get_text().strip()
     elif current_page_num is 2:
-      return " -r '" + ui._request_file.get_text().strip() + "'"
+      return " -r " + QUOTE % ui._request_file.get_text().strip()
     elif current_page_num is 3:
-      return " -x '" + ui._sitemap_url.get_text().strip() + "'"
+      return " -x " + QUOTE % ui._sitemap_url.get_text().strip()
     elif current_page_num is 4:
-      return " -m '" + ui._bulkfile.get_text().strip() + "'"
+      return " -m " + QUOTE % ui._bulkfile.get_text().strip()
     elif current_page_num is 5:
-      return " -g '" + ui._google_dork.get_text().strip() + "'"
+      return " -g " + QUOTE % ui._google_dork.get_text().strip()
     elif current_page_num is 6:
-      return " -c '" + ui._configfile.get_text().strip() + "'"
+      return " -c " + QUOTE % ui._configfile.get_text().strip()
 
   def _collect_opts(self):
     ui = self._w
@@ -354,10 +361,10 @@ class Singal_Handlers(object):
                                 ui._dump_area_no_sys_db_ckbtn),
       self._get_text_from_entry("--start=",
                                 ui._limit_area_start_ckbtn,
-                                ui._limit_area_start_entry),
+                                ui._limit_area_start_entry, None),
       self._get_text_from_entry("--stop=",
                                 ui._limit_area_stop_ckbtn,
-                                ui._limit_area_stop_entry),
+                                ui._limit_area_stop_entry, None),
       self._get_text_from_entry("--first=",
                                 ui._blind_area_first_ckbtn,
                                 ui._blind_area_first_entry),
@@ -417,7 +424,7 @@ class Singal_Handlers(object):
                                 ui._request_area_headers_entry),
       self._get_text_from_entry("--method=",
                                 ui._request_area_method_ckbtn,
-                                ui._request_area_method_entry),
+                                ui._request_area_method_entry, None),
       self._get_text_from_entry("--param-del=",
                                 ui._request_area_param_del_ckbtn,
                                 ui._request_area_param_del_entry),
@@ -456,7 +463,7 @@ class Singal_Handlers(object):
                                 ui._request_area_ignore_timeouts_ckbtn),
       self._get_text_from_entry("--ignore-code=",
                                 ui._request_area_ignore_code_ckbtn,
-                                ui._request_area_ignore_code_entry),
+                                ui._request_area_ignore_code_entry, None),
       self._get_text_only_ckbtn("--skip-urlencode",
                                 ui._request_area_skip_urlencode_ckbtn),
       self._get_text_only_ckbtn("--force-ssl",
@@ -465,13 +472,13 @@ class Singal_Handlers(object):
                                 ui._request_area_hpp_ckbtn),
       self._get_text_from_entry("--delay=",
                                 ui._request_area_delay_ckbtn,
-                                ui._request_area_delay_entry),
+                                ui._request_area_delay_entry, None),
       self._get_text_from_entry("--timeout=",
                                 ui._request_area_timeout_ckbtn,
-                                ui._request_area_timeout_entry),
+                                ui._request_area_timeout_entry, None),
       self._get_text_from_entry("--retries=",
                                 ui._request_area_retries_ckbtn,
-                                ui._request_area_retries_entry),
+                                ui._request_area_retries_entry, None),
       self._get_text_from_entry("--randomize=",
                                 ui._request_area_randomize_ckbtn,
                                 ui._request_area_randomize_entry),
@@ -567,16 +574,16 @@ class Singal_Handlers(object):
                                 ui._detection_area_re_entry),
       self._get_text_from_entry("--code=",
                                 ui._detection_area_code_ckbtn,
-                                ui._detection_area_code_entry),
+                                ui._detection_area_code_entry, None),
       self._get_text_from_entry("--technique=",
                                 ui._tech_area_tech_ckbtn,
-                                ui._tech_area_tech_entry),
+                                ui._tech_area_tech_entry, None),
       self._get_text_from_entry("--time-sec=",
                                 ui._tech_area_time_sec_ckbtn,
-                                ui._tech_area_time_sec_entry),
+                                ui._tech_area_time_sec_entry, None),
       self._get_text_from_entry("--union-cols=",
                                 ui._tech_area_union_col_ckbtn,
-                                ui._tech_area_union_col_entry),
+                                ui._tech_area_union_col_entry, None),
       self._get_text_from_entry("--union-char=",
                                 ui._tech_area_union_chr_ckbtn,
                                 ui._tech_area_union_chr_entry),
@@ -623,7 +630,7 @@ class Singal_Handlers(object):
     _pass = ui._request_area_proxy_password_entry.get_text()
 
     if all((_use_proxy, _username, _pass)) :
-      return "".join((" --proxy-cred='", _username, ":", _pass, "'"))
+      return ''.join((" --proxy-cred=", QUOTE % '{}:{}'.format(_username, _pass)))
     return ''
 
   def _get_http_proxy(self):
@@ -635,9 +642,9 @@ class Singal_Handlers(object):
 
     if _use_proxy and _ip:
       if _port:
-        return "".join((" --proxy='", _ip, ":", _port, "'"))
+        return "".join((" --proxy=", QUOTE % '{}:{}'.format(_ip, _port)))
       else:
-        return "".join((" --proxy='", _ip, "'"))
+        return "".join((" --proxy=", QUOTE % _ip))
     return ''
 
   def _get_tampers(self):
@@ -653,7 +660,7 @@ class Singal_Handlers(object):
         _tampers = _tampers + _tamper_tmp.strip() + ','
 
     if _tampers:
-      return " --tamper='" + _tampers.rstrip(',') + "'"
+      return " --tamper=" + QUOTE % _tampers.rstrip(',')
     return ''
 
   def _get_text_from_scale(self, opt_str, ckbtn, scale):
@@ -666,10 +673,10 @@ class Singal_Handlers(object):
       return ''.join((' ', opt_str))
     return ''
 
-  def _get_text_from_entry(self, opt_str, ckbtn, entry, quote = "'"):
+  def _get_text_from_entry(self, opt_str, ckbtn, entry, quote = QUOTE):
     if ckbtn.get_active() and entry.get_text():
       if quote:
-        return ''.join((' ', opt_str, quote, entry.get_text(), quote))
+        return ''.join((' ', opt_str, quote % entry.get_text()))
       else:
         return ''.join((' ', opt_str, entry.get_text()))
     return ''

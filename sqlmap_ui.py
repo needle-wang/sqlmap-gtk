@@ -1642,6 +1642,7 @@ class UI_Window(g.Window):
 
     _row1 = g.Frame()
     _log_view = g.TextView()
+    _log_view.set_editable(False)
 
     self._log_view_textbuffer = _log_view.get_buffer()
     self._log_view_textbuffer.set_text(''.join(
