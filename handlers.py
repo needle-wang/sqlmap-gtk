@@ -17,6 +17,7 @@ from urllib.parse import urlparse
 if OS_NAME == 'posix':
   QUOTE = "'%s'"
 else:
+  # dos下只能用双引号
   QUOTE = '"%s"'
 
 
@@ -81,7 +82,7 @@ class Singal_Handlers(object):
 
   def _get_url_dir(self):
     '''
-    return: pathlib.PosixPath
+    return: pathlib.Path
     '''
     _load_url = self._w._url_combobox.get_child().get_text()
 
@@ -95,13 +96,13 @@ class Singal_Handlers(object):
 
   def _log_view_insert(self, file_path):
     '''
-    file_path: pathlib.PosixPath
+    file_path: pathlib.Path
                sqlmap库中dataToOutFile默认utf8写入
     '''
     ui = self._w
     _end_iter = ui._log_view_textbuffer.get_end_iter()
     try:
-      with file_path.open() as _f:
+      with file_path.open(encoding = 'utf8') as _f:
         _line_list_tmp = _f.readlines()
         if _line_list_tmp:
           for _line_tmp in _line_list_tmp:
