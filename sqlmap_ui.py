@@ -616,21 +616,15 @@ class UI_Window(g.Window):
     self._detection_area_level_ckbtn = g.CheckButton.new_with_label('探测等级(范围)')
     self._detection_area_level_scale = g.Scale.new_with_range(g.Orientation.HORIZONTAL, 1, 5, 1)
 
-    self._detection_area_text_only_ckbtn = g.CheckButton.new_with_label('仅对比文本')
-
     _row1.pack_start(self._detection_area_level_ckbtn, False, True, 5)
     _row1.pack_start(self._detection_area_level_scale, True, True, 5)
-    _row1.pack_end(self._detection_area_text_only_ckbtn, False, True, 5)
 
     _row2 = g.Box()
     self._detection_area_risk_ckbtn = g.CheckButton.new_with_label('payload危险等级')
     self._detection_area_risk_scale = g.Scale.new_with_range(g.Orientation.HORIZONTAL, 1, 3, 1)
 
-    self._detection_area_titles_ckbtn = g.CheckButton.new_with_label('仅对比title')
-
     _row2.pack_start(self._detection_area_risk_ckbtn, False, True, 5)
     _row2.pack_start(self._detection_area_risk_scale, True, True, 10)
-    _row2.pack_start(self._detection_area_titles_ckbtn, False, True, 5)
 
     _row3 = g.Box()
     self._detection_area_str_ckbtn = g.CheckButton.new_with_label('指定字符串')
@@ -660,8 +654,15 @@ class UI_Window(g.Window):
     _row6.pack_start(self._detection_area_code_ckbtn, False, True, 5)
     _row6.pack_end(self._detection_area_code_entry, True, True, 5)
 
-    # 添加行: _row1 - _row6
-    for _i in range(1, 7):
+    _row7 = g.Box()
+    self._detection_area_text_only_ckbtn = g.CheckButton.new_with_label('仅对比文本')
+    self._detection_area_titles_ckbtn = g.CheckButton.new_with_label('仅对比title')
+
+    _row7.pack_start(self._detection_area_text_only_ckbtn, True, True, 5)
+    _row7.pack_start(self._detection_area_titles_ckbtn, True, True, 5)
+
+    # 添加行: _row1 - _row7
+    for _i in range(1, 8):
       _detection_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._detection_area.add(_detection_area_opts)
 
@@ -1707,9 +1708,9 @@ class UI_Window(g.Window):
     # _manual_hh = '/home/needle/bin/output_interval.sh'
     # WIN下不能用此行
     # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
-    _manual_hh = ['sqlmap', '-hh']
+    _manual_hh = 'echo y|sqlmap -hh'
     try:
-      _subprocess = Popen(_manual_hh, stdout=PIPE, bufsize=1)
+      _subprocess = Popen(_manual_hh, stdout=PIPE, bufsize=1, shell = True)
 
       for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
         GLib.idle_add(self._manual_view_textbuffer.insert, _end_iter, _an_bytes_line_tmp.decode('utf8'))

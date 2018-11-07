@@ -82,6 +82,10 @@ class Widget_Mesg(object):
                           ui._page1_misc_web_root_entry)
 
   def set_all_tooltips(self, ui):
+    '''
+    使用gtk3.24时, 有scale组件的行内的tooltip会flicker(闪烁)(GTK3的bug!)
+    只能禁用了
+    '''
     # 0.target区
     self._set_tooltip('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
                       ui._url_combobox)
@@ -135,12 +139,12 @@ class Widget_Mesg(object):
                       ui._inject_area_invalid_bignum_ckbtn)
     self._set_tooltip('--invalid-string    Use random strings for invalidating values',
                       ui._inject_area_invalid_str_ckbtn)
-    self._set_tooltip('--level=默认为1',
-                      ui._detection_area_level_ckbtn,)
+    # self._set_tooltip('--level=默认为1',
+                      # ui._detection_area_level_ckbtn,)
     self._set_tooltip('--text-only',
                       ui._detection_area_text_only_ckbtn)
-    self._set_tooltip('--risk=默认为1',
-                      ui._detection_area_risk_ckbtn,)
+    # self._set_tooltip('--risk=默认为1',
+                      # ui._detection_area_risk_ckbtn,)
     self._set_tooltip('--titles',
                       ui._detection_area_titles_ckbtn)
     self._set_tooltip('--string=STRING\tString to match when query is evaluated to True',
@@ -196,8 +200,8 @@ class Widget_Mesg(object):
                       ui._optimize_area_keep_alive_ckbtn)
     self._set_tooltip('--null-connection',
                       ui._optimize_area_null_connect_ckbtn)
-    self._set_tooltip('-v 默认为1',
-                      ui._general_area_verbose_ckbtn)
+    # self._set_tooltip('-v 默认为1',
+                      # ui._general_area_verbose_ckbtn)
     self._set_tooltip('--fingerprint',
                       ui._general_area_finger_ckbtn)
     self._set_tooltip('--hex',
