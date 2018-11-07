@@ -14,8 +14,8 @@ from threading import Thread
 from gtk3_header import Gdk as d
 from gtk3_header import GLib
 from gtk3_header import Gtk as g
-from sqlmap_ui_handlers import Singal_Handlers as Handlers
-from sqlmap_ui_tooltips import Widget_Mesg as Init_Mesg
+from handlers import Singal_Handlers as Handlers
+from tooltips import Widget_Mesg as Init_Mesg
 
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
@@ -1704,7 +1704,7 @@ class UI_Window(g.Window):
     '''
     _end_iter = self._manual_view_textbuffer.get_end_iter()
     # _manual_hh = '/home/needle/bin/output_interval.sh'
-    # TODO, WIN下不能用此行
+    # WIN下不能用此行
     # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
     _manual_hh = ['sqlmap', '-hh']
     try:

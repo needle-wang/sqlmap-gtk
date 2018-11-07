@@ -45,7 +45,8 @@ class Singal_Handlers(object):
       if os.name == 'posix':
         _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap ', _sqlmap_opts))
       else:
-        _cmdline_str = ''.join(('start cmd /k python sqlmap.py ', _sqlmap_opts))
+        # msys2
+        _cmdline_str = ''.join(('start cmd /k sqlmap ', _sqlmap_opts))
 
       # print(_cmdline_str)
       Popen(_cmdline_str, shell = True)
@@ -54,7 +55,9 @@ class Singal_Handlers(object):
     entry.set_text(button.get_filename())
 
   def clear_buffer(self, button):
-    self._w._log_view_textbuffer.set_text('')
+    self._w._log_view_textbuffer.set_text(''.join(
+      ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output\n'))
+    ))
 
   def optimize_area_controller(self, button):
     ui = self._w
