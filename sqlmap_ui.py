@@ -4,7 +4,7 @@
 # 2018年 08月 26日 星期日 16:54:41 CST
 # sqlmap gui(gtk+3 by needle wang)
 # required: python3.5+, python3-gi, sqlmap
-# sqlmap requires python 2.6.x and 2.7.x
+# sqlmap requires: python 2.6.x and 2.7.x
 
 # python3.5+
 from pathlib import Path
@@ -377,7 +377,7 @@ class UI_Window(g.Window):
 
     _row3 = g.Box()
     self._page1_general_crawl_ckbtn = g.CheckButton.new_with_label('爬网站(的层级/深度)')
-    self._page1_general_crawl_entry = g.Entry()
+    self._page1_general_crawl_entry = NumberEntry()
 
     self._page1_general_crawl_exclude_ckbtn = g.CheckButton.new_with_label('爬站时排除(正则)页面')
     self._page1_general_crawl_exclude_entry = g.Entry()
@@ -977,7 +977,7 @@ class UI_Window(g.Window):
     _row6 = g.Box()
     self._request_area_tor_ckbtn = g.CheckButton.new_with_label('使用Tor匿名网络')
     self._request_area_tor_port_ckbtn = g.CheckButton.new_with_label('Tor端口')
-    self._request_area_tor_port_entry = g.Entry()
+    self._request_area_tor_port_entry = NumberEntry()
     self._request_area_tor_type_ckbtn = g.CheckButton.new_with_label('Tor代理类型')
     self._request_area_tor_type_entry = g.Entry()
     self._request_area_check_tor_ckbtn = g.CheckButton.new_with_label('检查Tor连接')
@@ -1737,8 +1737,8 @@ class UI_Window(g.Window):
     self.page4.set_border_width(10)
 
     _about_str = '''
-    1. VERSION: 0.2
-       2018年 10月 24日 星期三 22:37:55 CST
+    1. VERSION: 0.2.1
+       2018年 11月 08日 星期四 17:35:43 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
