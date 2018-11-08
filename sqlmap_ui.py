@@ -6,6 +6,7 @@
 # required: python3.5+, python3-gi, sqlmap
 # sqlmap requires: python 2.6.x and 2.7.x
 
+from os import sep as OS_SEP
 # python3.5+
 from pathlib import Path
 from subprocess import Popen, PIPE
@@ -21,6 +22,55 @@ from tooltips import Widget_Mesg as Init_Mesg
 # logger = get_console_logger()
 
 
+class FileEntry(g.Entry):
+  def __init__(self):
+    super().__init__()
+
+    self.completion = g.EntryCompletion()
+    # self.completion.set_match_func(self.match_partly, None)
+
+    self.completion.set_model(None)
+    # 选择上框, 不行, 会触发changed!
+    # self.completion.set_inline_selection(True)
+    # 匹配成功的条目上框
+    self.completion.set_inline_completion(True)
+
+    self.completion.set_minimum_key_length(1)
+    self.completion.set_text_column(0)
+
+    self.set_completion(self.completion)
+    self.connect('changed', self.on_changed)
+
+  def on_changed(self, *args):
+    _file_store = g.ListStore(str)
+
+    _file = Path(self.get_text().strip())
+    if not _file.is_dir():
+      _file = _file.parent
+
+    if _file.is_dir():
+      try:
+        for _i in _file.iterdir():
+          if _i.is_dir():
+            # _file_store.append([_i.name + OS_SEP])
+            _file_store.append([str(_i) + OS_SEP])
+          else:
+            # _file_store.append([_i.name])
+            _file_store.append([str(_i)])
+      except PermissionError as e:
+        print(e)
+
+      self.completion.set_model(_file_store)
+
+  def match_partly(self, completion, entrystr, iter, data):
+    '''
+    set_inline_completion不生效呢?
+    '''
+    modelstr = completion.get_model()[iter][0]
+    _entrystr_name = Path(entrystr).name
+    return modelstr.startswith(_entrystr_name)
+
+
 class NumberEntry(g.Entry):
   '''
   https://stackoverflow.com/questions/2726839/creating-a-pygtk-text-field-that-only-accepts-number
@@ -30,6 +80,7 @@ class NumberEntry(g.Entry):
     self.connect('changed', self.on_changed)
 
   def on_changed(self, *args):
+    # print(args)
     text = self.get_text().strip()
     self.set_text(''.join([i for i in text if i in '0123456789']))
 
@@ -119,7 +170,7 @@ class UI_Window(g.Window):
 
     _burp_area = g.Box()
 
-    self._burp_logfile = g.Entry()
+    self._burp_logfile = FileEntry()
     self._burp_logfile_chooser = g.FileChooserButton()
 
     self._burp_logfile_chooser.connect(
@@ -133,7 +184,7 @@ class UI_Window(g.Window):
 
     _request_area = g.Box()
 
-    self._request_file = g.Entry()
+    self._request_file = FileEntry()
     self._request_file_chooser = g.FileChooserButton()
 
     self._request_file_chooser.connect(
@@ -147,7 +198,7 @@ class UI_Window(g.Window):
 
     _bulkfile_area = g.Box()
 
-    self._bulkfile = g.Entry()
+    self._bulkfile = FileEntry()
     self._bulkfile_chooser = g.FileChooserButton()
 
     self._bulkfile_chooser.connect(
@@ -161,7 +212,7 @@ class UI_Window(g.Window):
 
     _configfile_area = g.Box()
 
-    self._configfile = g.Entry()
+    self._configfile = FileEntry()
     self._configfile_chooser = g.FileChooserButton()
 
     self._configfile_chooser.connect(
@@ -270,7 +321,7 @@ class UI_Window(g.Window):
     self._page1_misc_web_root_ckbtn = g.CheckButton.new_with_label('远程web的root目录')
     self._page1_misc_web_root_entry = g.Entry()
     self._page1_misc_tmp_dir_ckbtn = g.CheckButton.new_with_label('本地临时目录')
-    self._page1_misc_tmp_dir_entry = g.Entry()
+    self._page1_misc_tmp_dir_entry = FileEntry()
     self._page1_misc_tmp_dir_chooser = g.FileChooserButton.new(
       '选择 本地临时目录', g.FileChooserAction.SELECT_FOLDER)
 
@@ -402,7 +453,7 @@ class UI_Window(g.Window):
 
     _row5 = g.Box()
     self._page1_general_session_file_ckbtn = g.CheckButton.new_with_label('指定会话文件')
-    self._page1_general_session_file_entry = g.Entry()
+    self._page1_general_session_file_entry = FileEntry()
     self._page1_general_session_file_chooser = g.FileChooserButton()
 
     self._page1_general_session_file_chooser.connect(
@@ -412,7 +463,7 @@ class UI_Window(g.Window):
     )
 
     self._page1_general_output_dir_ckbtn = g.CheckButton.new_with_label('输出的保存目录')
-    self._page1_general_output_dir_entry = g.Entry()
+    self._page1_general_output_dir_entry = FileEntry()
     self._page1_general_output_dir_chooser = g.FileChooserButton.new(
       '选择 结果保存在哪', g.FileChooserAction.SELECT_FOLDER)
 
@@ -445,7 +496,7 @@ class UI_Window(g.Window):
 
     _row7 = g.Box()
     self._page1_general_traffic_file_ckbtn = g.CheckButton.new_with_label('转存所有http流量到文本')
-    self._page1_general_traffic_file_entry = g.Entry()
+    self._page1_general_traffic_file_entry = FileEntry()
     self._page1_general_traffic_file_chooser = g.FileChooserButton()
 
     self._page1_general_traffic_file_chooser.connect(
@@ -455,7 +506,7 @@ class UI_Window(g.Window):
     )
 
     self._page1_general_har_ckbtn = g.CheckButton.new_with_label('转存至HAR文件')
-    self._page1_general_har_entry = g.Entry()
+    self._page1_general_har_entry = FileEntry()
     self._page1_general_har_chooser = g.FileChooserButton()
 
     self._page1_general_har_chooser.connect(
@@ -473,7 +524,7 @@ class UI_Window(g.Window):
 
     _row8 = g.Box()
     self._page1_general_save_ckbtn = g.CheckButton.new_with_label('保存选项至INI文件')
-    self._page1_general_save_entry = g.Entry()
+    self._page1_general_save_entry = FileEntry()
     self._page1_general_save_chooser = g.FileChooserButton()
 
     self._page1_general_save_chooser.connect(
@@ -483,7 +534,7 @@ class UI_Window(g.Window):
     )
 
     self._page1_general_scope_ckbtn = g.CheckButton.new_with_label('从代理日志过滤出目标(正则)')
-    self._page1_general_scope_entry = g.Entry()
+    self._page1_general_scope_entry = FileEntry()
     self._page1_general_scope_chooser = g.FileChooserButton()
 
     self._page1_general_scope_chooser.connect(
@@ -603,7 +654,7 @@ class UI_Window(g.Window):
     _row8.pack_start(self._tech_area_second_req_ckbtn, True, True, 5)
 
     _row9 = g.Box()
-    self._tech_area_second_req_entry = g.Entry()
+    self._tech_area_second_req_entry = FileEntry()
     self._tech_area_second_req_chooser = g.FileChooserButton()
 
     self._tech_area_second_req_chooser.connect(
@@ -915,7 +966,7 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._request_area_safe_req_ckbtn = g.CheckButton.new_with_label('从文件载入safe HTTP请求')
-    self._request_area_safe_req_entry = g.Entry()
+    self._request_area_safe_req_entry = FileEntry()
     self._request_area_safe_req_chooser = g.FileChooserButton()
 
     self._request_area_safe_req_chooser.connect(
@@ -939,7 +990,7 @@ class UI_Window(g.Window):
     self._request_area_ignore_proxy_ckbtn = g.CheckButton.new_with_label('忽略系统默认代理')
     self._request_area_proxy_ckbtn = g.CheckButton.new_with_label('使用代理')
     self._request_area_proxy_file_ckbtn = g.CheckButton.new_with_label('代理列表文件')
-    self._request_area_proxy_file_entry = g.Entry()
+    self._request_area_proxy_file_entry = FileEntry()
     self._request_area_proxy_file_chooser = g.FileChooserButton()
 
     self._request_area_proxy_file_chooser.connect(
@@ -1086,7 +1137,7 @@ class UI_Window(g.Window):
 
     _row5 = g.Box()
     self._request_area_load_cookies_ckbtn = g.CheckButton.new_with_label('本地Cookie文件')
-    self._request_area_load_cookies_entry = g.Entry()
+    self._request_area_load_cookies_entry = FileEntry()
     self._request_area_load_cookies_chooser = g.FileChooserButton()
     self._request_area_load_cookies_chooser.connect(
       'file-set',
@@ -1109,7 +1160,7 @@ class UI_Window(g.Window):
     self._request_area_auth_cred_ckbtn = g.CheckButton.new_with_label('http认证账密')
     self._request_area_auth_cred_entry = g.Entry()
     self._request_area_auth_file_ckbtn = g.CheckButton.new_with_label('http认证文件')
-    self._request_area_auth_file_entry = g.Entry()
+    self._request_area_auth_file_entry = FileEntry()
     self._request_area_auth_file_entry.set_max_width_chars(25)
     self._request_area_auth_file_chooser = g.FileChooserButton()
 
@@ -1259,7 +1310,7 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._runsql_area_sql_file_ckbtn = g.CheckButton.new_with_label('本地SQL文件:')
-    self._runsql_area_sql_file_entry = g.Entry()
+    self._runsql_area_sql_file_entry = FileEntry()
     self._runsql_area_sql_file_chooser = g.FileChooserButton()
 
     self._runsql_area_sql_file_chooser.connect(
@@ -1557,7 +1608,7 @@ class UI_Window(g.Window):
 
     _row3 = g.Box()
     self._file_os_access_msf_path_ckbtn = g.CheckButton.new_with_label('本地Metasploit安装路径')
-    self._file_os_access_msf_path_entry = g.Entry()
+    self._file_os_access_msf_path_entry = FileEntry()
     self._file_os_access_msf_path_chooser = g.FileChooserButton.new(
       '选择 本地Metasploit安装目录', g.FileChooserAction.SELECT_FOLDER)
 
@@ -1590,7 +1641,7 @@ class UI_Window(g.Window):
     self._file_write_area_udf_ckbtn = g.CheckButton.new_with_label('注入(默认sqlmap自带的)用户定义函数')
 
     self._file_write_area_shared_lib_ckbtn = g.CheckButton.new_with_label('本地共享库路径(--shared-lib=)')
-    self._file_write_area_shared_lib_entry = g.Entry()
+    self._file_write_area_shared_lib_entry = FileEntry()
     self._file_write_area_shared_lib_chooser = g.FileChooserButton()
 
     self._file_write_area_shared_lib_chooser.connect(
@@ -1606,7 +1657,7 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._file_write_area_file_write_ckbtn = g.CheckButton.new_with_label('本地文件路径(--file-write=)')
-    self._file_write_area_file_write_entry = g.Entry()
+    self._file_write_area_file_write_entry = FileEntry()
     self._file_write_area_file_write_chooser = g.FileChooserButton()
 
     self._file_write_area_file_write_chooser.connect(

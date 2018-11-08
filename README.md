@@ -22,9 +22,10 @@ sqlmap ui, using PyGObject(gtk+3)
 3. 细节优化(margin, padding啥的)(ok)
 4. 打从加了filechooserbutton起, 启动就变慢了一倍:  
    根据line_profiler输出: gtk.FileChooserButton()有性能问题!  
-5. 所有组件与label_str要不要分离成独立文件, 用于国际化?
-6. 代码重构(ok), 还能再优化嘛?比如handlers文件
-7. 将管道流集成到UI里?
+5. 添加本地ini配置文件(用于下次启动载入)
+6. 所有组件与label_str要不要分离成独立文件, 用于国际化?
+7. 代码重构(ok), 还能再优化嘛?比如handlers文件
+8. 将管道流集成到UI里?
 
 #### ABOUT
 1. VERSION: 0.2.1  
