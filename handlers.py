@@ -14,11 +14,8 @@ from urllib.parse import urlparse
 # from basis_and_too.logging_needle import get_console_logger
 # logger = get_console_logger()
 
-if OS_NAME == 'posix':
-  QUOTE = "'%s'"
-else:
-  # dos下只能用双引号
-  QUOTE = '"%s"'
+IS_POSIX = True if OS_NAME == 'posix' else False
+QUOTE = "'%s'" if OS_NAME == 'posix' else '"%s"'  # dos下只能用双引号
 
 
 class Singal_Handlers(object):
@@ -48,7 +45,7 @@ class Singal_Handlers(object):
 
     # TODO, 还是加个输入框, 指定sqlmap的路径吧
     if _sqlmap_opts:
-      if OS_NAME == 'posix':
+      if IS_POSIX:
         _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap ', _sqlmap_opts))
       else:
         # msys2
@@ -371,7 +368,7 @@ class Singal_Handlers(object):
                                 ui._blind_area_first_entry),
       self._get_text_from_entry("--last=",
                                 ui._blind_area_last_ckbtn,
-                                ui._blind_area_last_ckbtn),
+                                ui._blind_area_last_entry),
       self._get_text_from_entry("-D ",
                                 ui._meta_area_D_ckbtn,
                                 ui._meta_area_D_entry),
@@ -675,12 +672,34 @@ class Singal_Handlers(object):
     return ''
 
   def _get_text_from_entry(self, opt_str, ckbtn, entry, quote = QUOTE):
-    if ckbtn.get_active() and entry.get_text():
+    _entry_str = entry.get_text().strip()
+    if ckbtn.get_active() and _entry_str:
+
       if quote:
-        return ''.join((' ', opt_str, quote % entry.get_text()))
+        return ''.join((' ',
+                        opt_str,
+                        quote % self._escape_quote_in_QUOTE(_entry_str)))
       else:
-        return ''.join((' ', opt_str, entry.get_text()))
+        return ''.join((' ',
+                        opt_str,
+                        self._escape_quote(_entry_str)))
     return ''
+
+  def _escape_quote_in_QUOTE(self, widget_text):
+    '''
+    注意bash中, 双单引号内无法使用'(即无法转义)
+    '''
+    if widget_text:
+      if IS_POSIX:
+        return widget_text.replace("'", r"'\''")
+      else:
+        return widget_text.replace('"', r"\"")
+    return widget_text
+
+  def _escape_quote(self, widget_text):
+    if widget_text:
+      return widget_text.replace("'", r"\'").replace('"', r'\"')
+    return widget_text
 
 
 def main():

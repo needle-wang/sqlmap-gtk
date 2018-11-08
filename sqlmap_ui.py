@@ -21,6 +21,19 @@ from tooltips import Widget_Mesg as Init_Mesg
 # logger = get_console_logger()
 
 
+class NumberEntry(g.Entry):
+  '''
+  https://stackoverflow.com/questions/2726839/creating-a-pygtk-text-field-that-only-accepts-number
+  '''
+  def __init__(self):
+    super().__init__()
+    self.connect('changed', self.on_changed)
+
+  def on_changed(self, *args):
+    text = self.get_text().strip()
+    self.set_text(''.join([i for i in text if i in '0123456789']))
+
+
 class UI_Window(g.Window):
   def __init__(self):
     super().__init__(title='sqlmap-ui')
@@ -544,14 +557,14 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._tech_area_time_sec_ckbtn = g.CheckButton.new_with_label('指定DB延迟多少秒响应')
-    self._tech_area_time_sec_entry = g.Entry()
+    self._tech_area_time_sec_entry = NumberEntry()
 
     _row2.pack_start(self._tech_area_time_sec_ckbtn, False, True, 5)
     _row2.pack_end(self._tech_area_time_sec_entry, False, True, 5)
 
     _row3 = g.Box()
     self._tech_area_union_col_ckbtn = g.CheckButton.new_with_label('指定最大union列数')
-    self._tech_area_union_col_entry = g.Entry()
+    self._tech_area_union_col_entry = NumberEntry()
 
     _row3.pack_start(self._tech_area_union_col_ckbtn, False, True, 5)
     _row3.pack_end(self._tech_area_union_col_entry, False, True, 5)
@@ -649,7 +662,7 @@ class UI_Window(g.Window):
 
     _row6 = g.Box()
     self._detection_area_code_ckbtn = g.CheckButton.new_with_label('指定http状态码')
-    self._detection_area_code_entry = g.Entry()
+    self._detection_area_code_entry = NumberEntry()
 
     _row6.pack_start(self._detection_area_code_ckbtn, False, True, 5)
     _row6.pack_end(self._detection_area_code_entry, True, True, 5)
@@ -945,7 +958,7 @@ class UI_Window(g.Window):
     self._request_area_proxy_ip_label = g.Label.new('IP:')
     self._request_area_proxy_ip_entry = g.Entry()
     self._request_area_proxy_port_label = g.Label.new('PORT:')
-    self._request_area_proxy_port_entry = g.Entry()
+    self._request_area_proxy_port_entry = NumberEntry()
 
     self._request_area_proxy_username_label = g.Label.new('username:')
     self._request_area_proxy_username_entry = g.Entry()
@@ -989,7 +1002,7 @@ class UI_Window(g.Window):
     self._request_area_ignore_redirects_ckbtn = g.CheckButton.new_with_label('忽略重定向')
     self._request_area_ignore_timeouts_ckbtn = g.CheckButton.new_with_label('忽略连接超时')
     self._request_area_ignore_code_ckbtn = g.CheckButton.new_with_label('忽略错误型状态码:')
-    self._request_area_ignore_code_entry = g.Entry()
+    self._request_area_ignore_code_entry = NumberEntry()
     self._request_area_ignore_code_entry.set_text('401')
     self._request_area_skip_urlencode_ckbtn = g.CheckButton.new_with_label('payload不使用url编码')
     self._request_area_force_ssl_ckbtn = g.CheckButton.new_with_label('强制使用HTTPS')
@@ -1005,12 +1018,12 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._request_area_delay_ckbtn = g.CheckButton.new_with_label('请求间隔(秒)')
-    self._request_area_delay_entry = g.Entry()
+    self._request_area_delay_entry = NumberEntry()
     self._request_area_timeout_ckbtn = g.CheckButton.new_with_label('几秒超时')
-    self._request_area_timeout_entry = g.Entry()
+    self._request_area_timeout_entry = NumberEntry()
     self._request_area_timeout_entry.set_text('30')
     self._request_area_retries_ckbtn = g.CheckButton.new_with_label('超时重试次数')
-    self._request_area_retries_entry = g.Entry()
+    self._request_area_retries_entry = NumberEntry()
     self._request_area_retries_entry.set_text('3')
     self._request_area_randomize_ckbtn = g.CheckButton.new_with_label('指定要随机改变值的参数')
     self._request_area_randomize_entry = g.Entry()
@@ -1348,7 +1361,7 @@ class UI_Window(g.Window):
 
     _row1 = g.Box()
     self._limit_area_start_ckbtn = g.CheckButton.new_with_label('始于第')
-    self._limit_area_start_entry = g.Entry()
+    self._limit_area_start_entry = NumberEntry()
 
     _row1.pack_start(self._limit_area_start_ckbtn, False, True, 5)
     _row1.pack_start(self._limit_area_start_entry, False, True, 0)
@@ -1356,7 +1369,7 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._limit_area_stop_ckbtn = g.CheckButton.new_with_label('止于第')
-    self._limit_area_stop_entry = g.Entry()
+    self._limit_area_stop_entry = NumberEntry()
 
     _row2.pack_start(self._limit_area_stop_ckbtn, False, True, 5)
     _row2.pack_start(self._limit_area_stop_entry, False, True, 0)
