@@ -6,83 +6,19 @@
 # required: python3.5+, python3-gi, sqlmap
 # sqlmap requires: python 2.6.x and 2.7.x
 
-from os import sep as OS_SEP
 # python3.5+
 from pathlib import Path
 from subprocess import Popen, PIPE
 from threading import Thread
 
-from gtk3_header import Gdk as d
-from gtk3_header import GLib
-from gtk3_header import Gtk as g
+from gtk3_header import GLib, Gdk as d, Gtk as g
+from widgets import FileEntry, NumberEntry
 from handlers import Singal_Handlers as Handlers
-from tooltips import Widget_Mesg as Init_Mesg
+from session import Session
+from tooltips import Widget_Mesg as INIT_MESG
 
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
-
-
-class FileEntry(g.Entry):
-  def __init__(self):
-    super().__init__()
-
-    self.completion = g.EntryCompletion()
-    # self.completion.set_match_func(self.match_partly, None)
-
-    self.completion.set_model(None)
-    # 选择上框, 不行, 会触发changed!
-    # self.completion.set_inline_selection(True)
-    # 匹配成功的条目上框
-    self.completion.set_inline_completion(True)
-
-    self.completion.set_minimum_key_length(1)
-    self.completion.set_text_column(0)
-
-    self.set_completion(self.completion)
-    self.connect('changed', self.on_changed)
-
-  def on_changed(self, *args):
-    _file_store = g.ListStore(str)
-
-    _file = Path(self.get_text().strip())
-    if not _file.is_dir():
-      _file = _file.parent
-
-    if _file.is_dir():
-      try:
-        for _i in _file.iterdir():
-          if _i.is_dir():
-            # _file_store.append([_i.name + OS_SEP])
-            _file_store.append([str(_i) + OS_SEP])
-          else:
-            # _file_store.append([_i.name])
-            _file_store.append([str(_i)])
-      except PermissionError as e:
-        print(e)
-
-      self.completion.set_model(_file_store)
-
-  def match_partly(self, completion, entrystr, iter, data):
-    '''
-    set_inline_completion不生效呢?
-    '''
-    modelstr = completion.get_model()[iter][0]
-    _entrystr_name = Path(entrystr).name
-    return modelstr.startswith(_entrystr_name)
-
-
-class NumberEntry(g.Entry):
-  '''
-  https://stackoverflow.com/questions/2726839/creating-a-pygtk-text-field-that-only-accepts-number
-  '''
-  def __init__(self):
-    super().__init__()
-    self.connect('changed', self.on_changed)
-
-  def on_changed(self, *args):
-    # print(args)
-    text = self.get_text().strip()
-    self.set_text(''.join([i for i in text if i in '0123456789']))
 
 
 class UI_Window(g.Window):
@@ -113,7 +49,16 @@ class UI_Window(g.Window):
     self.add(_main_box)
 
     # 添加tooltips, placeholders等
-    Init_Mesg(self)
+    INIT_MESG(self)
+
+    # 读取 上次所有选项
+    self.session = Session(self)
+    self.session.load_from_tmp()
+
+  def on_window_destroy(self):
+    # 保存 此次所有选项
+    self.session.save_to_tmp()
+    g.main_quit()
 
   def _show_warn(self, button):
     # if True:
@@ -131,9 +76,16 @@ class UI_Window(g.Window):
 
       _warn_dialog.destroy()
 
+  def clear_all_entry(self, button):
+    for _i in dir(self):
+      if _i.endswith('entry'):
+        _tmp_entry = getattr(self, _i)
+        if isinstance(_tmp_entry, g.Entry):
+          _tmp_entry.set_text('')
+
   def unselect_all_ckbtn(self, button):
     for _i in dir(self):
-      if 'ckbtn' in _i:
+      if _i.endswith('ckbtn'):
         _tmp_ckbtn = getattr(self, _i)
         if isinstance(_tmp_ckbtn, g.CheckButton):
           _tmp_ckbtn.set_active(False)
@@ -151,7 +103,7 @@ class UI_Window(g.Window):
     _ctrl = (state & d.ModifierType.CONTROL_MASK)
 
     if _ctrl and(keysym == d.KEY_q or keysym == d.KEY_w):
-      g.main_quit()
+      self.on_window_destroy()
       return True
 
   def _build_page_target(self):
@@ -281,15 +233,19 @@ class UI_Window(g.Window):
     _build_button = g.Button.new_with_mnemonic('构造命令语句(_E)')
     _build_button.connect('clicked', self._handlers.build_all)
 
-    # 与sqlmap无关, 用于改善ui的使用体验!
+    # 用于改善ui的使用体验
     _unselect_all_btn = g.Button.new_with_mnemonic('反选所有复选框(_C)')
     _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
+
+    _clear_all_entry = g.Button.new_with_mnemonic('清空所有输入框(_I)')
+    _clear_all_entry.connect('clicked', self.clear_all_entry)
 
     _run_button = g.Button.new_with_mnemonic('开始(_R)')
     _run_button.connect('clicked', self._handlers.run_cmdline)
 
     _exec_area.pack_start(_build_button, False, True, 0)
     _exec_area.pack_start(_unselect_all_btn, True, False, 0)
+    _exec_area.pack_start(_clear_all_entry, True, False, 0)
     _exec_area.pack_end(_run_button, False, True, 0)
 
     self.page1.pack_end(_exec_area, False, True, 0)
@@ -830,6 +786,7 @@ class UI_Window(g.Window):
 
     _row2 = g.Box()
     self._inject_area_skip_static_ckbtn = g.CheckButton.new_with_label('跳过无动态特性的参数')
+    # set_active(True)为选中状态
     self._inject_area_skip_static_ckbtn.set_active(True)
 
     _row2.pack_start(self._inject_area_skip_static_ckbtn, True, True, 5)
@@ -1802,7 +1759,7 @@ class UI_Window(g.Window):
 
 def main():
   win = UI_Window()
-  win.connect('destroy', g.main_quit)
+  win.connect('destroy', lambda x: win.on_window_destroy())
   # win.maximize()
   win.show_all()
 

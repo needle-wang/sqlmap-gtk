@@ -149,19 +149,19 @@ class Singal_Handlers(object):
 
     current_page_num = ui._target_notbook.get_current_page()
     if current_page_num is 0:
-      return " -u " + QUOTE % ui._url_combobox.get_child().get_text().strip()
+      return "-u " + QUOTE % ui._url_combobox.get_child().get_text().strip()
     elif current_page_num is 1:
-      return " -l " + QUOTE % ui._burp_logfile.get_text().strip()
+      return "-l " + QUOTE % ui._burp_logfile.get_text().strip()
     elif current_page_num is 2:
-      return " -r " + QUOTE % ui._request_file.get_text().strip()
+      return "-r " + QUOTE % ui._request_file.get_text().strip()
     elif current_page_num is 3:
-      return " -x " + QUOTE % ui._sitemap_url.get_text().strip()
+      return "-x " + QUOTE % ui._sitemap_url.get_text().strip()
     elif current_page_num is 4:
-      return " -m " + QUOTE % ui._bulkfile.get_text().strip()
+      return "-m " + QUOTE % ui._bulkfile.get_text().strip()
     elif current_page_num is 5:
-      return " -g " + QUOTE % ui._google_dork.get_text().strip()
+      return "-g " + QUOTE % ui._google_dork.get_text().strip()
     elif current_page_num is 6:
-      return " -c " + QUOTE % ui._configfile.get_text().strip()
+      return "-c " + QUOTE % ui._configfile.get_text().strip()
 
   def _collect_opts(self):
     ui = self._w
