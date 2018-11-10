@@ -1745,8 +1745,8 @@ class UI_Window(g.Window):
     self.page4.set_border_width(10)
 
     _about_str = '''
-    1. VERSION: 0.2.1
-       2018年 11月 08日 星期四 17:35:43 CST
+    1. VERSION: 0.2.2
+       2018年 11月 09日 星期四 20:40:51 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
