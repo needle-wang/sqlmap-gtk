@@ -29,10 +29,10 @@ sqlmap ui, using PyGObject(gtk+3)
 9. 将管道流集成到UI里?(难度过大, 放弃)
 
 #### ABOUT
-1. VERSION: 0.3
-   2018年 11月 10日 星期六 16:17:53 CST
-   VERSION: 0.2.2  
-   2018年 11月 09日 星期四 20:40:51 CST
+1. branch: mvc: V0.3  
+   2018年 11月 10日 星期六 16:17:53 CST  
+   branch: master: V0.2.2  
+   2018年 11月 09日 星期四 20:40:51 CST  
    作者: needle wang ( needlewang2011@gmail.com )
 2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py
 3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)的作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)
