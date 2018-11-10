@@ -10,9 +10,12 @@ LAST_TMP = 'last.tmp'
 
 
 class Session(object):
-  def __init__(self, gtkWindow):
+  def __init__(self, m):
+    '''
+    m: model.Model
+    '''
     self._cfg = ConfigParser()
-    self._w = gtkWindow
+    self.m = m
 
   def save_to_tmp(self):
     self._save_to_tmp_ckbtn()
@@ -33,9 +36,9 @@ class Session(object):
 
     self._cfg.add_section('Entry')
 
-    for _i in dir(self._w):
+    for _i in dir(self.m):
       if _i.endswith('entry'):
-        _tmp_entry = getattr(self._w, _i)
+        _tmp_entry = getattr(self.m, _i)
 
         if isinstance(_tmp_entry, g.Entry) and _tmp_entry.get_text().strip():
           self._cfg['Entry'][_i] = _tmp_entry.get_text()
@@ -47,9 +50,9 @@ class Session(object):
     self._cfg.add_section('CheckButton')
 
     _checked = []
-    for _i in dir(self._w):
+    for _i in dir(self.m):
       if _i.endswith('ckbtn'):
-        _tmp_ckbtn = getattr(self._w, _i)
+        _tmp_ckbtn = getattr(self.m, _i)
 
         if isinstance(_tmp_ckbtn, g.CheckButton) and _tmp_ckbtn.get_active():
           _checked.append(_i)
@@ -61,8 +64,8 @@ class Session(object):
       self._cfg.add_section('Entry')
 
     for _i in self._cfg.options('Entry'):
-      # 不去手动改LAST_TMP, self._w就肯定有_i属性了
-      _tmp_entry = getattr(self._w, _i)
+      # 不去手动改LAST_TMP, self.m就肯定有_i属性了
+      _tmp_entry = getattr(self.m, _i)
 
       if isinstance(_tmp_entry, g.Entry) and self._cfg['Entry'][_i]:
         _tmp_entry.set_text(self._cfg['Entry'][_i])
@@ -75,10 +78,13 @@ class Session(object):
       _checked = self._cfg['CheckButton']['checked'].split(',')
       for _i in _checked:
         if _i:  # _i可能为''
-          # 不去手动改LAST_TMP, self._w就肯定有_i属性了
-          _tmp_ckbtn = getattr(self._w, _i)
+          # 不去手动改LAST_TMP, self.m就肯定有_i属性了
+          _tmp_ckbtn = getattr(self.m, _i)
           _tmp_ckbtn.set_active(True)
+        else:  # _checked = [''], 则使用默认值
+          pass
     except KeyError as e:
+      # 如果没有checked项, 则pass
       pass
 
 
