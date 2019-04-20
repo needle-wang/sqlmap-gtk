@@ -8,25 +8,24 @@ sqlmap ui, using PyGObject(gtk+3)
 #### INSTALLATION
 
 1. **REQUIRED**  
-  - python3.5+  
+  - GTK+3.22(which is hard to install at win), python3.5+  
   - pygobject: `pip3 install PyGObject` or `apt-get install python3-gi`  
-  - [sqlmap](https://github.com/sqlmapproject/sqlmap): `pip2 install sqlmap`
+  - [sqlmap](https://github.com/sqlmapproject/sqlmap): `pip2 install sqlmap` #hope sqlmap ports to python3 in future...
 2. **GET**
   - `git clone https://github.com/needle-wang/sqlmap-ui.git`
 3. **RUN**  
   - `./sqlmap_ui.py`
 
 #### TODO
-1. UI重新排版(ok)
-2. 分离并完善tooltip等提示信息(ok)
-3. 细节优化(margin, padding啥的)(ok)
+1. ~~UI重新排版~~
+2. ~~分离并完善tooltip等提示信息~~
+3. ~~细节优化(margin, padding啥的)~~
 4. 打从加了filechooserbutton起, 启动就慢了一倍:  
    根据line_profiler输出: gtk.FileChooserButton()有性能问题!  
-5. 重构(ok), 还能再优化嘛?比如handlers文件(yield)
-6. 添加session功能(v0.2.2, ok)
-7. 重构成MVC模式(结构改动很大~, v0.3, ok)
-8. 写好(linux和win下的)安装及使用指南
-9. 将管道流集成到UI里?(难度过大, 放弃)
+5. ~~重构~~
+6. ~~添加session功能(v0.2.2)~~
+7. ~~重构成MVC模式(结构改动很大~, v0.3)~~
+8. ~~将管道流集成到UI里(难度过大, 放弃)~~
 
 #### ABOUT
 1. branch: mvc: V0.3  

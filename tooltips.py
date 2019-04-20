@@ -7,18 +7,18 @@
 class Widget_Mesg(object):
   def __init__(self, w, m):
     '''
-    w: sqlmap_m.UI_Window
-    w: model.Model
+    w: sqlmap_ui.UI_Window
+    m: model.Model
     '''
     self.w = w
-    self.m = m
 
-    self.set_all_tooltips()
-    self.set_all_placeholders()
+    self.set_all_tooltips(m)
+    self.set_all_placeholders(m)
 
-  def set_all_placeholders(self):
-    m = self.m
-
+  def set_all_placeholders(self, m):
+    '''
+    m: model.Model
+    '''
     # 0.target区
     self._set_placeholder('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
                           m._url_combobox.get_child())
@@ -87,13 +87,12 @@ class Widget_Mesg(object):
     self._set_placeholder('/var/www',
                           m._page1_misc_web_root_entry)
 
-  def set_all_tooltips(self):
+  def set_all_tooltips(self, m):
     '''
+    m: model.Model
     使用gtk3.24时, 有scale组件的行内的tooltip会flicker(闪烁)(GTK3的bug!)
     只能禁用了
     '''
-    m = self.m
-
     # 0.target区
     self._set_tooltip('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
                       m._url_combobox)
@@ -280,6 +279,8 @@ class Widget_Mesg(object):
                       m._request_area_skip_urlencode_ckbtn)
     self._set_tooltip('--force-ssl',
                       m._request_area_force_ssl_ckbtn)
+    self._set_tooltip('--chunked',
+                      m._request_area_chunked_ckbtn)
     self._set_tooltip('--hpp',
                       m._request_area_hpp_ckbtn)
     self._set_tooltip('隔几秒发送一个HTTP请求',
@@ -375,6 +376,8 @@ class Widget_Mesg(object):
                       m._dump_area_search_ckbtn)
     self._set_tooltip('--exclude-sysdb',
                       m._dump_area_no_sys_db_ckbtn)
+    self._set_tooltip('--repair',
+                      m._dump_area_repair_ckbtn)
     self._set_tooltip('--start=',
                       m._limit_area_start_ckbtn,
                       m._limit_area_start_entry)
@@ -411,6 +414,8 @@ class Widget_Mesg(object):
     self._set_tooltip('--sql-query=QUERY',
                       m._runsql_area_sql_query_ckbtn,
                       m._runsql_area_sql_query_entry)
+    self._set_tooltip('--sql-shell',
+                      m._runsql_area_sql_shell_ckbtn)
     self._set_tooltip('--sql-file=SQLFILE',
                       m._runsql_area_sql_file_ckbtn,
                       m._runsql_area_sql_file_entry)
@@ -485,6 +490,9 @@ class Widget_Mesg(object):
                       m._page1_general_parse_errors_ckbtn)
     self._set_tooltip('--cleanup',
                       m._page1_misc_cleanup_ckbtn)
+    self._set_tooltip('--preprocess=',
+                      m._page1_general_preprocess_ckbtn,
+                      m._page1_general_preprocess_entry)
     self._set_tooltip('--crawl=',
                       m._page1_general_crawl_ckbtn,
                       m._page1_general_crawl_entry)
@@ -541,6 +549,8 @@ class Widget_Mesg(object):
                       m._page1_misc_smart_ckbtn)
     self._set_tooltip('--list-tampers',
                       m._page1_misc_list_tampers_ckbtn)
+    self._set_tooltip('--sqlmap-shell',
+                      m._page1_misc_sqlmap_shell_ckbtn)
     self._set_tooltip('--disable-coloring',
                       m._page1_misc_disable_color_ckbtn)
     self._set_tooltip('--offline',

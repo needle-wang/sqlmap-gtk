@@ -288,6 +288,7 @@ class UI_Window(g.Window):
     _row2.pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_smart_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_list_tampers_ckbtn, False, True, 5)
+    _row2.pack_start(m._page1_misc_sqlmap_shell_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_disable_color_ckbtn, False, True, 5)
 
     _row3 = g.Box()
@@ -340,6 +341,8 @@ class UI_Window(g.Window):
     _row2.pack_start(m._page1_general_forms_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
+    _row2.pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
+    _row2.pack_start(m._page1_general_preprocess_entry, False, True, 5)
 
     _row3 = g.Box()
     _row3.pack_start(m._page1_general_crawl_ckbtn, False, True, 5)
@@ -818,6 +821,7 @@ class UI_Window(g.Window):
     _row1.pack_start(m._request_area_ignore_code_entry, True, True, 5)
     _row1.pack_start(m._request_area_skip_urlencode_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_force_ssl_ckbtn, False, True, 5)
+    _row1.pack_start(m._request_area_chunked_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_hpp_ckbtn, False, True, 5)
 
     _row2 = g.Box()
@@ -1018,6 +1022,7 @@ class UI_Window(g.Window):
       m._runsql_area_sql_file_entry
     )
 
+    _row2.pack_start(m._runsql_area_sql_shell_ckbtn, False, True, 10)
     _row2.pack_start(m._runsql_area_sql_file_ckbtn, False, True, 10)
     _row2.pack_start(m._runsql_area_sql_file_entry, True, True, 0)
     _row2.pack_start(self._runsql_area_sql_file_chooser, False, True, 10)
@@ -1128,6 +1133,7 @@ class UI_Window(g.Window):
     _dump_area_opts_cols.add(m._dump_area_dump_all_ckbtn)
     _dump_area_opts_cols.add(m._dump_area_search_ckbtn)
     _dump_area_opts_cols.add(m._dump_area_no_sys_db_ckbtn)
+    _dump_area_opts_cols.add(m._dump_area_repair_ckbtn)
 
     _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
 
@@ -1397,6 +1403,7 @@ class UI_Window(g.Window):
     self.page4.set_border_width(10)
 
     _about_str = '''
+    update at 2019-04-20 18:18:13
     1. VERSION: 0.3
        2018年 11月 10日 星期六 16:17:44 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
