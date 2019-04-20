@@ -338,11 +338,20 @@ class UI_Window(g.Window):
     _row1.pack_start(m._page1_general_binary_fields_entry, False, True, 5)
 
     _row2 = g.Box()
+    self._page1_general_preprocess_chooser = g.FileChooserButton()
+
+    self._page1_general_preprocess_chooser.connect(
+      'file-set',
+      self._handlers.set_file_entry_text,
+      m._page1_general_preprocess_entry
+    )
+
     _row2.pack_start(m._page1_general_forms_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
-    _row2.pack_start(m._page1_general_preprocess_entry, False, True, 5)
+    _row2.pack_start(m._page1_general_preprocess_entry, True, True, 5)
+    _row2.pack_start(self._page1_general_preprocess_chooser, False, True, 5)
 
     _row3 = g.Box()
     _row3.pack_start(m._page1_general_crawl_ckbtn, False, True, 5)
@@ -1403,7 +1412,7 @@ class UI_Window(g.Window):
     self.page4.set_border_width(10)
 
     _about_str = '''
-    update at 2019-04-20 18:18:13
+    update at 2019-04-20 22:03:02
     1. VERSION: 0.3
        2018年 11月 10日 星期六 16:17:44 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
