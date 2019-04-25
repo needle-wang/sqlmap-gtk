@@ -4,13 +4,13 @@
 # 2018年 08月 29日 星期三 15:34:10 CST
 
 import time
-
-from os import name as OS_NAME
+from os import environ, name as OS_NAME
 # python3.5+
 from pathlib import Path
 from subprocess import Popen
 from urllib.parse import urlparse
 
+from gtk3_header import GLib, Vte
 # from basis_and_too.logging_needle import get_console_logger
 # logger = get_console_logger()
 
@@ -27,6 +27,7 @@ class Singal_Handlers(object):
     '''
     self.w = w
     self.m = m
+    self.shell = environ["SHELL"]
 
   def build_all(self, button):
     _target = self._get_target()
@@ -39,13 +40,48 @@ class Singal_Handlers(object):
 
     _final_line = _target + ''.join(_opts_list)
 
-    if _final_line:
-      self.m._cmd_entry.set_text(_final_line)
+    if _final_line is not None:
+      self.m._cmd_entry.set_text(_final_line.strip())
 
   def run_cmdline(self, button):
+    '''
+    only for posix, won't code it for win now.
+    '''
+    _sqlmap_opts = self.m._cmd_entry.get_text().strip()
+    if IS_POSIX:
+      self.w.main_notebook.next_page()
+      _cmdline_str = ''.join(('sqlmap ', _sqlmap_opts, '\n'))
+      # print(_cmdline_str)
+      if _cmdline_str:
+        self.m._page0_cmdline_str_label.set_text("running: " + _cmdline_str)
+        self.m._page0_terminal.feed_child(_cmdline_str, len(_cmdline_str))
+        self.w.set_focus(self.m._page0_terminal)
+
+  def respawn_terminal(self, button):
+    '''
+    不管pty是不是还活着, 都重新生成一个
+    没有close方法, 无法删掉旧pty, 用top -Hp pid显示, 好像会残留线程
+    '''
+    _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
+    self.m._page0_terminal.set_pty(_pty)
+
+    _pty.spawn_async(str(Path.home()),
+                     [self.shell],
+                     None,
+                     GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+                     None,
+                     None,
+                     -1,
+                     None,
+                     lambda pty, task: None)
+    self.w.set_focus(self.m._page0_terminal)
+
+  def run_cmdline_old(self, button):
+    '''
+     -  -  -  - 废弃 -  -  -  -
+    '''
     _sqlmap_opts = self.m._cmd_entry.get_text().strip()
 
-    # TODO, 还是加个输入框, 指定sqlmap的路径吧
     if _sqlmap_opts:
       if IS_POSIX:
         _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap ', _sqlmap_opts))
@@ -132,6 +168,7 @@ class Singal_Handlers(object):
 
   def read_dumped_file(self, button):
     self.w.main_notebook.next_page()
+    self.w.main_notebook.next_page()
 
     _base_dir = self._get_url_dir()
     _load_file = self.m._file_read_area_file_read_entry.get_text()
@@ -147,22 +184,20 @@ class Singal_Handlers(object):
 
   def _get_target(self):
     m = self.m
-    current_page_num = self.w._target_notbook.get_current_page()
+    _current_pagenum = self.w._target_notbook.get_current_page()
+    _target_list = [("-u ", m._url_combobox.get_child().get_text),
+                    ("-l ", m._burp_logfile.get_text),
+                    ("-r ", m._request_file.get_text),
+                    ("-m ", m._bulkfile.get_text),
+                    ("-c ", m._configfile.get_text),
+                    ("-x ", m._sitemap_url.get_text),
+                    ("-g ", m._google_dork.get_text)]
 
-    if current_page_num is 0:
-      return "-u " + QUOTE % m._url_combobox.get_child().get_text().strip()
-    elif current_page_num is 1:
-      return "-l " + QUOTE % m._burp_logfile.get_text().strip()
-    elif current_page_num is 2:
-      return "-r " + QUOTE % m._request_file.get_text().strip()
-    elif current_page_num is 3:
-      return "-m " + QUOTE % m._bulkfile.get_text().strip()
-    elif current_page_num is 4:
-      return "-c " + QUOTE % m._configfile.get_text().strip()
-    elif current_page_num is 5:
-      return "-x " + QUOTE % m._sitemap_url.get_text().strip()
-    elif current_page_num is 6:
-      return "-g " + QUOTE % m._google_dork.get_text().strip()
+    _target_tmp = _target_list[_current_pagenum][1]().strip()
+    if _target_tmp:
+      return _target_list[_current_pagenum][0] + QUOTE % _target_tmp
+    else:
+      return ''
 
   def _collect_opts(self):
     m = self.m

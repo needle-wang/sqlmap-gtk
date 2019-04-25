@@ -20,7 +20,7 @@ class Widget_Mesg(object):
     m: model.Model
     '''
     # 0.target区
-    self._set_placeholder('必填项, 从 目标url/burp日志/HTTP请求... 任选一项',
+    self._set_placeholder('通常是从 目标url/burp日志/HTTP请求... 中任选一项',
                           m._url_combobox.get_child())
     self._set_placeholder('-l: Burp或WebScarab代理的日志文件路径(用来解析目标)',
                           m._burp_logfile)
@@ -283,7 +283,7 @@ class Widget_Mesg(object):
                       m._request_area_chunked_ckbtn)
     self._set_tooltip('--hpp',
                       m._request_area_hpp_ckbtn)
-    self._set_tooltip('隔几秒发送一个HTTP请求',
+    self._set_tooltip('--delay=隔几秒发送一个HTTP请求',
                       m._request_area_delay_ckbtn,
                       m._request_area_delay_entry)
     self._set_tooltip('--timeout=',
@@ -308,7 +308,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--safe-req=',
                       m._request_area_safe_req_ckbtn,
                       m._request_area_safe_req_entry)
-    self._set_tooltip('--safe-freq=',
+    self._set_tooltip('--safe-freq=SAFE.. Test requests between two visits to a given safe URL',
                       m._request_area_safe_freq_ckbtn,
                       m._request_area_safe_freq_entry)
     self._set_tooltip('--ignore-proxy',
@@ -576,7 +576,7 @@ class Widget_Mesg(object):
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
                       m._page1_misc_z_ckbtn,
                       m._page1_misc_z_entry)
-    # 二、显示区(page2)
+    # 二、日志区(page2)
     self._set_tooltip('不会修改文件',
                       m._page2_clear_btn)
 

@@ -11,7 +11,7 @@ from pathlib import Path
 from subprocess import Popen, PIPE
 from threading import Thread
 
-from gtk3_header import GLib, Gdk as d, Gtk as g
+from gtk3_header import GLib, Gdk as d, Gtk as g, Vte
 from model import Model
 from handlers import Singal_Handlers as Handlers
 from session import Session
@@ -45,14 +45,16 @@ class UI_Window(g.Window):
 
     self.main_notebook = g.Notebook()
     self._build_page1()
+    self._build_page0()
     self._build_page2()
     self._build_page3()
     self._build_page4()
 
-    self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_Q)'))
-    self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('显示区(_W)'))
-    self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_H)'))
-    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_A)'))
+    self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_1)'))
+    self.main_notebook.append_page(self.page0, g.Label.new_with_mnemonic('输出区(_2)'))
+    self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('日志区(_3)'))
+    self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_4)'))
+    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_5)'))
 
     _main_box.pack_start(self.main_notebook, True, True, 0)
     self.add(_main_box)
@@ -214,27 +216,27 @@ class UI_Window(g.Window):
     self._build_page1_file()
     self._build_page1_other()
 
-    _notebook.append_page(self.page1_setting, g.Label.new_with_mnemonic('测试(_1)'))
-    _notebook.append_page(self.page1_request, g.Label.new_with_mnemonic('请求(_2)'))
-    _notebook.append_page(self.page1_enumeration, g.Label.new_with_mnemonic('枚举(_3)'))
-    _notebook.append_page(self.page1_file, g.Label.new_with_mnemonic('文件(_4)'))
-    _notebook.append_page(self.page1_other, g.Label.new_with_mnemonic('其他(_5)'))
+    _notebook.append_page(self.page1_setting, g.Label.new_with_mnemonic('测试(_Q)'))
+    _notebook.append_page(self.page1_request, g.Label.new_with_mnemonic('请求(_W)'))
+    _notebook.append_page(self.page1_enumeration, g.Label.new_with_mnemonic('枚举(_E)'))
+    _notebook.append_page(self.page1_file, g.Label.new_with_mnemonic('文件(_R)'))
+    _notebook.append_page(self.page1_other, g.Label.new_with_mnemonic('其他(_T)'))
 
     self.page1.pack_start(_notebook, True, True, 0)
 
     # 构造与执行
     _exec_area = g.Box()
 
-    _build_button = g.Button.new_with_mnemonic('构造命令语句(_E)')
+    _build_button = g.Button.new_with_mnemonic('构造命令语句(_A)')
     _build_button.connect('clicked', self._handlers.build_all)
 
     # 用于改善ui的使用体验
-    _unselect_all_btn = g.Button.new_with_mnemonic('反选所有复选框(_C)')
+    _unselect_all_btn = g.Button.new_with_mnemonic('反选所有复选框(_S)')
     _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
-    _clear_all_entry = g.Button.new_with_mnemonic('清空所有输入框(_I)')
+    _clear_all_entry = g.Button.new_with_mnemonic('清空所有输入框(_D)')
     _clear_all_entry.connect('clicked', self.clear_all_entry)
 
-    _run_button = g.Button.new_with_mnemonic('开始(_R)')
+    _run_button = g.Button.new_with_mnemonic('开始(_F)')
     _run_button.connect('clicked', self._handlers.run_cmdline)
 
     _exec_area.pack_start(_build_button, False, True, 0)
@@ -1007,8 +1009,9 @@ class UI_Window(g.Window):
 
     _row1 = g.Box()
 
-    _row1.pack_start(m._brute_force_area_common_tables_ckbtn, True, True, 10)
-    _row1.pack_start(m._brute_force_area_common_columns_ckbtn, True, True, 10)
+    _row1.pack_start(g.Label.new('检查是否存在:'), False, True, 10)
+    _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
+    _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 10)
 
     _brute_force_area_opts.pack_start(_row1, False, True, 5)
     self._brute_force_area.add(_brute_force_area_opts)
@@ -1326,6 +1329,51 @@ class UI_Window(g.Window):
     _file_read_area_opts.pack_start(_row1, False, True, 5)
     self._file_read_area.add(_file_read_area_opts)
 
+  def _build_page0(self):
+    '''
+    用subprocess不可实现与sqlap的交互!
+    不管是多线程, 同步还是异步, 都不行, 只能使用pty
+    '''
+    self.page0 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page0.set_border_width(10)
+
+    _row1 = g.Box(spacing = 6)
+    m._page0_cmdline_str_label.set_alignment(0, 0.5)    # 怎么没有垂直居中?
+    m._page0_respwan_btn.connect('clicked', self._handlers.respawn_terminal)
+
+    _row1.pack_start(m._page0_cmdline_str_label, True, True, 0)
+    _row1.pack_start(m._page0_respwan_btn, False, True, 0)
+
+    _row2 = g.Frame()
+    # 等价于_pty = m._page0_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
+    _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
+    m._page0_terminal.set_pty(_pty)
+
+    # https://stackoverflow.com/questions/55105447/virtual-python-shell-with-vte-pty-spawn-async
+    # https://gtk-d.dpldocs.info/vte.Pty.Pty.spawnAsync.html
+    # API手册上的该方法签名有问题, 与实际的对不上
+    # 最后一个参数为回调函数, 是必填项
+    _pty.spawn_async(str(Path.home()),
+                     [self._handlers.shell],
+                     None,
+                     GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+                     None,
+                     None,
+                     -1,
+                     None,
+                     lambda pty, task: None)
+
+    _scrolled = g.ScrolledWindow()
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(m._page0_terminal)
+    _row2.add(_scrolled)
+
+    self.page0.pack_start(_row1, False, True, 5)
+    self.page0.pack_end(_row2, True, True, 0)
+
+  def ready(self, pty, task):
+    print('pty ', pty)
+
   def _build_page2(self):
     self.page2 = g.Box(orientation=VERTICAL, spacing=6)
     self.page2.set_border_width(10)
@@ -1373,7 +1421,7 @@ class UI_Window(g.Window):
 
     self._manual_view_textbuffer = _manual_view.get_buffer()
 
-    # 启动线程, 填充帮助标签, 加快启动速度
+    # 使用线程 填充 帮助标签, 加快启动速度
     t = Thread(target = self._set_manual_view)
     t.daemon = True
     t.start()
@@ -1412,15 +1460,14 @@ class UI_Window(g.Window):
     self.page4.set_border_width(10)
 
     _about_str = '''
-    update at 2019-04-20 22:03:02
-    1. VERSION: 0.3
-       2018年 11月 10日 星期六 16:17:44 CST
+    1. VERSION: 0.3.1
+       2019年 04月 25日 星期四 17:36:44 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
     3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
     4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
-    5. 感谢sqm的作者 KINGX ( https://github.com/kxcode ), sqm UI 使用的是python2 + tkinter
+    5. 感谢sqm带来的灵感, 其作者: KINGX ( https://github.com/kxcode ), sqm UI 使用的是python2 + tkinter
     '''
     self.page4.pack_start(g.Label.new(_about_str), True, False, 0)
 

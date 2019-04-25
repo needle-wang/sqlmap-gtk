@@ -2,7 +2,7 @@
 #
 # 2018年 11月 10日 星期六 07:16:38 CST
 
-from gtk3_header import Gtk as g
+from gtk3_header import Gtk as g, Vte
 from widgets import FileEntry, NumberEntry
 
 HORIZONTAL = g.Orientation.HORIZONTAL
@@ -325,7 +325,11 @@ class Model(object):
     self._page1_misc_gpage_spinbtn = g.SpinButton.new_with_range(1, 100, 1)
     self._page1_misc_z_ckbtn = cb('使用短的助记符')
     self._page1_misc_z_entry = et()
-  # 显示区(W)
+  # 输出区(O)
+    self._page0_cmdline_str_label = g.Label.new('')
+    self._page0_respwan_btn = g.Button.new_with_label('重开终端')
+    self._page0_terminal = Vte.Terminal.new()
+  # 日志区(F)
     self._page2_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
 
 

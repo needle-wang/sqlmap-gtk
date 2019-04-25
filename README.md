@@ -25,14 +25,16 @@ sqlmap ui, using PyGObject(gtk+3)
 5. ~~重构~~
 6. ~~添加session功能(v0.2.2)~~
 7. ~~重构成MVC模式(结构重构改动很大, v0.3)~~
-8. ~~将管道流集成到UI里(难度过大, 放弃)~~
+8. ~~将管道流集成到UI里(无法实现, 改用pty实现成功)~~
 
 #### ABOUT
-1. V0.3  
+1. V0.3.1  
+   2019年 04月 25日 星期四 17:36:44 CST  
+   V0.3  
    2018年 11月 10日 星期六 16:17:53 CST  
    作者: needle wang ( needlewang2011@gmail.com )
 2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py
-3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)的作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)
+3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)带来的灵感, 其作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)
 
 #### REFERENCE
 1. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest/
