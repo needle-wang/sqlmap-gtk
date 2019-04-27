@@ -21,10 +21,10 @@ class Model(object):
     self._configfile = FileEntry()
     self._sitemap_url = g.Entry()
     self._google_dork = g.Entry()
-  # 选项区(Q)
+  # 选项区(1)
   # sqlmap命令语句:
     self._cmd_entry = et()
-  # 测试(1)
+  # 测试(Q)
     # 注入选项
     self._inject_area_param_ckbtn = cb('可测试的参数')
     self._inject_area_param_entry = et()
@@ -93,7 +93,8 @@ class Model(object):
     self._general_area_finger_ckbtn = cb('执行宽泛的DB版本检测')
     self._general_area_hex_ckbtn = cb('获取数据时使用hex转换')
     self._general_area_batch_ckbtn = cb('非交互模式, 一切皆默认')
-  # 请求(2)
+    self._page1_misc_wizard_ckbtn = cb('新手向导')
+  # 请求(W)
     # HTTP header
     self._request_area_random_agent_ckbtn = cb('随机User-Agent头')
     self._request_area_user_agent_ckbtn = cb('指定User-Agent头')
@@ -176,7 +177,7 @@ class Model(object):
     self._request_area_tor_type_ckbtn = cb('Tor代理类型')
     self._request_area_tor_type_entry = et()
     self._request_area_check_tor_ckbtn = cb('检查Tor连接')
-  # 枚举(3)
+  # 枚举(E)
     # 枚举
     self._enum_area_opts_ckbtns = (
       (cb('DB banner'), cb('当前用户'), cb('当前数据库'), cb('主机名'), cb('是否是DBA')),
@@ -223,7 +224,7 @@ class Model(object):
     # 暴破表名/列名
     self._brute_force_area_common_tables_ckbtn = cb('常用表名')
     self._brute_force_area_common_columns_ckbtn = cb('常用列名')
-  # 文件(4)
+  # 文件(R)
     # 读取远程文件
     self._file_read_area_file_read_ckbtn = cb('远程文件路径(--file-read=)')
     self._file_read_area_file_read_entry = et()
@@ -259,7 +260,7 @@ class Model(object):
     self._file_os_registry_reg_data_entry = et()
     self._file_os_registry_reg_type_label = g.Label.new('类型')
     self._file_os_registry_reg_type_entry = et()
-  # 其他(5)
+  # 其他(T)
     # 通用项
     self._page1_general_check_internet_ckbtn = cb('检查与目标的网络连接')
     self._page1_general_fresh_queries_ckbtn = cb('刷新此次查询')
@@ -308,7 +309,7 @@ class Model(object):
     self._page1_misc_identify_waf_ckbtn = cb('鉴别WAF')
     self._page1_misc_skip_waf_ckbtn = cb('跳过对WAF/IPS保护的启发式侦测')
     self._page1_misc_smart_ckbtn = cb('只对明显注入点进行详细测试')
-    self._page1_misc_list_tampers_ckbtn = cb('显示可用的tamper脚本列表')
+    self._page1_misc_list_tampers_ckbtn = cb('列出可用的tamper脚本')
     self._page1_misc_sqlmap_shell_ckbtn = cb('打开sqlmap交互shell')
     self._page1_misc_disable_color_ckbtn = cb('禁用终端输出的颜色')
     self._page1_misc_offline_ckbtn = cb('离线模式(只使用保存的会话数据)')
@@ -325,12 +326,12 @@ class Model(object):
     self._page1_misc_gpage_spinbtn = g.SpinButton.new_with_range(1, 100, 1)
     self._page1_misc_z_ckbtn = cb('使用短的助记符')
     self._page1_misc_z_entry = et()
-  # 输出区(O)
-    self._page0_cmdline_str_label = g.Label.new('')
-    self._page0_respwan_btn = g.Button.new_with_label('重开终端')
-    self._page0_terminal = Vte.Terminal.new()
-  # 日志区(F)
-    self._page2_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
+  # 输出区(2)
+    # self._page2_cmdline_str_label = g.Label.new('')
+    self._page2_respwan_btn = g.Button.new_with_label('重开终端')
+    self._page2_terminal = Vte.Terminal.new()
+  # 日志区(3)
+    self._page3_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
 
 
 def main():

@@ -109,6 +109,9 @@ class Widget_Mesg(object):
     self._set_tooltip('-g: 将google dork的结果作为目标url',
                       m._google_dork)
     # 一、选项区(page1)
+    # 0._cmd_entry
+    self._set_tooltip('1.勾选, 填写所需的 选项\n2.点击 收集选项\n3.点击 开始',
+                      m._cmd_entry)
     # 1.测试页面
     self._set_tooltip('-p TESTPARAMETER\tTestable parameter(s)',
                       m._inject_area_param_ckbtn,
@@ -215,6 +218,8 @@ class Widget_Mesg(object):
                       m._general_area_hex_ckbtn)
     self._set_tooltip('--batch',
                       m._general_area_batch_ckbtn)
+    self._set_tooltip('--wizard(其他选项可不选)',
+                      m._page1_misc_wizard_ckbtn)
     # 2.请求页面
     self._set_tooltip('--random-agent',
                       m._request_area_random_agent_ckbtn)
@@ -576,9 +581,9 @@ class Widget_Mesg(object):
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
                       m._page1_misc_z_ckbtn,
                       m._page1_misc_z_entry)
-    # 二、日志区(page2)
+    # 二、日志区(page3)
     self._set_tooltip('不会修改文件',
-                      m._page2_clear_btn)
+                      m._page3_clear_btn)
 
   def _set_placeholder(self, placeholder, *widgets):
     '''

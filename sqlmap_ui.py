@@ -45,16 +45,18 @@ class UI_Window(g.Window):
 
     self.main_notebook = g.Notebook()
     self._build_page1()
-    self._build_page0()
     self._build_page2()
     self._build_page3()
     self._build_page4()
+    self._build_page5()
+    self._build_page6()
 
     self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_1)'))
-    self.main_notebook.append_page(self.page0, g.Label.new_with_mnemonic('输出区(_2)'))
-    self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('日志区(_3)'))
-    self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('帮助(_4)'))
-    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('关于(_5)'))
+    self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('输出区(_2)'))
+    self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('日志区(_3)'))
+    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('API区(_4)'))
+    self.main_notebook.append_page(self.page5, g.Label.new_with_mnemonic('帮助(_H)'))
+    self.main_notebook.append_page(self.page6, g.Label.new('关于'))
 
     _main_box.pack_start(self.main_notebook, True, True, 0)
     self.add(_main_box)
@@ -200,7 +202,7 @@ class UI_Window(g.Window):
     self.page1.set_border_width(10)
 
     # sqlmap命令语句
-    _cmd_area = g.Frame.new('sqlmap命令语句:')
+    _cmd_area = g.Frame.new('A.收集选项 的结果显示在这:')
 
     _cmd_area.add(m._cmd_entry)
 
@@ -227,7 +229,7 @@ class UI_Window(g.Window):
     # 构造与执行
     _exec_area = g.Box()
 
-    _build_button = g.Button.new_with_mnemonic('构造命令语句(_A)')
+    _build_button = g.Button.new_with_mnemonic('A.收集选项(_A)')
     _build_button.connect('clicked', self._handlers.build_all)
 
     # 用于改善ui的使用体验
@@ -236,7 +238,7 @@ class UI_Window(g.Window):
     _clear_all_entry = g.Button.new_with_mnemonic('清空所有输入框(_D)')
     _clear_all_entry.connect('clicked', self.clear_all_entry)
 
-    _run_button = g.Button.new_with_mnemonic('开始(_F)')
+    _run_button = g.Button.new_with_mnemonic('B.开始(_F)')
     _run_button.connect('clicked', self._handlers.run_cmdline)
 
     _exec_area.pack_start(_build_button, False, True, 0)
@@ -602,10 +604,14 @@ class UI_Window(g.Window):
     _row4 = g.Box()
     _row4.pack_start(m._general_area_batch_ckbtn, False, True, 5)
 
+    _row5 = g.Box()
+    _row5.pack_start(m._page1_misc_wizard_ckbtn, False, True, 5)
+
     _general_area_opts.add(_row1)
     _general_area_opts.add(_row2)
     _general_area_opts.add(_row3)
     _general_area_opts.add(_row4)
+    _general_area_opts.add(_row5)
     self._general_area.add(_general_area_opts)
 
   def _build_page1_setting_optimize(self):
@@ -1329,25 +1335,25 @@ class UI_Window(g.Window):
     _file_read_area_opts.pack_start(_row1, False, True, 5)
     self._file_read_area.add(_file_read_area_opts)
 
-  def _build_page0(self):
+  def _build_page2(self):
     '''
     用subprocess不可实现与sqlap的交互!
     不管是多线程, 同步还是异步, 都不行, 只能使用pty
     '''
-    self.page0 = g.Box(orientation=VERTICAL, spacing=6)
-    self.page0.set_border_width(10)
+    self.page2 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page2.set_border_width(10)
 
     _row1 = g.Box(spacing = 6)
-    m._page0_cmdline_str_label.set_alignment(0, 0.5)    # 怎么没有垂直居中?
-    m._page0_respwan_btn.connect('clicked', self._handlers.respawn_terminal)
+    # m._page2_cmdline_str_label.set_alignment(0, 0.5)    # 怎么没有垂直居中?
+    m._page2_respwan_btn.connect('clicked', self._handlers.respawn_terminal)
 
-    _row1.pack_start(m._page0_cmdline_str_label, True, True, 0)
-    _row1.pack_start(m._page0_respwan_btn, False, True, 0)
+    # _row1.pack_start(m._page2_cmdline_str_label, True, True, 0)
+    _row1.pack_start(m._page2_respwan_btn, False, True, 0)
 
     _row2 = g.Frame()
-    # 等价于_pty = m._page0_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
+    # 等价于_pty = m._page2_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
     _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
-    m._page0_terminal.set_pty(_pty)
+    m._page2_terminal.set_pty(_pty)
 
     # https://stackoverflow.com/questions/55105447/virtual-python-shell-with-vte-pty-spawn-async
     # https://gtk-d.dpldocs.info/vte.Pty.Pty.spawnAsync.html
@@ -1365,18 +1371,15 @@ class UI_Window(g.Window):
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
-    _scrolled.add(m._page0_terminal)
+    _scrolled.add(m._page2_terminal)
     _row2.add(_scrolled)
 
-    self.page0.pack_start(_row1, False, True, 5)
-    self.page0.pack_end(_row2, True, True, 0)
+    self.page2.pack_start(_row1, False, True, 5)
+    self.page2.pack_end(_row2, True, True, 0)
 
-  def ready(self, pty, task):
-    print('pty ', pty)
-
-  def _build_page2(self):
-    self.page2 = g.Box(orientation=VERTICAL, spacing=6)
-    self.page2.set_border_width(10)
+  def _build_page3(self):
+    self.page3 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page3.set_border_width(10)
 
     _row1 = g.Frame()
     _log_view = g.TextView()
@@ -1394,26 +1397,30 @@ class UI_Window(g.Window):
     _row1.add(_scrolled)
 
     _row2 = g.Box()
-    self._page2_read_target_btn = g.Button.new_with_label('查看target文件')
-    self._page2_read_target_btn.connect('clicked', self._handlers.read_target_file)
+    self._page3_read_target_btn = g.Button.new_with_label('查看target文件')
+    self._page3_read_target_btn.connect('clicked', self._handlers.read_target_file)
 
-    _row2.pack_start(self._page2_read_target_btn, True, False, 0)
+    _row2.pack_start(self._page3_read_target_btn, True, False, 0)
 
-    m._page2_clear_btn.connect('clicked', self._handlers.clear_buffer)
+    m._page3_clear_btn.connect('clicked', self._handlers.clear_buffer)
 
-    _row2.pack_start(m._page2_clear_btn, True, False, 0)
+    _row2.pack_start(m._page3_clear_btn, True, False, 0)
 
-    self._page2_read_log_btn = g.Button.new_with_label('查看log文件')
-    self._page2_read_log_btn.connect('clicked', self._handlers.read_log_file)
+    self._page3_read_log_btn = g.Button.new_with_label('查看log文件')
+    self._page3_read_log_btn.connect('clicked', self._handlers.read_log_file)
 
-    _row2.pack_start(self._page2_read_log_btn, True, False, 0)
+    _row2.pack_start(self._page3_read_log_btn, True, False, 0)
 
-    self.page2.pack_start(_row1, True, True, 5)
-    self.page2.pack_end(_row2, False, True, 0)
+    self.page3.pack_start(_row1, True, True, 5)
+    self.page3.pack_end(_row2, False, True, 0)
 
-  def _build_page3(self):
-    self.page3 = g.Box(orientation=VERTICAL)
-    self.page3.set_border_width(10)
+  def _build_page4(self):
+    self.page4 = g.Box(orientation=VERTICAL)
+    self.page4.set_border_width(10)
+
+  def _build_page5(self):
+    self.page5 = g.Box(orientation=VERTICAL)
+    self.page5.set_border_width(10)
 
     _row1 = g.Frame()
     _manual_view = g.TextView()
@@ -1432,7 +1439,7 @@ class UI_Window(g.Window):
 
     _row1.add(_scrolled)
 
-    self.page3.pack_start(_row1, True, True, 10)
+    self.page5.pack_start(_row1, True, True, 10)
 
   def _set_manual_view(self):
     '''
@@ -1455,9 +1462,9 @@ class UI_Window(g.Window):
     except FileNotFoundError as e:
       GLib.idle_add(self._manual_view_textbuffer.insert, _end_iter, str(e))
 
-  def _build_page4(self):
-    self.page4 = g.Box(orientation=VERTICAL, spacing=6)
-    self.page4.set_border_width(10)
+  def _build_page6(self):
+    self.page6 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page6.set_border_width(10)
 
     _about_str = '''
     1. VERSION: 0.3.1
@@ -1469,7 +1476,7 @@ class UI_Window(g.Window):
     4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
     5. 感谢sqm带来的灵感, 其作者: KINGX ( https://github.com/kxcode ), sqm UI 使用的是python2 + tkinter
     '''
-    self.page4.pack_start(g.Label.new(_about_str), True, False, 0)
+    self.page6.pack_start(g.Label.new(_about_str), True, False, 0)
 
 
 def main():

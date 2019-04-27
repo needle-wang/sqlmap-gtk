@@ -53,9 +53,9 @@ class Singal_Handlers(object):
       _cmdline_str = ''.join(('sqlmap ', _sqlmap_opts, '\n'))
       # print(_cmdline_str)
       if _cmdline_str:
-        self.m._page0_cmdline_str_label.set_text("running: " + _cmdline_str)
-        self.m._page0_terminal.feed_child(_cmdline_str, len(_cmdline_str))
-        self.w.set_focus(self.m._page0_terminal)
+        # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
+        self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str))
+        self.w.set_focus(self.m._page2_terminal)
 
   def respawn_terminal(self, button):
     '''
@@ -63,7 +63,7 @@ class Singal_Handlers(object):
     没有close方法, 无法删掉旧pty, 用top -Hp pid显示, 好像会残留线程
     '''
     _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
-    self.m._page0_terminal.set_pty(_pty)
+    self.m._page2_terminal.set_pty(_pty)
 
     _pty.spawn_async(str(Path.home()),
                      [self.shell],
@@ -74,7 +74,7 @@ class Singal_Handlers(object):
                      -1,
                      None,
                      lambda pty, task: None)
-    self.w.set_focus(self.m._page0_terminal)
+    self.w.set_focus(self.m._page2_terminal)
 
   def run_cmdline_old(self, button):
     '''
@@ -664,6 +664,8 @@ class Singal_Handlers(object):
                                 m._general_area_hex_ckbtn),
       self._get_text_only_ckbtn("--batch",
                                 m._general_area_batch_ckbtn),
+      self._get_text_only_ckbtn("--wizard",
+                                m._page1_misc_wizard_ckbtn),
       self._get_tampers(),
     ]
 

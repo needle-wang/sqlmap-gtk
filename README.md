@@ -26,6 +26,7 @@ sqlmap ui, using PyGObject(gtk+3)
 6. ~~添加session功能(v0.2.2)~~
 7. ~~重构成MVC模式(结构重构改动很大, v0.3)~~
 8. ~~将管道流集成到UI里(无法实现, 改用pty实现成功)~~
+9. 继续重构!
 
 #### ABOUT
 1. V0.3.1  
