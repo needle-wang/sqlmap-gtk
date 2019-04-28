@@ -11,7 +11,7 @@ from pathlib import Path
 from subprocess import Popen, PIPE
 from threading import Thread
 
-from gtk3_header import GLib, Gdk as d, Gtk as g, Vte
+from gtk3_header import GLib, Gdk as d, g, Vte
 from model import Model
 from handlers import Singal_Handlers as Handlers
 from session import Session
@@ -51,10 +51,10 @@ class UI_Window(g.Window):
     self._build_page5()
     self._build_page6()
 
+    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('API区(_4)'))
     self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_1)'))
     self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('输出区(_2)'))
     self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('日志区(_3)'))
-    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('API区(_4)'))
     self.main_notebook.append_page(self.page5, g.Label.new_with_mnemonic('帮助(_H)'))
     self.main_notebook.append_page(self.page6, g.Label.new('关于'))
 
@@ -643,19 +643,20 @@ class UI_Window(g.Window):
     self._optimize_area.add(_optimize_area_opts)
 
   def _build_page1_setting_tamper(self):
+    '''
+    frame套box, box套scroll会出现:
+    一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
+    即内容的显示没有 下滑 滚轮的效果.
+    '''
     self._tamper_area = g.Frame.new('tamper脚本')
 
-    _tamper_area_list = g.Box()
-
-    _tamper_area_tamper_view = g.TextView()
-    self._tamper_area_tamper_textbuffer = _tamper_area_tamper_view.get_buffer()
-
-    _tamper_area_list.pack_start(_tamper_area_tamper_view, True, True, 0)
+    self._tamper_area_tamper_view = g.TextView()
+    self._tamper_area_tamper_view.set_wrap_mode(g.WrapMode.CHAR)
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_size_request(300, 0)
-    _scrolled.set_policy(g.PolicyType.ALWAYS, g.PolicyType.ALWAYS)
-    _scrolled.add(_tamper_area_list)
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(self._tamper_area_tamper_view)
 
     self._tamper_area.add(_scrolled)
 
@@ -1382,18 +1383,19 @@ class UI_Window(g.Window):
     self.page3.set_border_width(10)
 
     _row1 = g.Frame()
-    _log_view = g.TextView()
-    _log_view.set_editable(False)
+    self._log_view = g.TextView()
+    self._log_view.set_editable(False)
+    self._log_view.set_wrap_mode(g.WrapMode.WORD)
 
-    self._log_view_textbuffer = _log_view.get_buffer()
-    self._log_view_textbuffer.set_text(''.join(
-      ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output\n'))
-    ))
+    _log_view_textbuffer = self._log_view.get_buffer()
+    self._handlers.clear_buffer(None)
+
+    _end_iter = _log_view_textbuffer.get_end_iter()
+    _log_view_textbuffer.create_mark('end', _end_iter, False)
 
     _scrolled = g.ScrolledWindow()
-    _scrolled.set_policy(g.PolicyType.ALWAYS, g.PolicyType.ALWAYS)
-    _scrolled.add(_log_view)
-
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(self._log_view)
     _row1.add(_scrolled)
 
     _row2 = g.Box()
@@ -1415,8 +1417,49 @@ class UI_Window(g.Window):
     self.page3.pack_end(_row2, False, True, 0)
 
   def _build_page4(self):
-    self.page4 = g.Box(orientation=VERTICAL)
+    self.page4 = g.Box(orientation=VERTICAL, spacing=6)
     self.page4.set_border_width(10)
+
+    _row1 = g.Box(spacing = 6)
+    m._page4_api_server_entry.set_text('127.0.0.1:8775')
+    # set_width_chars: 设置entry长度
+    # set_max_length: 设置entry可输入的字符长度(admin token只有32位)
+    m._page4_admin_token_entry.set_max_length(32)
+    _row1.pack_start(m._page4_api_server_label, False, True, 0)
+    _row1.pack_start(m._page4_api_server_entry, True, True, 0)
+    _row1.pack_start(m._page4_admin_token_label, False, True, 0)
+    _row1.pack_start(m._page4_admin_token_entry, True, True, 0)
+
+    _row2 = g.Box(spacing = 6)
+    m._page4_task_new_btn.connect('clicked', self._handlers.api_task_new)
+    m._page4_admin_list_btn.connect('clicked', self._handlers.api_admin_list)
+    m._page4_admin_flush_btn.connect('clicked', self._handlers.api_admin_flush)
+    _row2.pack_start(m._page4_task_new_btn, False, True, 0)
+    _row2.pack_start(m._page4_admin_list_btn, False, True, 0)
+    _row2.pack_start(m._page4_admin_flush_btn, False, True, 0)
+
+    self._api_admin_list_rows = g.ListBox.new()
+    self._api_admin_list_rows.set_selection_mode(g.SelectionMode.NONE)
+
+    _row4 = g.Frame()
+    self._task_view = g.TextView()
+    self._task_view.set_editable(False)
+    self._task_view.set_wrap_mode(g.WrapMode.WORD)
+
+    _task_view_textbuffer = self._task_view.get_buffer()
+    _end_iter = _task_view_textbuffer.get_end_iter()
+    _task_view_textbuffer.create_mark('end', _end_iter, False)
+
+    _scrolled = g.ScrolledWindow()
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(self._task_view)
+
+    _row4.add(_scrolled)
+
+    self.page4.pack_start(_row1, False, True, 5)
+    self.page4.pack_start(_row2, False, True, 5)
+    self.page4.pack_start(self._api_admin_list_rows, True, True, 5)
+    self.page4.pack_start(_row4, True, True, 5)
 
   def _build_page5(self):
     self.page5 = g.Box(orientation=VERTICAL)
@@ -1425,6 +1468,7 @@ class UI_Window(g.Window):
     _row1 = g.Frame()
     _manual_view = g.TextView()
     _manual_view.set_editable(False)
+    _manual_view.set_wrap_mode(g.WrapMode.WORD)
 
     self._manual_view_textbuffer = _manual_view.get_buffer()
 
@@ -1434,7 +1478,7 @@ class UI_Window(g.Window):
     t.start()
 
     _scrolled = g.ScrolledWindow()
-    _scrolled.set_policy(g.PolicyType.ALWAYS, g.PolicyType.ALWAYS)
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _scrolled.add(_manual_view)
 
     _row1.add(_scrolled)

@@ -6,7 +6,7 @@ from os import sep as OS_SEP
 # python3.5+
 from pathlib import Path
 
-from gtk3_header import Gtk as g
+from gtk3_header import g
 
 
 class FileEntry(g.Entry):

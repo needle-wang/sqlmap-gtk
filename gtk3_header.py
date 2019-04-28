@@ -8,5 +8,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('Vte', '2.91')
 
-from gi.repository import Gdk, Gio, GLib, Gtk, Vte
+from gi.repository import Gdk, Gio, GLib
+from gi.repository import Gtk as g
+from gi.repository import Vte
 

@@ -2,7 +2,7 @@
 #
 # 2018年 11月 10日 星期六 07:16:38 CST
 
-from gtk3_header import Gtk as g, Vte
+from gtk3_header import g, Vte
 from widgets import FileEntry, NumberEntry
 
 HORIZONTAL = g.Orientation.HORIZONTAL
@@ -332,6 +332,14 @@ class Model(object):
     self._page2_terminal = Vte.Terminal.new()
   # 日志区(3)
     self._page3_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
+  # API区(4)
+    self._page4_api_server_label = g.Label.new('REST-JSON API server:')
+    self._page4_api_server_entry = et()
+    self._page4_admin_token_label = g.Label.new('Admin (secret) token:')
+    self._page4_admin_token_entry = et()
+    self._page4_task_new_btn = g.Button.new_with_label('创建新任务')
+    self._page4_admin_list_btn = g.Button.new_with_label('显示任务列表')
+    self._page4_admin_flush_btn = g.Button.new_with_label('删除所有任务')
 
 
 def main():

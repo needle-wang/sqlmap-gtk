@@ -3,7 +3,7 @@
 # 2018年 11月 09日 星期五 15:06:50 CST
 
 from configparser import ConfigParser
-from gtk3_header import Gtk as g
+from gtk3_header import g
 
 
 LAST_TMP = 'last.tmp'
