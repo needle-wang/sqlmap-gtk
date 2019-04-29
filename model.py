@@ -337,9 +337,13 @@ class Model(object):
     self._page4_api_server_entry = et()
     self._page4_admin_token_label = g.Label.new('Admin (secret) token:')
     self._page4_admin_token_entry = et()
-    self._page4_task_new_btn = g.Button.new_with_label('创建新任务')
-    self._page4_admin_list_btn = g.Button.new_with_label('显示任务列表')
+    self._page4_task_new_btn = g.Button.new_with_label('创建任务')
+    self._page4_admin_list_btn = g.Button.new_with_label('显示任务')
     self._page4_admin_flush_btn = g.Button.new_with_label('删除所有任务')
+    self._page4_clear_task_view_btn = g.Button.new_with_label('清空反馈的结果')
+    self._page4_option_get_entry = et()
+    self._page4_option_set_view = g.TextView()
+    self._page4_task_view = g.TextView()
 
 
 def main():

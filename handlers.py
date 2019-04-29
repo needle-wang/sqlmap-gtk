@@ -3,6 +3,7 @@
 #
 # 2018年 08月 29日 星期三 15:34:10 CST
 
+import ast
 import time
 from os import environ, name as OS_NAME
 # python3.5+
@@ -46,7 +47,8 @@ class Singal_Handlers(object):
 
   def api_task_new(self, button):
     '''
-    @get("/task/new") 创建新的任务
+    rest api获取自: https://github.com/PyxYuYu/MyBlog/issues/69
+    @get("/task/new") 创建新任务
     '''
     _host = self.m._page4_api_server_entry.get_text()
     if _host:
@@ -54,13 +56,13 @@ class Singal_Handlers(object):
         _resp = requests.get('http://%s/task/new' % _host)
         _resp = _resp.json()
         if _resp['success']:
-          self._task_view_insert('%s: 创建成功.' % _resp['taskid'])
+          self._task_view_append('%s: 创建成功.' % _resp['taskid'])
       except Exception as e:
-        self._task_view_insert(e)
+        self._task_view_append(e)
 
   def api_admin_list(self, button):
     '''
-    @get("/admin/<taskid>/list") 查看所有任务列表，并显示运行状态
+    @get("/admin/<taskid>/list") 查看所有任务，并显示运行状态
     '''
     _host = self.m._page4_api_server_entry.get_text()
     _token = self.m._page4_admin_token_entry.get_text()
@@ -70,10 +72,11 @@ class Singal_Handlers(object):
         _resp = _resp.json()
         # print(_resp)
         if _resp['success']:
-          self._task_view_insert('总任务数: %s' % _resp['tasks_num'])
+          # self._task_view_append('总任务数: %s' % _resp['tasks_num'])
           # 清空之前的任务列表
           for _a_child in self.w._api_admin_list_rows.get_children():
-            self.w._api_admin_list_rows.remove(_a_child)
+            # self.w._api_admin_list_rows.remove(_a_child)
+            _a_child.destroy()
           # 填充任务列表
           _id = 0
           for _taskid, _status in _resp['tasks'].items():
@@ -81,29 +84,49 @@ class Singal_Handlers(object):
             _a_row_box_tmp = g.Box()
             _a_task_row.add(_a_row_box_tmp)
 
-            _option_get_btn = g.Button.new_with_label('查看选项')
-            _option_get_btn.connect('clicked', self.api_option_get, _taskid)
-            _option_list_btn = g.Button.new_with_label('查看选项和参数')
-            _option_list_btn.connect('clicked', self.api_option_list, _taskid)
             _task_del_btn = g.Button.new_with_label('删除')
             _task_del_btn.connect('clicked', self.api_task_delete, _a_task_row, _taskid)
+            _scan_kill_btn = g.Button.new_with_label('杀死')
+            _scan_kill_btn.connect('clicked', self.api_scan_kill, _taskid)
+            _scan_stop_btn = g.Button.new_with_label('停止')
+            _scan_stop_btn.connect('clicked', self.api_scan_stop, _taskid)
+            _scan_start_btn = g.Button.new_with_label('启动')
+            _scan_start_btn.connect('clicked', self.api_scan_start, _taskid)
+            _scan_data_btn = g.Button.new_with_label('data')
+            _scan_data_btn.connect('clicked', self.api_scan_data, _taskid)
+            _scan_log_btn = g.Button.new_with_label('log')
+            _scan_log_btn.connect('clicked', self.api_scan_log, _taskid)
+            _option_list_btn = g.Button.new_with_label('所有选项')
+            _option_list_btn.connect('clicked', self.api_option_list, _taskid)
+            _option_get_btn = g.Button.new_with_label('选项:')
+            _option_get_btn.connect('clicked', self.api_option_get, _taskid)
+            _option_set_btn = g.Button.new_with_label('设置:')
+            _option_set_btn.connect('clicked', self.api_option_set, _taskid)
 
             _id += 1
             _a_row_box_tmp.pack_start(g.Label.new('%s. %s' % (_id, _taskid)), False, True, 5)
             _a_row_box_tmp.pack_start(g.Label.new('(%s)' % _status), False, True, 0)
-            _a_row_box_tmp.pack_start(_option_get_btn, False, True, 5)
-            _a_row_box_tmp.pack_start(_option_list_btn, False, True, 5)
-            _a_row_box_tmp.pack_start(_task_del_btn, False, True, 5)
+            _a_row_box_tmp.pack_start(_task_del_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(_scan_kill_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(_scan_stop_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(_scan_start_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(g.Label.new('查看:('), False, True, 1)
+            _a_row_box_tmp.pack_start(_scan_data_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(_scan_log_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(_option_list_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(_option_get_btn, False, True, 1)
+            _a_row_box_tmp.pack_start(g.Label.new(')'), False, True, 1)
+            _a_row_box_tmp.pack_start(_option_set_btn, False, True, 1)
 
             self.w._api_admin_list_rows.add(_a_task_row)
 
           self.w._api_admin_list_rows.show_all()
       except Exception as e:
-        self._task_view_insert(e)
+        self._task_view_append(e)
 
   def api_option_list(self, button, taskid):
     '''
-    @get("/option/<taskid>/list") 列出指定任务的选项
+    @get("/option/<taskid>/list") 获取指定任务的options
     '''
     _host = self.m._page4_api_server_entry.get_text()
     if _host:
@@ -113,32 +136,73 @@ class Singal_Handlers(object):
         if _resp['success']:
           for _key, _value in _resp['options'].items():
             if _value:
-              self._task_view_insert('%s: %s' % (_key, _value))
+              self._task_view_append('%s: %s' % (_key, _value))
       except Exception as e:
-        self._task_view_insert(e)
+        self._task_view_append(e)
 
   def api_option_get(self, button, taskid):
     '''
-    @post("/option/<taskid>/get") 获取指定任务的选项的值
+    @post("/option/<taskid>/get") 获取指定任务的option(s)
     '''
     _host = self.m._page4_api_server_entry.get_text()
-    if _host:
+    _buffer_text = self.m._page4_option_get_entry.get_text()
+    _options = {}
+    for _tmp in _buffer_text.split():
+      _options[_tmp] = None
+    if _host and _options:
+      _mesg = '%s:\n' % taskid
       try:
-        _resp = requests.post('http://%s/option/%s/get' % (_host, taskid))
+        _headers = {'Content-Type': 'application/json'}
+        _resp = requests.post('http://%s/option/%s/get' % (_host, taskid),
+                              json = _options,
+                              headers = _headers)
         _resp = _resp.json()
         if _resp['success']:
-          self._task_view_insert('%s:' % taskid)
           if _resp['options'].items():
             for _key, _value in _resp['options'].items():
-              self._task_view_insert('%s: %s' % (_key, _value))
+              _mesg += '%s: %s, ' % (_key, _value)
           else:
-            self._task_view_insert('None')
+            _mesg += 'None'
+        else:
+          _mesg += _resp['message']
       except Exception as e:
-        self._task_view_insert(e)
+        _mesg += str(e)
+      self._task_view_append(_mesg.strip())
+
+  def api_option_set(self, button, taskid):
+    '''
+    @post("/option/<taskid>/set") 设置指定任务的option(s)
+    Warning: any option can be set, even a invalid option which
+             is unable to remove, except deleting the task.
+    '''
+    _host = self.m._page4_api_server_entry.get_text()
+    _buffer_text = self._get_buffer_text(self.m._page4_option_set_view)
+    try:
+      _json = ast.literal_eval(_buffer_text)
+    except Exception as e:
+      _json = str(e)
+
+    _mesg = '%s: ' % taskid
+    if _json and isinstance(_json, dict):
+      if _host:
+        try:
+          _headers = {'Content-Type': 'application/json'}
+          _resp = requests.post('http://%s/option/%s/set' % (_host, taskid),
+                                json = _json,
+                                headers = _headers)
+          _resp = _resp.json()
+          if _resp['success']:
+            _mesg += '设置成功'
+        except Exception as e:
+          _mesg += str(e)
+    else:
+      _mesg += '需要一个有效的python dict'
+
+    self._task_view_append(_mesg)
 
   def api_admin_flush(self, button):
     '''
-    @get("/admin/<taskid>/flush") 刷新删除所有任务
+    @get("/admin/<taskid>/flush") 删除所有任务
     '''
     _host = self.m._page4_api_server_entry.get_text()
     _token = self.m._page4_admin_token_entry.get_text()
@@ -149,9 +213,9 @@ class Singal_Handlers(object):
         if _resp['success']:
           for _a_child in self.w._api_admin_list_rows.get_children():
             self.w._api_admin_list_rows.remove(_a_child)
-          self._task_view_insert('清空全部任务: 成功')
+          self._task_view_append('清空全部任务: 成功')
       except Exception as e:
-        self._task_view_insert(e)
+        self._task_view_append(e)
 
   def api_task_delete(self, button, *data):
     '''
@@ -164,20 +228,131 @@ class Singal_Handlers(object):
         _resp = _resp.json()
         if _resp['success']:
           self.w._api_admin_list_rows.remove(data[0])
-          self._task_view_insert('%s: 删除成功' % data[1])
+          self._task_view_append('%s: 删除成功' % data[1])
       except Exception as e:
-        self._task_view_insert(e)
+        self._task_view_append(e)
 
-  def _task_view_insert(self, output):
-    _task_view_textbuffer = self.w._task_view.get_buffer()
+  def api_scan_start(self, button, taskid):
+    '''
+    @post("/scan/<taskid>/start") 指定任务 开始扫描
+    要求发送json, 会执行/option/<taskid>/set
+    '''
+    _host = self.m._page4_api_server_entry.get_text()
+    if _host:
+      _mesg = '%s: ' % taskid
+      try:
+        _headers = {'Content-Type': 'application/json'}
+        _resp = requests.post('http://%s/scan/%s/start' % (_host, taskid),
+                              json = {},
+                              headers = _headers)
+        _resp = _resp.json()
+        if _resp['success']:
+          _mesg = '%sengineid: %s' % (_mesg, _resp['engineid'])
+        else:
+          _mesg += _resp['message']
+      except Exception as e:
+        _mesg += str(e)
+
+      self._task_view_append(_mesg)
+
+  def api_scan_stop(self, button, taskid):
+    '''
+    @get("/scan/<taskid>/stop") 指定任务 停止扫描
+    '''
+    _host = self.m._page4_api_server_entry.get_text()
+    if _host:
+      _mesg = '%s: ' % taskid
+      try:
+        _resp = requests.get('http://%s/scan/%s/stop' % (_host, taskid))
+        _resp = _resp.json()
+        if _resp['success']:
+          _mesg += 'ok, stoped.'
+        else:
+          _mesg += _resp['message']
+      except Exception as e:
+        _mesg += str(e)
+      self._task_view_append(_mesg)
+
+  def api_scan_kill(self, button, taskid):
+    '''
+    @get("/scan/<taskid>/kill") kill -9 指定任务
+    '''
+    _host = self.m._page4_api_server_entry.get_text()
+    if _host:
+      _mesg = '%s: ' % taskid
+      try:
+        _resp = requests.get('http://%s/scan/%s/kill' % (_host, taskid))
+        _resp = _resp.json()
+        if _resp['success']:
+          _mesg += 'ok, killed.'
+        else:
+          _mesg += _resp['message']
+      except Exception as e:
+        _mesg += str(e)
+      self._task_view_append(_mesg)
+
+  def api_scan_data(self, button, taskid):
+    '''
+    @get("/scan/<taskid>/data") 查看指定任务的扫描数据,
+                                data若有内容说明存在注入
+    '''
+    _host = self.m._page4_api_server_entry.get_text()
+    if _host:
+      _mesg = '%s:\n' % taskid
+      try:
+        _resp = requests.get('http://%s/scan/%s/data' % (_host, taskid))
+        _resp = _resp.json()
+        # print(_resp)    # _resp['data'], _resp['error'] are list
+        if _resp['success']:
+          del[_resp['success']]
+          _mesg = '%s%s' % (_mesg, _resp)
+      except Exception as e:
+        _mesg += str(e)
+      self._task_view_append(_mesg)
+
+  def api_scan_log(self, button, taskid):
+    '''
+    @get("/scan/<taskid>/log") 查看指定任务的扫描日志
+    '''
+    _host = self.m._page4_api_server_entry.get_text()
+    if _host:
+      _mesg = '%s:\n' % taskid
+      try:
+        _resp = requests.get('http://%s/scan/%s/log' % (_host, taskid))
+        _resp = _resp.json()
+        if _resp['success']:
+          _logs = ''
+          for _tmp in _resp['log']:
+            _log = '%s %s: %s\n' % (_tmp['time'], _tmp['level'], _tmp['message'])
+            _logs = ''.join((_logs, _log))
+          if _logs:
+            _mesg += _logs.strip()
+          else:
+            _mesg += "没有log."
+        else:
+          _mesg += _resp['message']
+      except Exception as e:
+        _mesg += str(e)
+      self._task_view_append(_mesg)
+
+  def _get_buffer_text(self, textview):
+    _buffer = textview.get_buffer()
+    _start = _buffer.get_start_iter()
+    _end = _buffer.get_end_iter()
+    return _buffer.get_text(_start, _end, False).strip()
+
+  def _task_view_append(self, output):
+    _task_view_textbuffer = self.m._page4_task_view.get_buffer()
 
     _mark = _task_view_textbuffer.get_mark('end')
-    _end_iter = _task_view_textbuffer.get_iter_at_mark(_mark)
+    _end = _task_view_textbuffer.get_iter_at_mark(_mark)
 
-    _task_view_textbuffer.insert(_end_iter, '%s\n' % output)
+    _task_view_textbuffer.insert(_end, '%s\n' % output)
 
-    self.w._task_view.scroll_mark_onscreen(_mark)
-    self.w.set_focus(self.w._task_view)
+    self.m._page4_task_view.scroll_mark_onscreen(_mark)
+    # 获取焦点
+    # self.w.set_focus(self.m._page4_task_view)
+    self.m._page4_task_view.grab_focus()
 
   def run_cmdline(self, button):
     '''
@@ -191,7 +366,7 @@ class Singal_Handlers(object):
       if _cmdline_str:
         # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
         self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str))
-        self.w.set_focus(self.m._page2_terminal)
+        self.m._page2_terminal.grab_focus()
 
   def respawn_terminal(self, button):
     '''
@@ -210,7 +385,7 @@ class Singal_Handlers(object):
                      -1,
                      None,
                      lambda pty, task: None)
-    self.w.set_focus(self.m._page2_terminal)
+    self.m._page2_terminal.grab_focus()
 
   def run_cmdline_old(self, button):
     '''
@@ -231,11 +406,15 @@ class Singal_Handlers(object):
   def set_file_entry_text(self, button, entry):
     entry.set_text(button.get_filename())
 
-  def clear_buffer(self, button):
+  def clear_log_view_buffer(self, button):
     _log_view_textbuffer = self.w._log_view.get_buffer()
     _log_view_textbuffer.set_text(''.join(
       ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output\n'))
     ))
+
+  def clear_task_view_buffer(self, button):
+    _task_view_textbuffer = self.m._page4_task_view.get_buffer()
+    _task_view_textbuffer.set_text('')
 
   def optimize_area_controller(self, button):
     m = self.m
@@ -274,26 +453,26 @@ class Singal_Handlers(object):
     _log_view_textbuffer = self.w._log_view.get_buffer()
 
     _mark = _log_view_textbuffer.get_mark('end')
-    _end_iter = _log_view_textbuffer.get_iter_at_mark(_mark)
+    _end = _log_view_textbuffer.get_iter_at_mark(_mark)
 
     try:
       with file_path.open(encoding = 'utf8') as _f:
         _line_list_tmp = _f.readlines()
         if _line_list_tmp:
           for _line_tmp in _line_list_tmp:
-            _log_view_textbuffer.insert(_end_iter, _line_tmp)
+            _log_view_textbuffer.insert(_end, _line_tmp)
         else:
-          _log_view_textbuffer.insert(_end_iter, str(file_path) + ': 空文件')
+          _log_view_textbuffer.insert(_end, str(file_path) + ': 空文件')
     except EnvironmentError as e:
-      _log_view_textbuffer.insert(_end_iter, str(e))
+      _log_view_textbuffer.insert(_end, str(e))
     finally:
       _log_view_textbuffer.insert(
-        _end_iter,
+        _end,
         time.strftime('\n%Y-%m-%d %R:%S: ----------我是分割线----------\n',
                       time.localtime()))
 
     self.w._log_view.scroll_mark_onscreen(_mark)
-    self.w.set_focus(self.w._log_view)
+    self.w._log_view.grab_focus()
 
   def read_log_file(self, button):
     _base_dir = self._get_url_dir()
@@ -840,9 +1019,9 @@ class Singal_Handlers(object):
     _tamper_textbuffer = self.w._tamper_area_tamper_view.get_buffer()
     _tampers = ''
 
-    _start_iter = _tamper_textbuffer.get_start_iter()
-    _end_iter = _tamper_textbuffer.get_end_iter()
-    for _tamper_tmp in _tamper_textbuffer.get_text(_start_iter, _end_iter, False).splitlines():
+    _start = _tamper_textbuffer.get_start_iter()
+    _end = _tamper_textbuffer.get_end_iter()
+    for _tamper_tmp in _tamper_textbuffer.get_text(_start, _end, False).splitlines():
       if _tamper_tmp.strip():
         _tampers = _tampers + _tamper_tmp.strip() + ','
 
@@ -892,7 +1071,6 @@ class Singal_Handlers(object):
 
 
 def main():
-  from gtk3_header import g
   from sqlmap_ui import UI_Window
 
   win = UI_Window()

@@ -51,15 +51,18 @@ class UI_Window(g.Window):
     self._build_page5()
     self._build_page6()
 
-    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('API区(_4)'))
     self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_1)'))
     self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('输出区(_2)'))
     self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('日志区(_3)'))
+    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('API区(_4)'))
     self.main_notebook.append_page(self.page5, g.Label.new_with_mnemonic('帮助(_H)'))
     self.main_notebook.append_page(self.page6, g.Label.new('关于'))
 
     _main_box.pack_start(self.main_notebook, True, True, 0)
     self.add(_main_box)
+    # 初始化完后, 必须要有焦点, 不然按任何键都会报错, 直到操作一次UI:
+    # gtk_widget_event: assertion 'WIDGET_REALIZED_FOR_EVENT (widget, event)' failed`
+    m._inject_area_param_ckbtn.grab_focus()
 
     # 添加tooltips, placeholders等
     INIT_MESG(self, m)
@@ -644,7 +647,7 @@ class UI_Window(g.Window):
 
   def _build_page1_setting_tamper(self):
     '''
-    frame套box, box套scroll会出现:
+    frame套box, box再套scroll会出现:
     一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
     即内容的显示没有 下滑 滚轮的效果.
     '''
@@ -654,7 +657,7 @@ class UI_Window(g.Window):
     self._tamper_area_tamper_view.set_wrap_mode(g.WrapMode.CHAR)
 
     _scrolled = g.ScrolledWindow()
-    _scrolled.set_size_request(300, 0)
+    _scrolled.set_size_request(300, -1)
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _scrolled.add(self._tamper_area_tamper_view)
 
@@ -1388,10 +1391,10 @@ class UI_Window(g.Window):
     self._log_view.set_wrap_mode(g.WrapMode.WORD)
 
     _log_view_textbuffer = self._log_view.get_buffer()
-    self._handlers.clear_buffer(None)
+    self._handlers.clear_log_view_buffer(None)
 
-    _end_iter = _log_view_textbuffer.get_end_iter()
-    _log_view_textbuffer.create_mark('end', _end_iter, False)
+    _end = _log_view_textbuffer.get_end_iter()
+    _log_view_textbuffer.create_mark('end', _end, False)
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
@@ -1404,7 +1407,7 @@ class UI_Window(g.Window):
 
     _row2.pack_start(self._page3_read_target_btn, True, False, 0)
 
-    m._page3_clear_btn.connect('clicked', self._handlers.clear_buffer)
+    m._page3_clear_btn.connect('clicked', self._handlers.clear_log_view_buffer)
 
     _row2.pack_start(m._page3_clear_btn, True, False, 0)
 
@@ -1417,7 +1420,7 @@ class UI_Window(g.Window):
     self.page3.pack_end(_row2, False, True, 0)
 
   def _build_page4(self):
-    self.page4 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page4 = g.Box(orientation=VERTICAL)
     self.page4.set_border_width(10)
 
     _row1 = g.Box(spacing = 6)
@@ -1431,34 +1434,78 @@ class UI_Window(g.Window):
     _row1.pack_start(m._page4_admin_token_entry, True, True, 0)
 
     _row2 = g.Box(spacing = 6)
+    _arrow_down = g.Image.new_from_icon_name('pan-down-symbolic', 1)
+    m._page4_admin_list_btn.set_image(_arrow_down)
+    m._page4_admin_list_btn.set_image_position(g.PositionType.RIGHT)
+    m._page4_admin_list_btn.set_always_show_image(True)
+
     m._page4_task_new_btn.connect('clicked', self._handlers.api_task_new)
     m._page4_admin_list_btn.connect('clicked', self._handlers.api_admin_list)
     m._page4_admin_flush_btn.connect('clicked', self._handlers.api_admin_flush)
+    m._page4_clear_task_view_btn.connect('clicked', self._handlers.clear_task_view_buffer)
+
     _row2.pack_start(m._page4_task_new_btn, False, True, 0)
     _row2.pack_start(m._page4_admin_list_btn, False, True, 0)
     _row2.pack_start(m._page4_admin_flush_btn, False, True, 0)
+    _row2.pack_start(m._page4_clear_task_view_btn, False, True, 0)
+
+    _row3 = g.Frame()
+    _paned = g.Paned()
 
     self._api_admin_list_rows = g.ListBox.new()
     self._api_admin_list_rows.set_selection_mode(g.SelectionMode.NONE)
+    # TODO!
+    # self._api_admin_list_rows.set_placeholder(
+      # g.Label.new("抵制 assertion WIDGET_REALIZED_FOR_EVENT failed 的错误"))
+
+    _lscrolled = g.ScrolledWindow()
+    _lscrolled.set_size_request(400, -1)
+    _lscrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
+    _lscrolled.add(self._api_admin_list_rows)
+
+    _rbox = g.Box(orientation = VERTICAL)
+    m._page4_option_get_entry.set_text('url risk level')
+
+    m._page4_option_set_view.set_wrap_mode(g.WrapMode.CHAR)
+    _option_set_view_textbuffer = m._page4_option_set_view.get_buffer()
+    _options_example = ("{\n"
+                        "  'url': 'http://www.site.com/vuln.php?id=1',\n"
+                        "  'level': 1, 'risk': 1,\n\n"
+                        "}\n# 所有选项见sqlmap目录中的optiondict.py\n")
+    _option_set_view_textbuffer.set_text(_options_example, len(_options_example.encode('utf8')))
+    # 貌似scrollwindow要直接包含textview,
+    # 不然一直回车后, 页面不会向上滚
+    _option_set_scrolled = g.ScrolledWindow()
+    _option_set_scrolled.set_size_request(400, -1)
+    _option_set_scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
+    _option_set_scrolled.add(m._page4_option_set_view)
+
+    _rbox.pack_start(m._page4_option_get_entry, False, True, 2)
+    _rbox.pack_start(_option_set_scrolled, True, True, 2)
+
+    # Warning: don't edit pack1(), pack2() again, or it would be strange.
+    _paned.pack1(_lscrolled, False, False)
+    _paned.pack2(_rbox, False, True)
+    _row3.add(_paned)
 
     _row4 = g.Frame()
-    self._task_view = g.TextView()
-    self._task_view.set_editable(False)
-    self._task_view.set_wrap_mode(g.WrapMode.WORD)
+    m._page4_task_view.set_editable(False)
+    m._page4_task_view.set_wrap_mode(g.WrapMode.WORD)
 
-    _task_view_textbuffer = self._task_view.get_buffer()
-    _end_iter = _task_view_textbuffer.get_end_iter()
-    _task_view_textbuffer.create_mark('end', _end_iter, False)
+    _task_view_textbuffer = m._page4_task_view.get_buffer()
+    _end = _task_view_textbuffer.get_end_iter()
+    _task_view_textbuffer.create_mark('end', _end, False)
+    self._handlers._task_view_append('此处显示反馈的结果.')
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
-    _scrolled.add(self._task_view)
+    _scrolled.add(m._page4_task_view)
 
     _row4.add(_scrolled)
 
     self.page4.pack_start(_row1, False, True, 5)
     self.page4.pack_start(_row2, False, True, 5)
-    self.page4.pack_start(self._api_admin_list_rows, True, True, 5)
+    self.page4.pack_start(_row3, True, True, 5)
     self.page4.pack_start(_row4, True, True, 5)
 
   def _build_page5(self):
@@ -1491,7 +1538,7 @@ class UI_Window(g.Window):
     https://www.jianshu.com/p/11090e197648
     https://wiki.gnome.org/Projects/PyGObject/Threading
     '''
-    _end_iter = self._manual_view_textbuffer.get_end_iter()
+    _end = self._manual_view_textbuffer.get_end_iter()
     # _manual_hh = '/home/needle/bin/output_interval.sh'
     # WIN下不能用此行
     # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
@@ -1500,19 +1547,19 @@ class UI_Window(g.Window):
       _subprocess = Popen(_manual_hh, stdout=PIPE, bufsize=1, shell = True)
 
       for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
-        GLib.idle_add(self._manual_view_textbuffer.insert, _end_iter, _an_bytes_line_tmp.decode('utf8'))
+        GLib.idle_add(self._manual_view_textbuffer.insert, _end, _an_bytes_line_tmp.decode('utf8'))
       _subprocess.stdout.close()
       _subprocess.wait()
     except FileNotFoundError as e:
-      GLib.idle_add(self._manual_view_textbuffer.insert, _end_iter, str(e))
+      GLib.idle_add(self._manual_view_textbuffer.insert, _end, str(e))
 
   def _build_page6(self):
     self.page6 = g.Box(orientation=VERTICAL, spacing=6)
     self.page6.set_border_width(10)
 
     _about_str = '''
-    1. VERSION: 0.3.1
-       2019年 04月 25日 星期四 17:36:44 CST
+    1. VERSION: 0.3.2
+       2019年 04月 29日 星期一 21:20:07 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n

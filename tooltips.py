@@ -584,10 +584,39 @@ class Widget_Mesg(object):
     # 二、日志区(page3)
     self._set_tooltip('不会修改文件',
                       m._page3_clear_btn)
+    # 三、API区(page4)
+    self._set_tooltip('必填项, 不要加http://',
+                      m._page4_api_server_label,
+                      m._page4_api_server_entry)
+    self._set_tooltip('必填项, 32位的token',
+                      m._page4_admin_token_label,
+                      m._page4_admin_token_entry)
+    self._set_tooltip('此处填写要查看的选项(空格分隔), 如: url risk level',
+                      m._page4_option_get_entry)
+    _api_usage = '''sqlampapi使用步骤:
+    1. 在本地或远程运行: ./sqlmapapi.py -s
+    2. 填写API区第一行的server和token
+    3. 点击 创建任务
+    4. 点击 显示任务 后, 下方窗格中会显示任务列表
+    5. 在本窗格中填写 python dict类型的选项如:
+    {
+      'url': 'http://www.site.com/vuln.php?id=1',
+      'level': 1, 'risk': 1,
+    }
+    6. 点击 设置:(会发送 本窗格的选项dict)
+    7. 点击 启动 (设置了选项才有意义)
+    注: 1.要查看任务的状态, 点击 显示任务 进行刷新
+        2.sqlmapapi支持的选项与sqlmap不兼容,
+          且其进行选项设置时, 没有检查选项!
+          如果设置了无效的选项, 只能删除任务!
+    '''
+    self._set_tooltip(_api_usage,
+                      m._page4_option_set_view)
 
   def _set_placeholder(self, placeholder, *widgets):
     '''
     widgets: 应该都是entry吧?
+    只有entry才有set_placeholder_text方法
     '''
     for _widget in widgets:
       _widget.set_placeholder_text(placeholder)
