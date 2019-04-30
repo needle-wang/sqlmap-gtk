@@ -68,6 +68,7 @@ class Session(object):
       _tmp_entry = getattr(self.m, _i)
 
       if isinstance(_tmp_entry, g.Entry) and self._cfg['Entry'][_i]:
+        # print(type(self._cfg['Entry'][_i]))
         _tmp_entry.set_text(self._cfg['Entry'][_i])
 
   def _load_from_tmp_ckbtn(self):

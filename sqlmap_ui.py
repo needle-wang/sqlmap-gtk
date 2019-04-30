@@ -30,6 +30,7 @@ m = Model()
 
 
 class UI_Window(g.Window):
+  # @profile
   def __init__(self):
     super().__init__(title='sqlmap-ui')
     self.connect('key_press_event', self.on_window_key_press_event)
@@ -76,17 +77,35 @@ class UI_Window(g.Window):
     self.session.save_to_tmp()
     g.main_quit()
 
+  def set_file_entry_text(self, button, data):
+    '''
+    data: [file_entry, 'title of chooser']
+    '''
+    if len(data) > 1:   # 选择目录
+      dialog = g.FileChooserDialog(data[1], self,
+                                   g.FileChooserAction.SELECT_FOLDER,
+                                   ('_Cancel', g.ResponseType.CANCEL,
+                                    '_Select', g.ResponseType.OK))
+    else:
+      # 还是可以选择目录~~, 小问题, 不用管.
+      dialog = g.FileChooserDialog("选择文件", self,
+                                   g.FileChooserAction.OPEN,
+                                   ('_Cancel', g.ResponseType.CANCEL,
+                                    '_OK', g.ResponseType.OK))
+    response = dialog.run()
+    if response == g.ResponseType.OK:
+      data[0].set_text(dialog.get_filename())
+    dialog.destroy()
+    data[0].grab_focus()
+
   def _show_warn(self, button):
-    # if True:
     if button.get_active():
       _warn_dialog = g.MessageDialog(parent = self,
                                      flags = g.DialogFlags.MODAL,
                                      type = g.MessageType.WARNING,
                                      buttons = g.ButtonsType.OK_CANCEL,
                                      message_format = '这将清除所有记录!\n确定勾选?')
-      # _warn_dialog.show_all()
       _response = _warn_dialog.run()
-      # print(_response)
       if _response in (g.ResponseType.CANCEL, g.ResponseType.DELETE_EVENT):
         button.set_active(False)
 
@@ -136,12 +155,11 @@ class UI_Window(g.Window):
 
     _burp_area = g.Box()
 
-    self._burp_logfile_chooser = g.FileChooserButton()
-
+    self._burp_logfile_chooser = g.Button.new_with_label('打开')
     self._burp_logfile_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._burp_logfile
+      'clicked',
+      self.set_file_entry_text,
+      [m._burp_logfile]
     )
 
     _burp_area.pack_start(m._burp_logfile, True, True, 0)
@@ -149,12 +167,11 @@ class UI_Window(g.Window):
 
     _request_area = g.Box()
 
-    self._request_file_chooser = g.FileChooserButton()
-
+    self._request_file_chooser = g.Button.new_with_label('打开')
     self._request_file_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._request_file
+      'clicked',
+      self.set_file_entry_text,
+      [m._request_file]
     )
 
     _request_area.pack_start(m._request_file, True, True, 0)
@@ -162,12 +179,11 @@ class UI_Window(g.Window):
 
     _bulkfile_area = g.Box()
 
-    self._bulkfile_chooser = g.FileChooserButton()
-
+    self._bulkfile_chooser = g.Button.new_with_label('打开')
     self._bulkfile_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._bulkfile
+      'clicked',
+      self.set_file_entry_text,
+      [m._bulkfile]
     )
 
     _bulkfile_area.pack_start(m._bulkfile, True, True, 0)
@@ -175,12 +191,11 @@ class UI_Window(g.Window):
 
     _configfile_area = g.Box()
 
-    self._configfile_chooser = g.FileChooserButton()
-
+    self._configfile_chooser = g.Button.new_with_label('打开')
     self._configfile_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._configfile
+      'clicked',
+      self.set_file_entry_text,
+      [m._configfile]
     )
 
     _configfile_area.pack_start(m._configfile, True, True, 0)
@@ -275,13 +290,11 @@ class UI_Window(g.Window):
     _page1_other_misc_opts = g.Box(orientation=VERTICAL, spacing=6)
 
     _row1 = g.Box()
-    self._page1_misc_tmp_dir_chooser = g.FileChooserButton.new(
-      '选择 本地临时目录', g.FileChooserAction.SELECT_FOLDER)
-
+    self._page1_misc_tmp_dir_chooser = g.Button.new_with_label('打开')
     self._page1_misc_tmp_dir_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_misc_tmp_dir_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_misc_tmp_dir_entry, '选择 本地临时目录']
     )
 
     _row1.pack_start(m._page1_misc_web_root_ckbtn, False, True, 5)
@@ -345,12 +358,11 @@ class UI_Window(g.Window):
     _row1.pack_start(m._page1_general_binary_fields_entry, False, True, 5)
 
     _row2 = g.Box()
-    self._page1_general_preprocess_chooser = g.FileChooserButton()
-
+    self._page1_general_preprocess_chooser = g.Button.new_with_label('打开')
     self._page1_general_preprocess_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_preprocess_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_preprocess_entry]
     )
 
     _row2.pack_start(m._page1_general_forms_ckbtn, False, True, 5)
@@ -376,21 +388,18 @@ class UI_Window(g.Window):
     _row4.pack_start(m._page1_general_encoding_entry, False, True, 5)
 
     _row5 = g.Box()
-    self._page1_general_session_file_chooser = g.FileChooserButton()
-
+    self._page1_general_session_file_chooser = g.Button.new_with_label('打开')
     self._page1_general_session_file_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_session_file_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_session_file_entry]
     )
 
-    self._page1_general_output_dir_chooser = g.FileChooserButton.new(
-      '选择 结果保存在哪', g.FileChooserAction.SELECT_FOLDER)
-
+    self._page1_general_output_dir_chooser = g.Button.new_with_label('打开')
     self._page1_general_output_dir_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_output_dir_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_output_dir_entry, '选择 结果保存在哪']
     )
 
     _row5.pack_start(m._page1_general_session_file_ckbtn, False, True, 5)
@@ -411,20 +420,18 @@ class UI_Window(g.Window):
     _row6.pack_start(m._page1_general_csv_del_entry, False, True, 5)
 
     _row7 = g.Box()
-    self._page1_general_traffic_file_chooser = g.FileChooserButton()
-
+    self._page1_general_traffic_file_chooser = g.Button.new_with_label('打开')
     self._page1_general_traffic_file_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_traffic_file_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_traffic_file_entry]
     )
 
-    self._page1_general_har_chooser = g.FileChooserButton()
-
+    self._page1_general_har_chooser = g.Button.new_with_label('打开')
     self._page1_general_har_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_har_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_har_entry]
     )
 
     _row7.pack_start(m._page1_general_traffic_file_ckbtn, False, True, 5)
@@ -435,20 +442,18 @@ class UI_Window(g.Window):
     _row7.pack_start(self._page1_general_har_chooser, False, True, 5)
 
     _row8 = g.Box()
-    self._page1_general_save_chooser = g.FileChooserButton()
-
+    self._page1_general_save_chooser = g.Button.new_with_label('打开')
     self._page1_general_save_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_save_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_save_entry]
     )
 
-    self._page1_general_scope_chooser = g.FileChooserButton()
-
+    self._page1_general_scope_chooser = g.Button.new_with_label('打开')
     self._page1_general_scope_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._page1_general_scope_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._page1_general_scope_entry]
     )
 
     _row8.pack_start(m._page1_general_save_ckbtn, False, True, 5)
@@ -534,12 +539,11 @@ class UI_Window(g.Window):
     _row8.pack_start(m._tech_area_second_req_ckbtn, True, True, 5)
 
     _row9 = g.Box()
-    self._tech_area_second_req_chooser = g.FileChooserButton()
-
+    self._tech_area_second_req_chooser = g.Button.new_with_label('打开')
     self._tech_area_second_req_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._tech_area_second_req_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._tech_area_second_req_entry]
     )
 
     _row9.pack_end(self._tech_area_second_req_chooser, False, True, 5)
@@ -775,12 +779,11 @@ class UI_Window(g.Window):
     _row1.pack_start(m._request_area_safe_post_entry, True, True, 5)
 
     _row2 = g.Box()
-    self._request_area_safe_req_chooser = g.FileChooserButton()
-
+    self._request_area_safe_req_chooser = g.Button.new_with_label('打开')
     self._request_area_safe_req_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._request_area_safe_req_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._request_area_safe_req_entry]
     )
 
     _row2.pack_start(m._request_area_safe_req_ckbtn, False, True, 5)
@@ -792,12 +795,11 @@ class UI_Window(g.Window):
     _row3 = g.Separator.new(HORIZONTAL)
 
     _row4 = g.Box()
-    self._request_area_proxy_file_chooser = g.FileChooserButton()
-
+    self._request_area_proxy_file_chooser = g.Button.new_with_label('打开')
     self._request_area_proxy_file_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._request_area_proxy_file_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._request_area_proxy_file_entry]
     )
 
     _row4.pack_start(m._request_area_ignore_proxy_ckbtn, False, True, 5)
@@ -892,11 +894,11 @@ class UI_Window(g.Window):
     _row4.pack_start(m._request_area_cookie_del_entry, False, True, 5)
 
     _row5 = g.Box()
-    self._request_area_load_cookies_chooser = g.FileChooserButton()
+    self._request_area_load_cookies_chooser = g.Button.new_with_label('打开')
     self._request_area_load_cookies_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._request_area_load_cookies_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._request_area_load_cookies_entry]
     )
 
     _row5.pack_start(m._request_area_load_cookies_ckbtn, False, True, 10)
@@ -909,12 +911,12 @@ class UI_Window(g.Window):
     _row7 = g.Box()
     m._request_area_auth_type_entry.set_max_width_chars(25)
     m._request_area_auth_file_entry.set_max_width_chars(25)
-    self._request_area_auth_file_chooser = g.FileChooserButton()
 
+    self._request_area_auth_file_chooser = g.Button.new_with_label('打开')
     self._request_area_auth_file_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._request_area_auth_file_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._request_area_auth_file_entry]
     )
 
     _row7.pack_start(m._request_area_auth_type_ckbtn, False, True, 5)
@@ -1036,12 +1038,11 @@ class UI_Window(g.Window):
     _row1.pack_start(m._runsql_area_sql_query_entry, True, True, 10)
 
     _row2 = g.Box()
-    self._runsql_area_sql_file_chooser = g.FileChooserButton()
-
+    self._runsql_area_sql_file_chooser = g.Button.new_with_label('打开')
     self._runsql_area_sql_file_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._runsql_area_sql_file_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._runsql_area_sql_file_entry]
     )
 
     _row2.pack_start(m._runsql_area_sql_shell_ckbtn, False, True, 10)
@@ -1262,13 +1263,11 @@ class UI_Window(g.Window):
     _row2.pack_start(m._file_os_access_priv_esc_ckbtn, False, True, 5)
 
     _row3 = g.Box()
-    self._file_os_access_msf_path_chooser = g.FileChooserButton.new(
-      '选择 本地Metasploit安装目录', g.FileChooserAction.SELECT_FOLDER)
-
+    self._file_os_access_msf_path_chooser = g.Button.new_with_label('打开')
     self._file_os_access_msf_path_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._file_os_access_msf_path_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._file_os_access_msf_path_entry, '选择 本地Metasploit安装目录']
     )
 
     _row3.pack_start(m._file_os_access_msf_path_ckbtn, False, True, 5)
@@ -1288,12 +1287,11 @@ class UI_Window(g.Window):
     _file_write_area_opts = g.Box(orientation=VERTICAL, spacing=6)
 
     _row1 = g.Box()
-    self._file_write_area_shared_lib_chooser = g.FileChooserButton()
-
+    self._file_write_area_shared_lib_chooser = g.Button.new_with_label('打开')
     self._file_write_area_shared_lib_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._file_write_area_shared_lib_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._file_write_area_shared_lib_entry]
     )
 
     _row1.pack_start(m._file_write_area_udf_ckbtn, False, True, 5)
@@ -1302,12 +1300,11 @@ class UI_Window(g.Window):
     _row1.pack_start(self._file_write_area_shared_lib_chooser, False, True, 5)
 
     _row2 = g.Box()
-    self._file_write_area_file_write_chooser = g.FileChooserButton()
-
+    self._file_write_area_file_write_chooser = g.Button.new_with_label('打开')
     self._file_write_area_file_write_chooser.connect(
-      'file-set',
-      self._handlers.set_file_entry_text,
-      m._file_write_area_file_write_entry
+      'clicked',
+      self.set_file_entry_text,
+      [m._file_write_area_file_write_entry]
     )
 
     _row2.pack_start(m._file_write_area_file_write_ckbtn, False, True, 5)
@@ -1454,9 +1451,6 @@ class UI_Window(g.Window):
 
     self._api_admin_list_rows = g.ListBox.new()
     self._api_admin_list_rows.set_selection_mode(g.SelectionMode.NONE)
-    # TODO!
-    # self._api_admin_list_rows.set_placeholder(
-      # g.Label.new("抵制 assertion WIDGET_REALIZED_FOR_EVENT failed 的错误"))
 
     _lscrolled = g.ScrolledWindow()
     _lscrolled.set_size_request(400, -1)
@@ -1558,6 +1552,7 @@ class UI_Window(g.Window):
     self.page6.set_border_width(10)
 
     _about_str = '''
+    update at 2019-05-01 02:36:25
     1. VERSION: 0.3.2
        2019年 04月 29日 星期一 21:20:07 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)

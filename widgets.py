@@ -16,20 +16,30 @@ class FileEntry(g.Entry):
     self.completion = g.EntryCompletion()
     # self.completion.set_match_func(self.match_partly, None)
 
-    self.completion.set_model(None)
-    # 选择上框, 不行, 会触发changed!
+    self.completion.set_model(g.ListStore(str))
+    # 行内选择, 选择上框, 会触发changed和insert-text, 不能一起使用
     # self.completion.set_inline_selection(True)
-    # 匹配成功的条目上框
+    # 行内补全, 匹配成功的条目自动上框(选中状态)
     self.completion.set_inline_completion(True)
 
     self.completion.set_minimum_key_length(1)
     self.completion.set_text_column(0)
 
     self.set_completion(self.completion)
+    # 一用insert-text信号, 就报错~:
+    # Warning: g_value_get_int: assertion 'G_VALUE_HOLDS_INT (value)' failed
     self.connect('changed', self.on_changed)
 
   def on_changed(self, *args):
-    _file_store = g.ListStore(str)
+    '''
+    不管是用户输入, 还是set_text都会触发此方法!
+    竟然不存在 判断是否为用户打字触发的 信号~
+    修复这两个类竟然花了一晚上时间, 唉...
+    '''
+    if not self.has_focus():
+      return
+    _file_store = self.completion.get_model()
+    _file_store.clear()
 
     _file = Path(self.get_text().strip())
     # 如果写c::,  会抛异常, 暂时不管
@@ -48,8 +58,6 @@ class FileEntry(g.Entry):
       except PermissionError as e:
         print(e)
 
-      self.completion.set_model(_file_store)
-
   def match_partly(self, completion, entrystr, iter, data):
     '''
     set_inline_completion不生效呢?
@@ -59,18 +67,32 @@ class FileEntry(g.Entry):
     return modelstr.startswith(_entrystr_name)
 
 
-class NumberEntry(g.Entry):
+class NumberEntry(g.Entry, g.Editable):
   '''
-  https://stackoverflow.com/questions/2726839/creating-a-pygtk-text-field-that-only-accepts-number
+  Entry是Editable的子类, 如果单继承Entry的话, 由于python的动态特性,
+  本类任何重载的方法, 会反应到g.Editable上(啥?? # 自答, 然后自问)
+  1. https://stackoverflow.com/questions/2726839/creating-a-pygtk-text-field-that-only-accepts-number
+  2. https://stackoverflow.com/questions/38815694/gtk-3-position-attribute-on-insert-text-signal-from-gtk-entry-is-always-0
+  **Important Note: You have to inherit from Gtk.Editable in addition to Gtk.Entry.**
+  If you do not do so,
+  you will start seeing (the validation or whatever you do inside do_insert_text) applying to every other Gtk.Entry in your application.
+  If you do not inherit,
+  you are overriding the base implementation provided by Gtk.Editable(which is called by all other Gtk.Entry widgets in your application).
+  By inheriting from Gtk.Editable, you override only the 'local' copy of the base implementation which only applies to your custom class.
+  3. https://stackoverflow.com/questions/40074977/how-to-format-the-entries-in-gtk-entry/40163816
+  关于: Warning: g_value_get_int: assertion 'G_VALUE_HOLDS_INT (value)' failed
   '''
   def __init__(self):
     super().__init__()
-    self.connect('changed', self.on_changed)
 
-  def on_changed(self, *args):
-    # print(args)
-    text = self.get_text().strip()
-    self.set_text(''.join([i for i in text if i in '0123456789']))
+  def do_insert_text(self, new_text, length, position):
+    filtered_text = ''.join([i for i in new_text if i in '0123456789'])
+
+    if filtered_text:
+      self.get_buffer().insert_text(position, filtered_text, length)
+      return position + length
+
+    return position
 
 
 def main():

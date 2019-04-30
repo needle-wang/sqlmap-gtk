@@ -349,10 +349,11 @@ class Singal_Handlers(object):
 
     _task_view_textbuffer.insert(_end, '%s\n' % output)
 
-    self.m._page4_task_view.scroll_mark_onscreen(_mark)
     # 获取焦点
     # self.w.set_focus(self.m._page4_task_view)
     self.m._page4_task_view.grab_focus()
+    # https://stackoverflow.com/questions/48934458/gtk-sourceview-scroll-to-mark-not-working
+    GLib.idle_add(self.m._page4_task_view.scroll_mark_onscreen, _mark)
 
   def run_cmdline(self, button):
     '''
@@ -402,9 +403,6 @@ class Singal_Handlers(object):
 
       # print(_cmdline_str)
       Popen(_cmdline_str, shell = True)
-
-  def set_file_entry_text(self, button, entry):
-    entry.set_text(button.get_filename())
 
   def clear_log_view_buffer(self, button):
     _log_view_textbuffer = self.w._log_view.get_buffer()
@@ -471,8 +469,8 @@ class Singal_Handlers(object):
         time.strftime('\n%Y-%m-%d %R:%S: ----------我是分割线----------\n',
                       time.localtime()))
 
-    self.w._log_view.scroll_mark_onscreen(_mark)
     self.w._log_view.grab_focus()
+    GLib.idle_add(self.w._log_view.scroll_mark_onscreen, _mark)
 
   def read_log_file(self, button):
     _base_dir = self._get_url_dir()

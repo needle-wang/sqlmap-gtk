@@ -21,20 +21,21 @@ sqlmap ui, using PyGObject(gtk+3)
 - ~~UI重新排版~~
 - ~~分离并完善tooltip等提示信息~~
 - ~~细节优化(margin, padding啥的)~~
-- 打从加了filechooserbutton起, 启动就慢了一倍:  
-   根据line_profiler输出: gtk.FileChooserButton()有性能问题!  
+- ~~打从加了filechooserbutton起, 启动就慢了一倍:  
+   根据line_profiler输出: gtk.FileChooserButton()有性能问题!~~
 - ~~重构~~
 - ~~添加session功能(v0.2.2)~~
 - ~~重构成MVC模式(结构重构改动很大, v0.3)~~
 - ~~将管道流集成到UI里(无法实现, 改用pty实现成功)~~
-- ~~添加API区(实现sqlmapapi client)~~  
+- ~~添加API区(实现sqlmapapi client)~~
+- ~~修复: 修改filechooserbutton(常有什么network path超时警告, 启动加快),  
+  输出滚动不准确, file entry补全, G_VALUE_HOLDS_INT警告~~
 - 继续重构, 优化
 
 #### ABOUT
-1. V0.3.2  
+1. update at 2019-05-01 02:36:25  
+   V0.3.2  
    2019年 04月 29日 星期一 21:20:07 CST  
-   V0.3.1  
-   2019年 04月 25日 星期四 17:36:44 CST  
    作者: needle wang ( needlewang2011@gmail.com )
 2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py
 3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)带来的灵感, 其作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)
