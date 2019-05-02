@@ -43,7 +43,7 @@ class FileEntry(g.Entry):
     为什么会调用两次?? 单独写例子却只运行一次, 继承的原因嘛?
     '''
     uris = data.get_data().split()
-    print(uris)
+    # print(uris)
     if uris:
       path = self.get_file_path_from_dnd_dropped_uri(uris[0].decode('utf8'))
       # print('path: ', path)
