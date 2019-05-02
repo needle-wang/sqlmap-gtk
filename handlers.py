@@ -504,7 +504,7 @@ class Singal_Handlers(object):
 
   def _get_target(self):
     m = self.m
-    _current_pagenum = self.w._target_notbook.get_current_page()
+    _current_pagenum = self.w._target_notebook.get_current_page()
     _target_list = [("-u ", m._url_combobox.get_child().get_text),
                     ("-l ", m._burp_logfile.get_text),
                     ("-r ", m._request_file.get_text),

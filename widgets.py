@@ -5,8 +5,11 @@
 from os import sep as OS_SEP
 # python3.5+
 from pathlib import Path
+from urllib import request
 
-from gtk3_header import g
+from gtk3_header import g, Gdk as d
+
+drag_targets = [g.TargetEntry.new("text/uri-list", 0, 80)]
 
 
 class FileEntry(g.Entry):
@@ -29,6 +32,38 @@ class FileEntry(g.Entry):
     # 一用insert-text信号, 就报错~:
     # Warning: g_value_get_int: assertion 'G_VALUE_HOLDS_INT (value)' failed
     self.connect('changed', self.on_changed)
+
+    # 拖放文件功能
+    self.drag_dest_set(g.DestDefaults.ALL, drag_targets, d.DragAction.COPY)
+    self.connect('drag-data-received', self.set_path_by_drag)
+
+  def set_path_by_drag(self, entry, context, x, y, data, info, time):
+    '''
+    https://stackoverflow.com/questions/24094186/drag-and-drop-file-example-in-pygobject
+    为什么会调用两次?? 单独写例子却只运行一次, 继承的原因嘛?
+    '''
+    uris = data.get_data().split()
+    print(uris)
+    if uris:
+      path = self.get_file_path_from_dnd_dropped_uri(uris[0].decode('utf8'))
+      # print('path: ', path)
+      entry.set_text(path)
+    # context.finish(True, False, time)
+
+    return True
+
+  def get_file_path_from_dnd_dropped_uri(self, uri):
+    path = ""
+    if uri.startswith('file:\\\\\\'):  # windows
+        path = uri[8:]  # 8 is len('file:///')
+    elif uri.startswith('file://'):  # nautilus, rox
+        path = uri[7:]  # 7 is len('file://')
+    elif uri.startswith('file:'):  # xffm
+        path = uri[5:]  # 5 is len('file:')
+
+    path = request.url2pathname(path)  # escape special chars
+    # path = path.strip('\r\n\x00')  # remove \r\n and NULL
+    return path
 
   def on_changed(self, *args):
     '''

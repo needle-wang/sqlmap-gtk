@@ -42,9 +42,11 @@ class UI_Window(g.Window):
 
     self._build_page_target()
 
-    _main_box.pack_start(self._target_notbook, False, True, 0)
+    _main_box.pack_start(self._target_notebook, False, True, 0)
 
     self.main_notebook = g.Notebook()
+    self.main_notebook.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
+    self.main_notebook.connect('scroll-event', self.scroll_page)
     self._build_page1()
     self._build_page2()
     self._build_page3()
@@ -76,6 +78,19 @@ class UI_Window(g.Window):
     # 保存 此次所有选项
     self.session.save_to_tmp()
     g.main_quit()
+
+  def scroll_page(self, notebook, event):
+    '''
+    https://stackoverflow.com/questions/11773132/gtk-notebook-change-page-with-scrolling-and-alt1-like-firefox-chrome-epipha
+    '''
+    if event.get_scroll_deltas()[2] < 0:
+      notebook.prev_page()
+    else:
+      notebook.next_page()
+    # returns True, so it should stop the emission.
+    # 返回True, 会停止向上(父容器)传递信号,
+    # 不然page1的_notebook处理完信号后, 会传递给父容器的main_notebook
+    return True
 
   def set_file_entry_text(self, button, data):
     '''
@@ -142,7 +157,9 @@ class UI_Window(g.Window):
       return True
 
   def _build_page_target(self):
-    self._target_notbook = g.Notebook()
+    self._target_notebook = g.Notebook()
+    self._target_notebook.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
+    self._target_notebook.connect('scroll-event', self.scroll_page)
     # 目标url
     name_store = g.ListStore(int, str)
     name_store.append([1, "http://www.site.com/vuln.php?id=1"])
@@ -207,13 +224,13 @@ class UI_Window(g.Window):
     _google_dork_area = g.Box()
     _google_dork_area.pack_start(m._google_dork, True, True, 0)
 
-    self._target_notbook.append_page(_url_area, g.Label.new('目标url'))
-    self._target_notbook.append_page(_burp_area, g.Label.new('burp日志'))
-    self._target_notbook.append_page(_request_area, g.Label.new('HTTP请求'))
-    self._target_notbook.append_page(_bulkfile_area, g.Label.new('BULKFILE'))
-    self._target_notbook.append_page(_configfile_area, g.Label.new('ini文件'))
-    self._target_notbook.append_page(_sitemap_url_area, g.Label.new('xml_url'))
-    self._target_notbook.append_page(_google_dork_area, g.Label.new('GOOGLEDORK'))
+    self._target_notebook.append_page(_url_area, g.Label.new('目标url'))
+    self._target_notebook.append_page(_burp_area, g.Label.new('burp日志'))
+    self._target_notebook.append_page(_request_area, g.Label.new('HTTP请求'))
+    self._target_notebook.append_page(_bulkfile_area, g.Label.new('BULKFILE'))
+    self._target_notebook.append_page(_configfile_area, g.Label.new('ini文件'))
+    self._target_notebook.append_page(_sitemap_url_area, g.Label.new('xml_url'))
+    self._target_notebook.append_page(_google_dork_area, g.Label.new('GOOGLEDORK'))
 
   def _build_page1(self):
     self.page1 = g.Box(orientation=VERTICAL, spacing=6)
@@ -228,6 +245,8 @@ class UI_Window(g.Window):
 
     # 主构造区
     _notebook = g.Notebook()
+    _notebook.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
+    _notebook.connect('scroll-event', self.scroll_page)
 
     # 选项区 - 设置, 请求, 枚举, 文件
     self._build_page1_setting()
