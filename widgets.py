@@ -7,9 +7,34 @@ from os import sep as OS_SEP
 from pathlib import Path
 from urllib import request
 
-from gtk3_header import g, Gdk as d
+from gtk3_header import d, g
 
 drag_targets = [g.TargetEntry.new("text/uri-list", 0, 80)]
+
+
+class Notebook(g.Notebook):
+  def __init(self, **kwargs):
+    '''
+    scroll-event放这, 不生效~~ ??
+    '''
+    super().__init__(self, **kwargs)
+
+    self.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
+    self.connect('scroll-event', self.scroll_page)
+
+  def scroll_page(self, notebook, event):
+    '''
+    https://stackoverflow.com/questions/11773132/gtk-notebook-change-page-with-scrolling-and-alt1-like-firefox-chrome-epipha
+    '''
+    print('ha?')
+    if event.get_scroll_deltas()[2] < 0:
+      notebook.prev_page()
+    else:
+      notebook.next_page()
+    # returns True, so it should stop the emission.
+    # 返回True, 会停止向上(父容器)传递信号,
+    # 不然page1的_notebook处理完信号后, 会传递给父容器的main_notebook
+    return True
 
 
 class FileEntry(g.Entry):
@@ -55,11 +80,11 @@ class FileEntry(g.Entry):
   def get_file_path_from_dnd_dropped_uri(self, uri):
     path = ""
     if uri.startswith('file:\\\\\\'):  # windows
-        path = uri[8:]  # 8 is len('file:///')
+      path = uri[8:]  # 8 is len('file:///')
     elif uri.startswith('file://'):  # nautilus, rox
-        path = uri[7:]  # 7 is len('file://')
+      path = uri[7:]  # 7 is len('file://')
     elif uri.startswith('file:'):  # xffm
-        path = uri[5:]  # 5 is len('file:')
+      path = uri[5:]  # 5 is len('file:')
 
     path = request.url2pathname(path)  # escape special chars
     # path = path.strip('\r\n\x00')  # remove \r\n and NULL
@@ -117,6 +142,7 @@ class NumberEntry(g.Entry, g.Editable):
   3. https://stackoverflow.com/questions/40074977/how-to-format-the-entries-in-gtk-entry/40163816
   关于: Warning: g_value_get_int: assertion 'G_VALUE_HOLDS_INT (value)' failed
   '''
+
   def __init__(self):
     super().__init__()
 

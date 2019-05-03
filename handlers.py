@@ -13,14 +13,14 @@ from urllib.parse import urlparse
 import requests
 
 from gtk3_header import g, GLib, Vte
-# from basis_and_too.logging_needle import get_console_logger
+# from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
 
 IS_POSIX = True if OS_NAME == 'posix' else False
 QUOTE = "'%s'" if OS_NAME == 'posix' else '"%s"'  # dos下只能用双引号
 
 
-class Singal_Handlers(object):
+class Handler(object):
   def __init__(self, w, m):
     '''
     w: sqlmap_ui.UI_Window
@@ -405,7 +405,7 @@ class Singal_Handlers(object):
       Popen(_cmdline_str, shell = True)
 
   def clear_log_view_buffer(self, button):
-    _log_view_textbuffer = self.w._log_view.get_buffer()
+    _log_view_textbuffer = self.m._page3_log_view.get_buffer()
     _log_view_textbuffer.set_text(''.join(
       ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output\n'))
     ))
@@ -448,7 +448,7 @@ class Singal_Handlers(object):
     file_path: pathlib.Path
                sqlmap库中dataToOutFile默认utf8写入
     '''
-    _log_view_textbuffer = self.w._log_view.get_buffer()
+    _log_view_textbuffer = self.m._page3_log_view.get_buffer()
 
     _mark = _log_view_textbuffer.get_mark('end')
     _end = _log_view_textbuffer.get_iter_at_mark(_mark)
@@ -469,8 +469,8 @@ class Singal_Handlers(object):
         time.strftime('\n%Y-%m-%d %R:%S: ----------我是分割线----------\n',
                       time.localtime()))
 
-    self.w._log_view.grab_focus()
-    GLib.idle_add(self.w._log_view.scroll_mark_onscreen, _mark)
+    self.m._page3_log_view.grab_focus()
+    GLib.idle_add(self.m._page3_log_view.scroll_mark_onscreen, _mark)
 
   def read_log_file(self, button):
     _base_dir = self._get_url_dir()
