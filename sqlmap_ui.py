@@ -1538,7 +1538,7 @@ class UI_Window(g.Window):
     self.page6.set_border_width(10)
 
     _about_str = '''
-    update at 2019-05-03 03:10:28
+    update at 2019-05-03 16:13:47
     1. VERSION: 0.3.2
        2019年 04月 29日 星期一 21:20:07 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)

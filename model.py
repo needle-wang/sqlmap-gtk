@@ -9,6 +9,7 @@ HORIZONTAL = g.Orientation.HORIZONTAL
 btn = g.Button.new_with_label
 cb = g.CheckButton.new_with_label
 et = g.Entry
+label = g.Label.new
 
 
 class Model(object):
@@ -173,13 +174,13 @@ class Model(object):
     self._request_area_proxy_file_ckbtn = cb('代理列表文件')
     self._request_area_proxy_file_entry = FileEntry()
     self._request_area_proxy_file_chooser = btn('打开')
-    self._request_area_proxy_ip_label = g.Label.new('IP:')
+    self._request_area_proxy_ip_label = label('IP:')
     self._request_area_proxy_ip_entry = et()
-    self._request_area_proxy_port_label = g.Label.new('PORT:')
+    self._request_area_proxy_port_label = label('PORT:')
     self._request_area_proxy_port_entry = NumberEntry()
-    self._request_area_proxy_username_label = g.Label.new('username:')
+    self._request_area_proxy_username_label = label('username:')
     self._request_area_proxy_username_entry = et()
-    self._request_area_proxy_password_label = g.Label.new('password:')
+    self._request_area_proxy_password_label = label('password:')
     self._request_area_proxy_password_entry = et()
     self._request_area_tor_ckbtn = cb('使用Tor匿名网络')
     self._request_area_tor_port_ckbtn = cb('Tor端口')
@@ -266,13 +267,13 @@ class Model(object):
     # 访问WIN下注册表
     self._file_os_registry_reg_ckbtn = cb('键值操作:')
     self._file_os_registry_reg_combobox = g.ComboBoxText.new()
-    self._file_os_registry_reg_key_label = g.Label.new('键')
+    self._file_os_registry_reg_key_label = label('键')
     self._file_os_registry_reg_key_entry = et()
-    self._file_os_registry_reg_value_label = g.Label.new('值')
+    self._file_os_registry_reg_value_label = label('值')
     self._file_os_registry_reg_value_entry = et()
-    self._file_os_registry_reg_data_label = g.Label.new('数据')
+    self._file_os_registry_reg_data_label = label('数据')
     self._file_os_registry_reg_data_entry = et()
-    self._file_os_registry_reg_type_label = g.Label.new('类型')
+    self._file_os_registry_reg_type_label = label('类型')
     self._file_os_registry_reg_type_entry = et()
   # 其他(T)
     # 通用项
@@ -349,7 +350,7 @@ class Model(object):
     self._page1_misc_z_ckbtn = cb('使用短的助记符')
     self._page1_misc_z_entry = et()
   # 输出区(2)
-    # self._page2_cmdline_str_label = g.Label.new('')
+    # self._page2_cmdline_str_label = label('')
     self._page2_respwan_btn = btn('重开终端')
     self._page2_terminal = Vte.Terminal.new()
   # 日志区(3)
@@ -358,9 +359,9 @@ class Model(object):
     self._page3_clear_btn = g.Button.new_with_mnemonic('清空(_C)')
     self._page3_read_log_btn = btn('查看log文件')
   # API区(4)
-    self._page4_api_server_label = g.Label.new('REST-JSON API server:')
+    self._page4_api_server_label = label('REST-JSON API server:')
     self._page4_api_server_entry = et()
-    self._page4_admin_token_label = g.Label.new('Admin (secret) token:')
+    self._page4_admin_token_label = label('Admin (secret) token:')
     self._page4_admin_token_entry = et()
     self._page4_task_new_btn = btn('创建任务')
     self._page4_admin_list_btn = btn('显示任务')

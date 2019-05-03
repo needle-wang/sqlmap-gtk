@@ -33,7 +33,7 @@ sqlmap ui, using PyGObject(gtk+3)
 - 继续重构, 优化
 
 #### ABOUT
-1. update at 2019-05-03 03:10:28  
+1. update at 2019-05-03 16:13:47  
    V0.3.2  
    2019年 04月 29日 星期一 21:20:07 CST  
    作者: needle wang ( needlewang2011@gmail.com )
