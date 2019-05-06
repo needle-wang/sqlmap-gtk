@@ -65,14 +65,15 @@ class FileEntry(g.Entry):
   def set_path_by_drag(self, entry, context, x, y, data, info, time):
     '''
     https://stackoverflow.com/questions/24094186/drag-and-drop-file-example-in-pygobject
-    为什么会调用两次?? 单独写例子却只运行一次, 继承的原因嘛?
+    为什么会调用两次??
     '''
-    uris = data.get_data().split()
+    uris = data.get_uris()
     # print(uris)
     if uris:
-      path = self.get_file_path_from_dnd_dropped_uri(uris[0].decode('utf8'))
-      # print('path: ', path)
-      entry.set_text(path)
+      path = self.get_file_path_from_dnd_dropped_uri(uris[0])
+      # print(path, entry.get_text())
+      if path != entry.get_text():
+        entry.set_text(path)
     # context.finish(True, False, time)
 
     return True

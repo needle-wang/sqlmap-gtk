@@ -241,7 +241,7 @@ class UI_Window(g.Window):
     _notebook.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
     _notebook.connect('scroll-event', self.scroll_page)
 
-    # 选项区 - 设置, 请求, 枚举, 文件
+    # 选项区 - 设置, 请求, 枚举, 文件, 其他
     self._build_page1_setting()
     self._build_page1_request()
     self._build_page1_enumeration()
