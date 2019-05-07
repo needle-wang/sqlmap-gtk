@@ -261,7 +261,6 @@ class UI_Window(g.Window):
 
     _build_button = g.Button.new_with_mnemonic('A.收集选项(_A)')
     _build_button.connect('clicked', self._handlers.build_all)
-
     # 用于改善ui的使用体验
     _unselect_all_btn = g.Button.new_with_mnemonic('反选所有复选框(_S)')
     _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
@@ -279,7 +278,14 @@ class UI_Window(g.Window):
     self.page1.pack_end(_exec_area, False, True, 0)
 
   def _build_page1_other(self):
-    _page1_other = g.Box(orientation=VERTICAL)
+    '''
+    最大的宽应该是由最长的 request定制的第一行 决定
+
+    如果所有标签页全用ScrolledWindow的话, UI的尺寸(size)会变得很小
+    以"其他"标签的height作为标准高,
+    高于此height的标签页使用ScrolledWindow, 显示滚动条
+    '''
+    self.page1_other = g.Box(orientation=VERTICAL)
 
     self._build_page1_other_general()
     self._build_page1_other_misc()
@@ -290,12 +296,8 @@ class UI_Window(g.Window):
     _row2 = g.Box()
     _row2.pack_start(self.page1_other_misc_area, True, True, 5)
 
-    _page1_other.add(_row1)
-    _page1_other.add(_row2)
-
-    self.page1_other = g.ScrolledWindow()
-    self.page1_other.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
-    self.page1_other.add(_page1_other)
+    self.page1_other.add(_row1)
+    self.page1_other.add(_row2)
 
   def _build_page1_other_misc(self):
     self.page1_other_misc_area = g.Frame.new('杂项')
@@ -499,11 +501,11 @@ class UI_Window(g.Window):
     _row2.pack_start(self._optimize_area, False, True, 5)
     _row2.pack_start(self._general_area, False, True, 5)
 
-    _page1_setting.pack_start(_row1, True, True, 5)
-    _page1_setting.pack_start(_row2, True, True, 5)
+    _page1_setting.pack_start(_row1, False, True, 5)
+    _page1_setting.pack_start(_row2, False, True, 5)
 
     self.page1_setting = g.ScrolledWindow()
-    self.page1_setting.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
+    self.page1_setting.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     self.page1_setting.add(_page1_setting)
 
   def _build_page1_setting_tech(self):
@@ -584,7 +586,7 @@ class UI_Window(g.Window):
 
     _row6 = g.Box()
     _row6.pack_start(m._detection_area_code_ckbtn, False, True, 5)
-    _row6.pack_end(m._detection_area_code_entry, True, True, 5)
+    _row6.pack_start(m._detection_area_code_entry, False, True, 5)
 
     _row7 = g.Box()
     _row7.pack_start(m._detection_area_text_only_ckbtn, True, True, 5)
@@ -768,7 +770,7 @@ class UI_Window(g.Window):
     _page1_request.pack_start(_row4, False, True, 5)
 
     self.page1_request = g.ScrolledWindow()
-    self.page1_request.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
+    self.page1_request.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     self.page1_request.add(_page1_request)
 
   def _build_page1_request_proxy(self):
@@ -1009,10 +1011,6 @@ class UI_Window(g.Window):
     self.page1_enumeration.add(_row3)
     self.page1_enumeration.add(_row4)
 
-    # self.page1_enumeration = g.ScrolledWindow()
-    # self.page1_enumeration.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
-    # self.page1_enumeration.add(_page1_enumeration)
-
   def _build_page1_enumeration_brute_force(self):
     self._brute_force_area = g.Frame.new('暴破表名/列名')
 
@@ -1207,10 +1205,6 @@ class UI_Window(g.Window):
     self.page1_file.add(_row2)
     self.page1_file.add(_row3)
     self.page1_file.add(_row4)
-    # 如果全是ScrolledWindow, UI的尺寸(size)会变得很小
-    # self.page1_file = g.ScrolledWindow()
-    # self.page1_file.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
-    # self.page1_file.add(_page1_file)
 
   def _build_page1_file_os_registry(self):
     self._file_os_registry_area = g.Frame.new('访问WIN下注册表')
@@ -1442,7 +1436,7 @@ class UI_Window(g.Window):
 
     _lscrolled = g.ScrolledWindow()
     _lscrolled.set_size_request(400, -1)
-    _lscrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
+    _lscrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _lscrolled.add(self._api_admin_list_rows)
 
     _rbox = g.Box(orientation = VERTICAL)
@@ -1459,7 +1453,7 @@ class UI_Window(g.Window):
     # 不然一直回车后, 页面不会向上滚
     _option_set_scrolled = g.ScrolledWindow()
     _option_set_scrolled.set_size_request(400, -1)
-    _option_set_scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.AUTOMATIC)
+    _option_set_scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _option_set_scrolled.add(m._page4_option_set_view)
 
     _rbox.pack_start(m._page4_option_get_entry, False, True, 2)

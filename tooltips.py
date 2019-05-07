@@ -48,7 +48,7 @@ class Widget_Mesg(object):
                           m._detection_area_not_str_entry)
     self._set_placeholder('正则匹配查询为真时的字串',
                           m._detection_area_re_entry)
-    self._set_placeholder('查询为真时的状态码',
+    self._set_placeholder('查询为真时的',
                           m._detection_area_code_entry)
     self._set_placeholder('BEUSTQ',
                           m._tech_area_tech_entry)
