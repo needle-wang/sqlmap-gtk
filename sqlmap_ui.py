@@ -32,7 +32,7 @@ m = Model()
 class UI_Window(g.Window):
   # @profile
   def __init__(self):
-    super().__init__(title='sqlmap-ui')
+    super().__init__(title='sqlmap-gtk')
     self.connect('key_press_event', self.on_window_key_press_event)
 
     self._handlers = Handler(self, m)
@@ -102,16 +102,17 @@ class UI_Window(g.Window):
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_Select', g.ResponseType.OK))
     else:
-      # 还是可以选择目录~~, 小问题, 不用管.
+      # 点击左侧的 最近使用 可以选择目录, 小问题, 不用管.
       dialog = g.FileChooserDialog("选择文件", self,
                                    g.FileChooserAction.OPEN,
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_OK', g.ResponseType.OK))
-    response = dialog.run()
-    if response == g.ResponseType.OK:
-      data[0].set_text(dialog.get_filename())
-    dialog.destroy()
-    data[0].grab_focus()
+    try:
+      if dialog.run() == g.ResponseType.OK:
+        data[0].set_text(dialog.get_filename())
+        data[0].grab_focus()
+    finally:
+      dialog.destroy()
 
   def _show_warn(self, button):
     if button.get_active():
@@ -1495,7 +1496,7 @@ class UI_Window(g.Window):
     # 使用线程 填充 帮助标签, 加快启动速度
     t = Thread(target = self._set_manual_view,
                args = (m._page5_manual_view.get_buffer(),))
-    t.daemon = True
+    # t.daemon = True   # 死了也会存在
     t.start()
 
     _scrolled = g.ScrolledWindow()
@@ -1504,7 +1505,7 @@ class UI_Window(g.Window):
 
     _row1.add(_scrolled)
 
-    self.page5.pack_start(_row1, True, True, 10)
+    self.page5.pack_start(_row1, True, True, 5)
 
   def _set_manual_view(self, textbuffer):
     '''
@@ -1528,8 +1529,7 @@ class UI_Window(g.Window):
       GLib.idle_add(textbuffer.insert, _end, str(e))
 
   def _build_page6(self):
-    self.page6 = g.Box(orientation=VERTICAL, spacing=6)
-    self.page6.set_border_width(10)
+    self.page6 = g.Box()
 
     _about_str = '''
     update at 2019-05-03 16:13:47

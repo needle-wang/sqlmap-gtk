@@ -362,12 +362,11 @@ class Handler(object):
     _sqlmap_opts = self.m._cmd_entry.get_text().strip()
     if IS_POSIX:
       self.w.main_notebook.next_page()
-      _cmdline_str = ''.join(('sqlmap ', _sqlmap_opts, '\n'))
+      _cmdline_str = 'sqlmap %s\n' % _sqlmap_opts
       # print(_cmdline_str)
-      if _cmdline_str:
-        # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
-        self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str))
-        self.m._page2_terminal.grab_focus()
+      # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
+      self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str))
+      self.m._page2_terminal.grab_focus()
 
   def respawn_terminal(self, button):
     '''
@@ -393,22 +392,17 @@ class Handler(object):
      -  -  -  - 废弃 -  -  -  -
     '''
     _sqlmap_opts = self.m._cmd_entry.get_text().strip()
+    if IS_POSIX:
+      _cmdline_str = '/usr/bin/env xterm -hold -e sqlmap %s' % _sqlmap_opts
+    else:
+      _cmdline_str = 'start cmd /k sqlmap %s' % _sqlmap_opts
 
-    if _sqlmap_opts:
-      if IS_POSIX:
-        _cmdline_str = ''.join(('/usr/bin/env xterm -hold -e sqlmap ', _sqlmap_opts))
-      else:
-        # msys2
-        _cmdline_str = ''.join(('start cmd /k sqlmap ', _sqlmap_opts))
-
-      # print(_cmdline_str)
-      Popen(_cmdline_str, shell = True)
+    # print(_cmdline_str)
+    Popen(_cmdline_str, shell = True)
 
   def clear_log_view_buffer(self, button):
-    _log_view_textbuffer = self.m._page3_log_view.get_buffer()
-    _log_view_textbuffer.set_text(''.join(
-      ('sqlmap的运行记录都放在这: ', str(Path.home() / '.sqlmap/output\n'))
-    ))
+    self.m._page3_log_view.get_buffer().set_text(
+      'sqlmap的运行记录都放在这: %s\n' % (Path.home() / '.sqlmap/output'))
 
   def clear_task_view_buffer(self, button):
     _task_view_textbuffer = self.m._page4_task_view.get_buffer()
@@ -460,7 +454,7 @@ class Handler(object):
           for _line_tmp in _line_list_tmp:
             _log_view_textbuffer.insert(_end, _line_tmp)
         else:
-          _log_view_textbuffer.insert(_end, str(file_path) + ': 空文件')
+          _log_view_textbuffer.insert(_end, ': 空文件' % str(file_path))
     except EnvironmentError as e:
       _log_view_textbuffer.insert(_end, str(e))
     finally:
@@ -469,8 +463,8 @@ class Handler(object):
         time.strftime('\n%Y-%m-%d %R:%S: ----------我是分割线----------\n',
                       time.localtime()))
 
-    self.m._page3_log_view.grab_focus()
-    GLib.idle_add(self.m._page3_log_view.scroll_mark_onscreen, _mark)
+      self.m._page3_log_view.grab_focus()
+      GLib.idle_add(self.m._page3_log_view.scroll_mark_onscreen, _mark)
 
   def read_log_file(self, button):
     _base_dir = self._get_url_dir()
