@@ -433,7 +433,7 @@ class Widget_Mesg(object):
                       m._file_read_area_file_read_ckbtn,
                       m._file_read_area_file_read_entry)
     self._set_tooltip('只能查看已下载到本地的文件',
-                      m._file_read_area_file_btn)
+                      m._file_read_area_file_read_btn)
     self._set_tooltip('--udf-inject',
                       m._file_write_area_udf_ckbtn)
     self._set_tooltip('与--udf-inject配套使用, 可选',

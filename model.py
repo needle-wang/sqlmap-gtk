@@ -240,7 +240,7 @@ class Model(object):
     # 读取远程文件
     self._file_read_area_file_read_ckbtn = cb('远程文件路径(--file-read=)')
     self._file_read_area_file_read_entry = et()
-    self._file_read_area_file_btn = btn('查看')
+    self._file_read_area_file_read_btn = btn('查看')
     # 文件上传
     self._file_write_area_udf_ckbtn = cb('注入(默认sqlmap自带的)用户定义函数')
     self._file_write_area_shared_lib_ckbtn = cb('本地共享库路径(--shared-lib=)')

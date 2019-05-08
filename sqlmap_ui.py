@@ -382,7 +382,7 @@ class UI_Window(g.Window):
     _row2.pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
-    _row2.pack_start(m._page1_general_preprocess_entry, True, True, 5)
+    _row2.pack_start(m._page1_general_preprocess_entry, True, True, 0)
     _row2.pack_start(m._page1_general_preprocess_chooser, False, True, 5)
 
     _row3 = g.Box()
@@ -793,7 +793,7 @@ class UI_Window(g.Window):
 
     _row2.pack_start(m._request_area_safe_req_ckbtn, False, True, 5)
     _row2.pack_start(m._request_area_safe_req_entry, True, True, 0)
-    _row2.pack_start(m._request_area_safe_req_chooser, False, True, 0)
+    _row2.pack_start(m._request_area_safe_req_chooser, False, True, 5)
     _row2.pack_start(m._request_area_safe_freq_ckbtn, False, True, 5)
     _row2.pack_start(m._request_area_safe_freq_entry, False, True, 5)
 
@@ -904,10 +904,10 @@ class UI_Window(g.Window):
       [m._request_area_load_cookies_entry]
     )
 
-    _row5.pack_start(m._request_area_load_cookies_ckbtn, False, True, 10)
+    _row5.pack_start(m._request_area_load_cookies_ckbtn, False, True, 5)
     _row5.pack_start(m._request_area_load_cookies_entry, True, True, 0)
-    _row5.pack_start(m._request_area_load_cookies_chooser, False, True, 0)
-    _row5.pack_start(m._request_area_drop_set_cookie_ckbtn, False, True, 10)
+    _row5.pack_start(m._request_area_load_cookies_chooser, False, True, 5)
+    _row5.pack_start(m._request_area_drop_set_cookie_ckbtn, False, True, 5)
 
     _row6 = g.Separator.new(HORIZONTAL)
 
@@ -1317,11 +1317,11 @@ class UI_Window(g.Window):
 
     _row1 = g.Box()
     m._file_read_area_file_read_entry.set_text('/etc/passwd')
-    m._file_read_area_file_btn.connect('clicked', self._handlers.read_dumped_file)
+    m._file_read_area_file_read_btn.connect('clicked', self._handlers.read_dumped_file)
 
-    _row1.pack_start(m._file_read_area_file_read_ckbtn, False, True, 10)
-    _row1.pack_start(m._file_read_area_file_read_entry, True, True, 10)
-    _row1.pack_start(m._file_read_area_file_btn, False, True, 10)
+    _row1.pack_start(m._file_read_area_file_read_ckbtn, False, True, 5)
+    _row1.pack_start(m._file_read_area_file_read_entry, True, True, 0)
+    _row1.pack_start(m._file_read_area_file_read_btn, False, True, 5)
 
     _file_read_area_opts.pack_start(_row1, False, True, 5)
     self._file_read_area.add(_file_read_area_opts)
@@ -1532,7 +1532,7 @@ class UI_Window(g.Window):
     self.page6 = g.Box()
 
     _about_str = '''
-    update at 2019-05-03 16:13:47
+    update at 2019-05-09 01:02:36
     1. VERSION: 0.3.2
        2019年 04月 29日 星期一 21:20:07 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)

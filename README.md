@@ -1,5 +1,5 @@
-## SQLMAP-UI
-sqlmap ui, using PyGObject(gtk+3) 
+## sqlmap-ui
+sqlmap GUI, using PyGObject(gtk+3) 
 
 
 #### SCREENSHORT
@@ -8,7 +8,7 @@ sqlmap ui, using PyGObject(gtk+3)
 #### INSTALLATION
 
 1. **REQUIRED**  
-  - GTK+3.20(which is hard to install at win), python3.5+  
+  - python3.5+, GTK+3.20(which is hard to install at win)  
   - pygobject: `pip3 install PyGObject` or `apt-get install python3-gi`  
   - requests: `pip3 install requests`
   - [sqlmap](https://github.com/sqlmapproject/sqlmap): `pip2 install sqlmap` #hope sqlmap ports to python3 in future...
@@ -33,7 +33,7 @@ sqlmap ui, using PyGObject(gtk+3)
 - 继续重构, 优化
 
 #### ABOUT
-1. update at 2019-05-03 16:13:47  
+1. update at 2019-05-09 01:02:36  
    V0.3.2  
    2019年 04月 29日 星期一 21:20:07 CST  
    作者: needle wang ( needlewang2011@gmail.com )
