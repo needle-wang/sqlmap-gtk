@@ -408,6 +408,10 @@ class Handler(object):
     _task_view_textbuffer = self.m._page4_task_view.get_buffer()
     _task_view_textbuffer.set_text('')
 
+  def cb_single(self, widget, ckbtn):
+    if widget.get_active():
+      ckbtn.set_active(False)
+
   def optimize_area_controller(self, button):
     m = self.m
     if m._optimize_area_turn_all_ckbtn.get_active():

@@ -590,6 +590,13 @@ class UI_Window(g.Window):
     _row6.pack_start(m._detection_area_code_entry, False, True, 5)
 
     _row7 = g.Box()
+    m._detection_area_text_only_ckbtn.connect(
+      'clicked',
+      self._handlers.cb_single, m._detection_area_titles_ckbtn)
+    m._detection_area_titles_ckbtn.connect(
+      'clicked',
+      self._handlers.cb_single, m._detection_area_text_only_ckbtn)
+
     _row7.pack_start(m._detection_area_text_only_ckbtn, True, True, 5)
     _row7.pack_start(m._detection_area_titles_ckbtn, True, True, 5)
 
