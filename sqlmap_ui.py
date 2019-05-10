@@ -8,7 +8,7 @@
 
 # python3.5+
 from pathlib import Path
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 
 from gtk3_header import GLib, Vte, d, g
@@ -40,7 +40,8 @@ class UI_Window(g.Window):
     # g.Box默认的orientation是HORIZONTAL
     _main_box = g.Box.new(orientation = VERTICAL, spacing = 0)
 
-    self._build_page_target()
+    self._target_notebook = g.Notebook()
+    self._build_target_notebook(self._target_notebook)
 
     _main_box.pack_start(self._target_notebook, False, True, 0)
 
@@ -157,10 +158,9 @@ class UI_Window(g.Window):
       self.on_window_destroy()
       return True
 
-  def _build_page_target(self):
-    self._target_notebook = g.Notebook()
-    self._target_notebook.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
-    self._target_notebook.connect('scroll-event', self.scroll_page)
+  def _build_target_notebook(self, target_nb):
+    target_nb.add_events(d.EventMask.SCROLL_MASK | d.EventMask.SMOOTH_SCROLL_MASK)
+    target_nb.connect('scroll-event', self.scroll_page)
     # 目标url
     name_store = g.ListStore(int, str)
     name_store.append([1, "http://www.site.com/vuln.php?id=1"])
@@ -218,13 +218,13 @@ class UI_Window(g.Window):
     _google_dork_area = g.Box()
     _google_dork_area.pack_start(m._google_dork, True, True, 0)
 
-    self._target_notebook.append_page(_url_area, g.Label.new('目标url'))
-    self._target_notebook.append_page(_burp_area, g.Label.new('burp日志'))
-    self._target_notebook.append_page(_request_area, g.Label.new('HTTP请求'))
-    self._target_notebook.append_page(_bulkfile_area, g.Label.new('BULKFILE'))
-    self._target_notebook.append_page(_configfile_area, g.Label.new('ini文件'))
-    self._target_notebook.append_page(_sitemap_url_area, g.Label.new('xml_url'))
-    self._target_notebook.append_page(_google_dork_area, g.Label.new('GOOGLEDORK'))
+    target_nb.append_page(_url_area, g.Label.new('目标url'))
+    target_nb.append_page(_burp_area, g.Label.new('burp日志'))
+    target_nb.append_page(_request_area, g.Label.new('HTTP请求'))
+    target_nb.append_page(_bulkfile_area, g.Label.new('BULKFILE'))
+    target_nb.append_page(_configfile_area, g.Label.new('ini文件'))
+    target_nb.append_page(_sitemap_url_area, g.Label.new('xml_url'))
+    target_nb.append_page(_google_dork_area, g.Label.new('GOOGLEDORK'))
 
   def _build_page1(self):
     self.page1 = g.Box(orientation=VERTICAL, spacing=6)
@@ -1519,7 +1519,7 @@ class UI_Window(g.Window):
     # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
     _manual_hh = 'echo y|sqlmap -hh'
     try:
-      _subprocess = Popen(_manual_hh, stdout=PIPE, bufsize=1, shell = True)
+      _subprocess = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT, bufsize=1, shell = True)
 
       for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
         GLib.idle_add(textbuffer.insert, _end, _an_bytes_line_tmp.decode('utf8'))
