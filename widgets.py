@@ -7,7 +7,30 @@ from os import sep as OS_SEP
 from pathlib import Path
 from urllib import request
 
-from gtk3_header import d, g
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gdk', '3.0')
+gi.require_version('Vte', '2.91')
+
+from gi.repository import Gdk as d
+from gi.repository import Gio, GLib
+from gi.repository import Gtk as g
+from gi.repository import Vte
+
+HORIZONTAL = g.Orientation.HORIZONTAL
+VERTICAL = g.Orientation.VERTICAL
+
+Box = g.Box
+Frame = g.Frame
+
+btn = g.Button
+cb = g.CheckButton.new_with_label
+cbb = g.ComboBox.new_with_entry
+et = g.Entry
+label = g.Label
+sl = g.Scale.new_with_range
+sp = g.SpinButton
+tv = g.TextView
 
 drag_targets = [g.TargetEntry.new("text/uri-list", 0, 80)]
 

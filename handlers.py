@@ -12,7 +12,7 @@ from subprocess import Popen
 from urllib.parse import urlparse
 import requests
 
-from gtk3_header import g, GLib, Vte
+from widgets import g, GLib, Vte
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
 
@@ -44,13 +44,14 @@ class Handler(object):
 
     if _final_line is not None:
       self.m._cmd_entry.set_text(_final_line.strip())
+      self.m._cmd_entry.grab_focus()
 
   def api_task_new(self, button):
     '''
     rest api获取自: https://github.com/PyxYuYu/MyBlog/issues/69
     @get("/task/new") 创建新任务
     '''
-    _host = self.m._page4_api_server_entry.get_text()
+    _host = self.m._page4_api_server_entry.get_text().strip()
     if _host:
       try:
         _resp = requests.get('http://%s/task/new' % _host)
@@ -64,8 +65,8 @@ class Handler(object):
     '''
     @get("/admin/<taskid>/list") 查看所有任务，并显示运行状态
     '''
-    _host = self.m._page4_api_server_entry.get_text()
-    _token = self.m._page4_admin_token_entry.get_text()
+    _host = self.m._page4_api_server_entry.get_text().strip()
+    _token = self.m._page4_admin_token_entry.get_text().strip()
     if _host and _token:
       try:
         _resp = requests.get('http://%s/admin/%s/list' % (_host, _token))
@@ -128,7 +129,7 @@ class Handler(object):
     '''
     @get("/option/<taskid>/list") 获取指定任务的options
     '''
-    _host = self.m._page4_api_server_entry.get_text()
+    _host = self.m._page4_api_server_entry.get_text().strip()
     if _host:
       try:
         _resp = requests.get('http://%s/option/%s/list' % (_host, taskid))
@@ -221,7 +222,7 @@ class Handler(object):
     '''
     @get("/task/<taskid>/delete") 删除指定任务
     '''
-    _host = self.m._page4_api_server_entry.get_text()
+    _host = self.m._page4_api_server_entry.get_text().strip()
     if _host:
       try:
         _resp = requests.get('http://%s/task/%s/delete' % (_host, data[1]))

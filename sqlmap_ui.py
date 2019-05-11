@@ -11,7 +11,9 @@ from pathlib import Path
 from subprocess import Popen, PIPE, STDOUT
 from threading import Thread
 
-from gtk3_header import GLib, Vte, d, g
+from widgets import GLib, Vte, d, g, Box, Frame, btn, label, tv
+from widgets import HORIZONTAL, VERTICAL
+
 from model import Model
 from handlers import Handler
 from session import Session
@@ -20,10 +22,6 @@ from tooltips import Widget_Mesg as INIT_MESG
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
 
-# 从左往右
-HORIZONTAL = g.Orientation.HORIZONTAL
-# 从上至下
-VERTICAL = g.Orientation.VERTICAL
 # Model()与对象有关, 按照OOP原则, 理应是实例属性
 # 但只有一个实例, 所以就这么写吧
 m = Model()
@@ -38,7 +36,7 @@ class UI_Window(g.Window):
     self._handlers = Handler(self, m)
 
     # g.Box默认的orientation是HORIZONTAL
-    _main_box = g.Box.new(orientation = VERTICAL, spacing = 0)
+    _main_box = Box.new(orientation = VERTICAL, spacing = 0)
 
     self._target_notebook = g.Notebook()
     self._build_target_notebook(self._target_notebook)
@@ -55,12 +53,12 @@ class UI_Window(g.Window):
     self._build_page5()
     self._build_page6()
 
-    self.main_notebook.append_page(self.page1, g.Label.new_with_mnemonic('选项区(_1)'))
-    self.main_notebook.append_page(self.page2, g.Label.new_with_mnemonic('输出区(_2)'))
-    self.main_notebook.append_page(self.page3, g.Label.new_with_mnemonic('日志区(_3)'))
-    self.main_notebook.append_page(self.page4, g.Label.new_with_mnemonic('API区(_4)'))
-    self.main_notebook.append_page(self.page5, g.Label.new_with_mnemonic('帮助(_H)'))
-    self.main_notebook.append_page(self.page6, g.Label.new('关于'))
+    self.main_notebook.append_page(self.page1, label.new_with_mnemonic('选项区(_1)'))
+    self.main_notebook.append_page(self.page2, label.new_with_mnemonic('输出区(_2)'))
+    self.main_notebook.append_page(self.page3, label.new_with_mnemonic('日志区(_3)'))
+    self.main_notebook.append_page(self.page4, label.new_with_mnemonic('API区(_4)'))
+    self.main_notebook.append_page(self.page5, label.new_with_mnemonic('帮助(_H)'))
+    self.main_notebook.append_page(self.page6, label.new('关于'))
 
     _main_box.pack_start(self.main_notebook, True, True, 0)
     self.add(_main_box)
@@ -165,13 +163,13 @@ class UI_Window(g.Window):
     name_store = g.ListStore(int, str)
     name_store.append([1, "http://www.site.com/vuln.php?id=1"])
 
-    _url_area = g.Box()
+    _url_area = Box()
     m._url_combobox.set_model(name_store)
     m._url_combobox.set_entry_text_column(1)
 
     _url_area.pack_start(m._url_combobox, True, True, 0)
 
-    _burp_area = g.Box()
+    _burp_area = Box()
     m._burp_logfile_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -181,7 +179,7 @@ class UI_Window(g.Window):
     _burp_area.pack_start(m._burp_logfile, True, True, 0)
     _burp_area.pack_start(m._burp_logfile_chooser, False, True, 0)
 
-    _request_area = g.Box()
+    _request_area = Box()
 
     m._request_file_chooser.connect(
       'clicked',
@@ -192,7 +190,7 @@ class UI_Window(g.Window):
     _request_area.pack_start(m._request_file, True, True, 0)
     _request_area.pack_start(m._request_file_chooser, False, True, 0)
 
-    _bulkfile_area = g.Box()
+    _bulkfile_area = Box()
     m._bulkfile_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -202,7 +200,7 @@ class UI_Window(g.Window):
     _bulkfile_area.pack_start(m._bulkfile, True, True, 0)
     _bulkfile_area.pack_start(m._bulkfile_chooser, False, True, 0)
 
-    _configfile_area = g.Box()
+    _configfile_area = Box()
     m._configfile_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -212,26 +210,26 @@ class UI_Window(g.Window):
     _configfile_area.pack_start(m._configfile, True, True, 0)
     _configfile_area.pack_start(m._configfile_chooser, False, True, 0)
 
-    _sitemap_url_area = g.Box()
+    _sitemap_url_area = Box()
     _sitemap_url_area.pack_start(m._sitemap_url, True, True, 0)
 
-    _google_dork_area = g.Box()
+    _google_dork_area = Box()
     _google_dork_area.pack_start(m._google_dork, True, True, 0)
 
-    target_nb.append_page(_url_area, g.Label.new('目标url'))
-    target_nb.append_page(_burp_area, g.Label.new('burp日志'))
-    target_nb.append_page(_request_area, g.Label.new('HTTP请求'))
-    target_nb.append_page(_bulkfile_area, g.Label.new('BULKFILE'))
-    target_nb.append_page(_configfile_area, g.Label.new('ini文件'))
-    target_nb.append_page(_sitemap_url_area, g.Label.new('xml_url'))
-    target_nb.append_page(_google_dork_area, g.Label.new('GOOGLEDORK'))
+    target_nb.append_page(_url_area, label.new('目标url'))
+    target_nb.append_page(_burp_area, label.new('burp日志'))
+    target_nb.append_page(_request_area, label.new('HTTP请求'))
+    target_nb.append_page(_bulkfile_area, label.new('BULKFILE'))
+    target_nb.append_page(_configfile_area, label.new('ini文件'))
+    target_nb.append_page(_sitemap_url_area, label.new('xml_url'))
+    target_nb.append_page(_google_dork_area, label.new('GOOGLEDORK'))
 
   def _build_page1(self):
-    self.page1 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page1 = Box(orientation=VERTICAL, spacing=6)
     self.page1.set_border_width(10)
 
     # sqlmap命令语句
-    _cmd_area = g.Frame.new('A.收集选项 的结果显示在这:')
+    _cmd_area = Frame.new('A.收集选项 的结果显示在这:')
 
     _cmd_area.add(m._cmd_entry)
 
@@ -249,26 +247,26 @@ class UI_Window(g.Window):
     self._build_page1_file()
     self._build_page1_other()
 
-    _notebook.append_page(self.page1_setting, g.Label.new_with_mnemonic('测试(_Q)'))
-    _notebook.append_page(self.page1_request, g.Label.new_with_mnemonic('请求(_W)'))
-    _notebook.append_page(self.page1_enumeration, g.Label.new_with_mnemonic('枚举(_E)'))
-    _notebook.append_page(self.page1_file, g.Label.new_with_mnemonic('文件(_R)'))
-    _notebook.append_page(self.page1_other, g.Label.new_with_mnemonic('其他(_T)'))
+    _notebook.append_page(self.page1_setting, label.new_with_mnemonic('测试(_Q)'))
+    _notebook.append_page(self.page1_request, label.new_with_mnemonic('请求(_W)'))
+    _notebook.append_page(self.page1_enumeration, label.new_with_mnemonic('枚举(_E)'))
+    _notebook.append_page(self.page1_file, label.new_with_mnemonic('文件(_R)'))
+    _notebook.append_page(self.page1_other, label.new_with_mnemonic('其他(_T)'))
 
     self.page1.pack_start(_notebook, True, True, 0)
 
     # 构造与执行
-    _exec_area = g.Box()
+    _exec_area = Box()
 
-    _build_button = g.Button.new_with_mnemonic('A.收集选项(_A)')
+    _build_button = btn.new_with_mnemonic('A.收集选项(_A)')
     _build_button.connect('clicked', self._handlers.build_all)
     # 用于改善ui的使用体验
-    _unselect_all_btn = g.Button.new_with_mnemonic('反选所有复选框(_S)')
+    _unselect_all_btn = btn.new_with_mnemonic('反选所有复选框(_S)')
     _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
-    _clear_all_entry = g.Button.new_with_mnemonic('清空所有输入框(_D)')
+    _clear_all_entry = btn.new_with_mnemonic('清空所有输入框(_D)')
     _clear_all_entry.connect('clicked', self.clear_all_entry)
 
-    _run_button = g.Button.new_with_mnemonic('B.开始(_F)')
+    _run_button = btn.new_with_mnemonic('B.开始(_F)')
     _run_button.connect('clicked', self._handlers.run_cmdline)
 
     _exec_area.pack_start(_build_button, False, True, 0)
@@ -286,25 +284,25 @@ class UI_Window(g.Window):
     以"其他"标签的height作为标准高,
     高于此height的标签页使用ScrolledWindow, 显示滚动条
     '''
-    self.page1_other = g.Box(orientation=VERTICAL)
+    self.page1_other = Box(orientation=VERTICAL)
 
     self._build_page1_other_general()
     self._build_page1_other_misc()
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(self.page1_other_general_area, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(self.page1_other_misc_area, True, True, 5)
 
     self.page1_other.add(_row1)
     self.page1_other.add(_row2)
 
   def _build_page1_other_misc(self):
-    self.page1_other_misc_area = g.Frame.new('杂项')
-    _page1_other_misc_opts = g.Box(orientation=VERTICAL, spacing=6)
+    self.page1_other_misc_area = Frame.new('杂项')
+    _page1_other_misc_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._page1_misc_tmp_dir_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -317,7 +315,7 @@ class UI_Window(g.Window):
     _row1.pack_start(m._page1_misc_tmp_dir_entry, True, True, 0)
     _row1.pack_start(m._page1_misc_tmp_dir_chooser, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._page1_misc_identify_waf_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_smart_ckbtn, False, True, 5)
@@ -325,7 +323,7 @@ class UI_Window(g.Window):
     _row2.pack_start(m._page1_misc_sqlmap_shell_ckbtn, False, True, 5)
     _row2.pack_start(m._page1_misc_disable_color_ckbtn, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     m._page1_misc_purge_ckbtn.connect('toggled', self._show_warn)
 
     _row3.pack_start(m._page1_misc_offline_ckbtn, False, True, 5)
@@ -335,7 +333,7 @@ class UI_Window(g.Window):
     _row3.pack_start(m._page1_misc_dependencies_ckbtn, False, True, 5)
     _row3.pack_start(m._page1_general_update_ckbtn, False, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     m._page1_misc_answers_entry.set_text('quit=N,follow=N')
 
     _row4.pack_start(m._page1_misc_answers_ckbtn, False, True, 5)
@@ -345,7 +343,7 @@ class UI_Window(g.Window):
     _row4.pack_start(m._page1_misc_gpage_ckbtn, False, True, 5)
     _row4.pack_start(m._page1_misc_gpage_spinbtn, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     m._page1_misc_z_entry.set_text('flu,bat,ban,tec=EU...')
 
     _row5.pack_start(m._page1_misc_z_ckbtn, False, True, 5)
@@ -360,10 +358,10 @@ class UI_Window(g.Window):
     self.page1_other_misc_area.add(_page1_other_misc_opts)
 
   def _build_page1_other_general(self):
-    self.page1_other_general_area = g.Frame.new('通用项')
-    _page1_other_general_opts = g.Box(orientation=VERTICAL, spacing=6)
+    self.page1_other_general_area = Frame.new('通用项')
+    _page1_other_general_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._page1_general_check_internet_ckbtn, False, True, 5)
     _row1.pack_start(m._page1_general_fresh_queries_ckbtn, False, True, 5)
     _row1.pack_start(m._page1_general_flush_session_ckbtn, False, True, 5)
@@ -371,7 +369,7 @@ class UI_Window(g.Window):
     _row1.pack_start(m._page1_general_binary_fields_ckbtn, False, True, 5)
     _row1.pack_start(m._page1_general_binary_fields_entry, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     m._page1_general_preprocess_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -385,13 +383,13 @@ class UI_Window(g.Window):
     _row2.pack_start(m._page1_general_preprocess_entry, True, True, 0)
     _row2.pack_start(m._page1_general_preprocess_chooser, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._page1_general_crawl_ckbtn, False, True, 5)
     _row3.pack_start(m._page1_general_crawl_entry, True, True, 5)
     _row3.pack_start(m._page1_general_crawl_exclude_ckbtn, False, True, 5)
     _row3.pack_start(m._page1_general_crawl_exclude_entry, True, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     m._page1_general_charset_entry.set_text('0123456789abcdef')
     m._page1_general_encoding_entry.set_text('GBK')
 
@@ -400,7 +398,7 @@ class UI_Window(g.Window):
     _row4.pack_start(m._page1_general_encoding_ckbtn, False, True, 5)
     _row4.pack_start(m._page1_general_encoding_entry, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     m._page1_general_session_file_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -420,7 +418,7 @@ class UI_Window(g.Window):
     _row5.pack_start(m._page1_general_output_dir_entry, True, True, 0)
     _row5.pack_start(m._page1_general_output_dir_chooser, False, True, 5)
 
-    _row6 = g.Box()
+    _row6 = Box()
     m._page1_general_dump_format_entry.set_max_width_chars(40)
     m._page1_general_csv_del_entry.set_max_length(1)
     m._page1_general_csv_del_entry.set_text(',')
@@ -430,7 +428,7 @@ class UI_Window(g.Window):
     _row6.pack_start(m._page1_general_csv_del_ckbtn, False, True, 5)
     _row6.pack_start(m._page1_general_csv_del_entry, False, True, 5)
 
-    _row7 = g.Box()
+    _row7 = Box()
     m._page1_general_traffic_file_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -450,7 +448,7 @@ class UI_Window(g.Window):
     _row7.pack_start(m._page1_general_har_entry, True, True, 0)
     _row7.pack_start(m._page1_general_har_chooser, False, True, 5)
 
-    _row8 = g.Box()
+    _row8 = Box()
     m._page1_general_save_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -470,7 +468,7 @@ class UI_Window(g.Window):
     _row8.pack_start(m._page1_general_scope_entry, True, True, 0)
     _row8.pack_start(m._page1_general_scope_chooser, False, True, 5)
 
-    _row9 = g.Box()
+    _row9 = Box()
     _row9.pack_start(m._page1_general_test_filter_ckbtn, False, True, 5)
     _row9.pack_start(m._page1_general_test_filter_entry, True, True, 5)
     _row9.pack_start(m._page1_general_test_skip_ckbtn, False, True, 5)
@@ -482,9 +480,9 @@ class UI_Window(g.Window):
     self.page1_other_general_area.add(_page1_other_general_opts)
 
   def _build_page1_setting(self):
-    _page1_setting = g.Box(orientation=VERTICAL)
+    _page1_setting = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     self._build_page1_setting_inject()
     self._build_page1_setting_detection()
     self._build_page1_setting_tech()
@@ -493,7 +491,7 @@ class UI_Window(g.Window):
     _row1.pack_start(self._detection_area, True, True, 5)
     _row1.pack_start(self._tech_area, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     self._build_page1_setting_tamper()
     self._build_page1_setting_optimize()
     self._build_page1_setting_general()
@@ -510,42 +508,42 @@ class UI_Window(g.Window):
     self.page1_setting.add(_page1_setting)
 
   def _build_page1_setting_tech(self):
-    self._tech_area = g.Frame.new('各注入技术的选项')
+    self._tech_area = Frame.new('各注入技术的选项')
 
-    _tech_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _tech_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._tech_area_tech_ckbtn, False, True, 5)
     _row1.pack_end(m._tech_area_tech_entry, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._tech_area_time_sec_ckbtn, False, True, 5)
     _row2.pack_end(m._tech_area_time_sec_entry, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._tech_area_union_col_ckbtn, False, True, 5)
     _row3.pack_end(m._tech_area_union_col_entry, False, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.pack_start(m._tech_area_union_chr_ckbtn, False, True, 5)
     _row4.pack_end(m._tech_area_union_chr_entry, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     _row5.pack_start(m._tech_area_union_from_ckbtn, False, True, 5)
     _row5.pack_end(m._tech_area_union_from_entry, False, True, 5)
 
-    _row6 = g.Box()
+    _row6 = Box()
     _row6.pack_start(m._tech_area_dns_ckbtn, True, True, 5)
     _row6.pack_end(m._tech_area_dns_entry, True, True, 5)
 
-    _row7 = g.Box()
+    _row7 = Box()
     _row7.pack_start(m._tech_area_second_url_ckbtn, True, True, 5)
     _row7.pack_end(m._tech_area_second_url_entry, True, True, 5)
 
-    _row8 = g.Box()
+    _row8 = Box()
     _row8.pack_start(m._tech_area_second_req_ckbtn, True, True, 5)
 
-    _row9 = g.Box()
+    _row9 = Box()
     m._tech_area_second_req_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -561,35 +559,35 @@ class UI_Window(g.Window):
     self._tech_area.add(_tech_area_opts)
 
   def _build_page1_setting_detection(self):
-    self._detection_area = g.Frame.new('探测选项')
+    self._detection_area = Frame.new('探测选项')
 
-    _detection_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _detection_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._detection_area_level_ckbtn, False, True, 5)
     _row1.pack_start(m._detection_area_level_scale, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._detection_area_risk_ckbtn, False, True, 5)
     _row2.pack_start(m._detection_area_risk_scale, True, True, 10)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._detection_area_str_ckbtn, False, True, 5)
     _row3.pack_end(m._detection_area_str_entry, True, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.pack_start(m._detection_area_not_str_ckbtn, False, True, 5)
     _row4.pack_end(m._detection_area_not_str_entry, True, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     _row5.pack_start(m._detection_area_re_ckbtn, False, True, 5)
     _row5.pack_end(m._detection_area_re_entry, True, True, 5)
 
-    _row6 = g.Box()
+    _row6 = Box()
     _row6.pack_start(m._detection_area_code_ckbtn, False, True, 5)
     _row6.pack_start(m._detection_area_code_entry, False, True, 5)
 
-    _row7 = g.Box()
+    _row7 = Box()
     m._detection_area_text_only_ckbtn.connect(
       'clicked',
       self._handlers.cb_single, m._detection_area_titles_ckbtn)
@@ -606,25 +604,25 @@ class UI_Window(g.Window):
     self._detection_area.add(_detection_area_opts)
 
   def _build_page1_setting_general(self):
-    self._general_area = g.Frame.new('常用选项')
-    _general_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    self._general_area = Frame.new('常用选项')
+    _general_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._general_area_verbose_scale.set_value(1.0)
 
     _row1.pack_start(m._general_area_verbose_ckbtn, False, True, 5)
     _row1.pack_start(m._general_area_verbose_scale, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._general_area_finger_ckbtn, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._general_area_hex_ckbtn, False, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.pack_start(m._general_area_batch_ckbtn, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     _row5.pack_start(m._page1_misc_wizard_ckbtn, False, True, 5)
 
     _general_area_opts.add(_row1)
@@ -635,26 +633,26 @@ class UI_Window(g.Window):
     self._general_area.add(_general_area_opts)
 
   def _build_page1_setting_optimize(self):
-    self._optimize_area = g.Frame.new('性能优化')
+    self._optimize_area = Frame.new('性能优化')
 
-    _optimize_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _optimize_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._optimize_area_turn_all_ckbtn.connect('clicked', self._handlers.optimize_area_controller)
 
     _row1.pack_start(m._optimize_area_turn_all_ckbtn, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._optimize_area_thread_num_ckbtn, False, True, 5)
     _row2.pack_start(m._optimize_area_thread_num_spinbtn, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._optimize_area_predict_ckbtn, False, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.pack_start(m._optimize_area_keep_alive_ckbtn, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     _row5.pack_start(m._optimize_area_null_connect_ckbtn, False, True, 5)
 
     # 添加行: _row1 - _row5
@@ -668,9 +666,9 @@ class UI_Window(g.Window):
     一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
     即内容的显示没有 下滑 滚轮的效果.
     '''
-    self._tamper_area = g.Frame.new('tamper脚本')
+    self._tamper_area = Frame.new('tamper脚本')
 
-    self._tamper_area_tamper_view = g.TextView()
+    self._tamper_area_tamper_view = tv()
     self._tamper_area_tamper_view.set_wrap_mode(g.WrapMode.CHAR)
 
     _scrolled = g.ScrolledWindow()
@@ -681,35 +679,35 @@ class UI_Window(g.Window):
     self._tamper_area.add(_scrolled)
 
   def _build_page1_setting_inject(self):
-    self._inject_area = g.Frame.new('注入选项')
+    self._inject_area = Frame.new('注入选项')
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._inject_area_param_ckbtn, False, True, 5)
     _row1.pack_start(m._inject_area_param_entry, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     # set_active(True)为选中状态
     m._inject_area_skip_static_ckbtn.set_active(True)
 
     _row2.pack_start(m._inject_area_skip_static_ckbtn, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._inject_area_prefix_ckbtn, False, True, 5)
     _row3.pack_start(m._inject_area_prefix_entry, True, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.pack_start(m._inject_area_suffix_ckbtn, False, True, 5)
     _row4.pack_start(m._inject_area_suffix_entry, True, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     _row5.pack_start(m._inject_area_skip_ckbtn, False, True, 5)
     _row5.pack_start(m._inject_area_skip_entry, True, True, 5)
 
-    _row6 = g.Box()
+    _row6 = Box()
     _row6.pack_start(m._inject_area_param_exclude_ckbtn, False, True, 5)
     _row6.pack_start(m._inject_area_param_exclude_entry, True, True, 5)
 
-    _row7 = g.Box()
+    _row7 = Box()
     _db_store = g.ListStore(str)
     _db_store.append(["mysql"])
     _db_store.append(["sqlite"])
@@ -721,53 +719,53 @@ class UI_Window(g.Window):
     _row7.pack_start(m._inject_area_dbms_ckbtn, False, True, 5)
     _row7.pack_start(m._inject_area_dbms_combobox, True, True, 5)
 
-    _row8 = g.Box()
+    _row8 = Box()
     _row8.pack_start(m._inject_area_dbms_cred_ckbtn, False, True, 5)
     _row8.pack_start(m._inject_area_dbms_cred_entry, True, True, 5)
 
-    _row9 = g.Box()
+    _row9 = Box()
     _row9.pack_start(m._inject_area_os_ckbtn, False, True, 5)
     _row9.pack_start(m._inject_area_os_entry, True, True, 5)
 
-    _row10 = g.Box()
+    _row10 = Box()
     _row10.pack_start(m._inject_area_no_cast_ckbtn, False, True, 5)
     _row10.pack_start(m._inject_area_no_escape_ckbtn, False, True, 5)
 
-    _row11 = g.Box()
-    _invalid_label = g.Label.new('对payload中的废值:')
+    _row11 = Box()
+    _invalid_label = label.new('对payload中的废值:')
 
     _row11.pack_start(_invalid_label, False, True, 5)
     _row11.pack_end(m._inject_area_invalid_logic_ckbtn, False, True, 5)
 
-    _row12 = g.Box()
+    _row12 = Box()
     _row12.pack_end(m._inject_area_invalid_str_ckbtn, False, True, 5)
     _row12.pack_end(m._inject_area_invalid_bignum_ckbtn, False, True, 5)
 
-    _inject_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _inject_area_opts = Box(orientation=VERTICAL, spacing=6)
     # 添加行: _row1 - _row12
     for _i in range(1, 13):
       _inject_area_opts.add(locals()[''.join(('_row', str(_i)))])
     self._inject_area.add(_inject_area_opts)
 
   def _build_page1_request(self):
-    _page1_request = g.Box(orientation=VERTICAL)
+    _page1_request = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     self._build_page1_request_header()
 
     _row1.pack_start(self._request_header_area, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     self._build_page1_request_data()
 
     _row2.pack_start(self._request_data_area, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     self._build_page1_request_custom()
 
     _row3.pack_start(self._request_custom_area, True, True, 5)
 
-    _row4 = g.Box()
+    _row4 = Box()
     self._build_page1_request_proxy()
 
     _row4.pack_start(self._request_proxy_area, True, True, 5)
@@ -782,16 +780,16 @@ class UI_Window(g.Window):
     self.page1_request.add(_page1_request)
 
   def _build_page1_request_proxy(self):
-    self._request_proxy_area = g.Frame.new('隐匿/代理')
-    _request_proxy_opts = g.Box(orientation=VERTICAL, spacing = 5)
+    self._request_proxy_area = Frame.new('隐匿/代理')
+    _request_proxy_opts = Box(orientation=VERTICAL, spacing = 5)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._request_area_safe_url_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_safe_url_entry, True, True, 5)
     _row1.pack_start(m._request_area_safe_post_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_safe_post_entry, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     m._request_area_safe_req_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -806,7 +804,7 @@ class UI_Window(g.Window):
 
     _row3 = g.Separator.new(HORIZONTAL)
 
-    _row4 = g.Box()
+    _row4 = Box()
     m._request_area_proxy_file_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -819,7 +817,7 @@ class UI_Window(g.Window):
     _row4.pack_start(m._request_area_proxy_file_entry, True, True, 0)
     _row4.pack_start(m._request_area_proxy_file_chooser, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     _row5.pack_start(m._request_area_proxy_ip_label, False, True, 5)
     _row5.pack_start(m._request_area_proxy_ip_entry, True, True, 5)
     _row5.pack_start(m._request_area_proxy_port_label, False, True, 5)
@@ -829,7 +827,7 @@ class UI_Window(g.Window):
     _row5.pack_start(m._request_area_proxy_password_label, False, True, 5)
     _row5.pack_start(m._request_area_proxy_password_entry, True, True, 5)
 
-    _row6 = g.Box()
+    _row6 = Box()
     _row6.pack_start(m._request_area_tor_ckbtn, False, True, 5)
     _row6.pack_start(m._request_area_tor_port_ckbtn, False, True, 5)
     _row6.pack_start(m._request_area_tor_port_entry, False, True, 5)
@@ -843,10 +841,10 @@ class UI_Window(g.Window):
     self._request_proxy_area.add(_request_proxy_opts)
 
   def _build_page1_request_custom(self):
-    self._request_custom_area = g.Frame.new('request定制')
-    _request_custom_opts = g.Box(orientation=VERTICAL, spacing = 5)
+    self._request_custom_area = Frame.new('request定制')
+    _request_custom_opts = Box(orientation=VERTICAL, spacing = 5)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._request_area_ignore_code_entry.set_text('401')
 
     _row1.pack_start(m._request_area_ignore_redirects_ckbtn, False, True, 5)
@@ -858,7 +856,7 @@ class UI_Window(g.Window):
     _row1.pack_start(m._request_area_chunked_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_hpp_ckbtn, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     m._request_area_timeout_entry.set_text('30')
     m._request_area_retries_entry.set_text('3')
 
@@ -871,7 +869,7 @@ class UI_Window(g.Window):
     _row2.pack_start(m._request_area_randomize_ckbtn, False, True, 5)
     _row2.pack_start(m._request_area_randomize_entry, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._request_area_eval_ckbtn, False, True, 5)
     _row3.pack_start(m._request_area_eval_entry, True, True, 5)
 
@@ -881,10 +879,10 @@ class UI_Window(g.Window):
     self._request_custom_area.add(_request_custom_opts)
 
   def _build_page1_request_data(self):
-    self._request_data_area = g.Frame.new('HTTP data')
-    _request_data_opts = g.Box(orientation=VERTICAL, spacing = 5)
+    self._request_data_area = Frame.new('HTTP data')
+    _request_data_opts = Box(orientation=VERTICAL, spacing = 5)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._request_area_param_del_entry.set_max_length(1)
 
     _row1.pack_start(m._request_area_method_ckbtn, False, True, 5)
@@ -892,19 +890,19 @@ class UI_Window(g.Window):
     _row1.pack_start(m._request_area_param_del_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_param_del_entry, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._request_area_post_ckbtn, False, True, 5)
     _row2.pack_start(m._request_area_post_entry, True, True, 5)
 
     _row3 = g.Separator.new(HORIZONTAL)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.pack_start(m._request_area_cookie_ckbtn, False, True, 5)
     _row4.pack_start(m._request_area_cookie_entry, True, True, 5)
     _row4.pack_start(m._request_area_cookie_del_ckbtn, False, True, 5)
     _row4.pack_start(m._request_area_cookie_del_entry, False, True, 5)
 
-    _row5 = g.Box()
+    _row5 = Box()
     m._request_area_load_cookies_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -918,7 +916,7 @@ class UI_Window(g.Window):
 
     _row6 = g.Separator.new(HORIZONTAL)
 
-    _row7 = g.Box()
+    _row7 = Box()
     m._request_area_auth_type_entry.set_max_width_chars(25)
     m._request_area_auth_file_entry.set_max_width_chars(25)
 
@@ -936,7 +934,7 @@ class UI_Window(g.Window):
     _row7.pack_start(m._request_area_auth_file_entry, True, True, 0)
     _row7.pack_start(m._request_area_auth_file_chooser, False, True, 5)
 
-    _row8 = g.Box()
+    _row8 = Box()
     _row8.pack_start(m._request_area_csrf_token_ckbtn, False, True, 5)
     _row8.pack_start(m._request_area_csrf_token_entry, True, True, 5)
     _row8.pack_start(m._request_area_csrf_url_ckbtn, False, True, 5)
@@ -948,23 +946,23 @@ class UI_Window(g.Window):
     self._request_data_area.add(_request_data_opts)
 
   def _build_page1_request_header(self):
-    self._request_header_area = g.Frame.new('HTTP header')
-    _request_header_opts = g.Box(orientation=VERTICAL, spacing = 5)
+    self._request_header_area = Frame.new('HTTP header')
+    _request_header_opts = Box(orientation=VERTICAL, spacing = 5)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._request_area_random_agent_ckbtn.set_active(True)
 
     _row1.pack_start(m._request_area_random_agent_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_user_agent_ckbtn, False, True, 5)
     _row1.pack_start(m._request_area_user_agent_entry, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._request_area_host_ckbtn, False, True, 5)
     _row2.pack_start(m._request_area_host_entry, True, True, 5)
     _row2.pack_start(m._request_area_referer_ckbtn, False, True, 5)
     _row2.pack_start(m._request_area_referer_entry, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._request_area_header_ckbtn, False, True, 5)
     _row3.pack_start(m._request_area_header_entry, True, True, 5)
     _row3.pack_start(m._request_area_headers_ckbtn, False, True, 5)
@@ -979,9 +977,9 @@ class UI_Window(g.Window):
     '''
     完全用Gtk.Box和Frame写吧
     '''
-    self.page1_enumeration = g.Box(orientation=VERTICAL)
+    self.page1_enumeration = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.props.margin = 10
 
     self._build_page1_enumeration_enum()
@@ -994,21 +992,21 @@ class UI_Window(g.Window):
     _row1.pack_start(self._limit_area, False, True, 10)
     _row1.pack_start(self._blind_area, False, True, 10)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.props.margin = 10
 
     self._build_page1_enumeration_meta()
 
     _row2.pack_start(self._meta_area, True, True, 10)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.props.margin = 10
 
     self._build_page1_enumeration_runsql()
 
     _row3.pack_start(self._runsql_area, True, True, 10)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.props.margin = 10
     self._build_page1_enumeration_brute_force()
 
@@ -1020,13 +1018,13 @@ class UI_Window(g.Window):
     self.page1_enumeration.add(_row4)
 
   def _build_page1_enumeration_brute_force(self):
-    self._brute_force_area = g.Frame.new('暴破表名/列名')
+    self._brute_force_area = Frame.new('暴破表名/列名')
 
-    _brute_force_area_opts = g.Box(orientation=VERTICAL)
+    _brute_force_area_opts = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
 
-    _row1.pack_start(g.Label.new('检查是否存在:'), False, True, 10)
+    _row1.pack_start(label.new('检查是否存在:'), False, True, 10)
     _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
     _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 10)
 
@@ -1034,15 +1032,15 @@ class UI_Window(g.Window):
     self._brute_force_area.add(_brute_force_area_opts)
 
   def _build_page1_enumeration_runsql(self):
-    self._runsql_area = g.Frame.new('执行SQL语句')
+    self._runsql_area = Frame.new('执行SQL语句')
 
-    _runsql_area_opts = g.Box(orientation=VERTICAL)
+    _runsql_area_opts = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._runsql_area_sql_query_ckbtn, False, True, 10)
     _row1.pack_start(m._runsql_area_sql_query_entry, True, True, 10)
 
-    _row2 = g.Box()
+    _row2 = Box()
     m._runsql_area_sql_file_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -1059,25 +1057,25 @@ class UI_Window(g.Window):
     self._runsql_area.add(_runsql_area_opts)
 
   def _build_page1_enumeration_meta(self):
-    self._meta_area = g.Frame.new('数据库名, 表名, 列名...')
+    self._meta_area = Frame.new('数据库名, 表名, 列名...')
 
-    _meta_area_opts = g.Box(orientation=VERTICAL)
+    _meta_area_opts = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
 
-    _col1 = g.Box()     # It's row actually.
+    _col1 = Box()     # It's row actually.
     _col1.pack_start(m._meta_area_D_ckbtn, False, True, 10)
     _col1.pack_start(m._meta_area_D_entry, True, True, 10)
 
-    _col2 = g.Box()
+    _col2 = Box()
     _col2.pack_start(m._meta_area_T_ckbtn, False, True, 10)
     _col2.pack_start(m._meta_area_T_entry, True, True, 10)
 
-    _col3 = g.Box()
+    _col3 = Box()
     _col3.pack_start(m._meta_area_C_ckbtn, False, True, 10)
     _col3.pack_start(m._meta_area_C_entry, True, True, 10)
 
-    _col4 = g.Box()
+    _col4 = Box()
     _col4.pack_start(m._meta_area_U_ckbtn, False, True, 10)
     _col4.pack_start(m._meta_area_U_entry, True, True, 10)
 
@@ -1086,20 +1084,20 @@ class UI_Window(g.Window):
     _row1.pack_start(_col3, False, True, 5)
     _row1.pack_start(_col4, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
 
-    _col1 = g.Box()
+    _col1 = Box()
     _col1.pack_start(m._meta_area_X_ckbtn, False, True, 10)
     _col1.pack_start(m._meta_area_X_entry, True, True, 10)
 
-    _col2 = g.Box()
+    _col2 = Box()
     _col2.pack_start(m._meta_area_pivot_ckbtn, False, True, 10)
     _col2.pack_start(m._meta_area_pivot_entry, True, True, 10)
 
     _row2.pack_start(_col1, False, True, 5)
     _row2.pack_start(_col2, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._meta_area_where_ckbtn, False, True, 10)
     _row3.pack_start(m._meta_area_where_entry, True, True, 10)
 
@@ -1110,17 +1108,17 @@ class UI_Window(g.Window):
     self._meta_area.add(_meta_area_opts)
 
   def _build_page1_enumeration_blind(self):
-    self._blind_area = g.Frame.new('盲注选项')
+    self._blind_area = Frame.new('盲注选项')
 
-    _blind_area_opts = g.Box(orientation=VERTICAL)
+    _blind_area_opts = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._blind_area_first_ckbtn, False, True, 5)
     _row1.pack_start(m._blind_area_first_entry, False, True, 10)
 
     _blind_area_opts.pack_start(_row1, False, True, 10)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._blind_area_last_ckbtn, False, True, 5)
     _row2.pack_start(m._blind_area_last_entry, False, True, 10)
 
@@ -1129,19 +1127,19 @@ class UI_Window(g.Window):
     self._blind_area.add(_blind_area_opts)
 
   def _build_page1_enumeration_limit(self):
-    self._limit_area = g.Frame.new('limit(dump时的限制)')
+    self._limit_area = Frame.new('limit(dump时的限制)')
 
-    _limit_area_opts = g.Box(orientation=VERTICAL)
+    _limit_area_opts = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._limit_area_start_ckbtn, False, True, 5)
     _row1.pack_start(m._limit_area_start_entry, False, True, 0)
-    _row1.pack_start(g.Label.new('条'), False, True, 5)
+    _row1.pack_start(label.new('条'), False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._limit_area_stop_ckbtn, False, True, 5)
     _row2.pack_start(m._limit_area_stop_entry, False, True, 0)
-    _row2.pack_start(g.Label.new('条'), False, True, 5)
+    _row2.pack_start(label.new('条'), False, True, 5)
 
     _limit_area_opts.pack_start(_row1, False, True, 10)
     _limit_area_opts.pack_start(_row2, False, True, 10)
@@ -1149,12 +1147,12 @@ class UI_Window(g.Window):
     self._limit_area.add(_limit_area_opts)
 
   def _build_page1_enumeration_dump(self):
-    self._dump_area = g.Frame.new('Dump(转储)')
+    self._dump_area = Frame.new('Dump(转储)')
 
-    _dump_area_opts = g.Box(spacing=6)
+    _dump_area_opts = Box(spacing=6)
 
     # 加这一层, 只是为了横向上有padding
-    _dump_area_opts_cols = g.Box(orientation=VERTICAL)
+    _dump_area_opts_cols = Box(orientation=VERTICAL)
 
     _dump_area_opts_cols.add(m._dump_area_dump_ckbtn)
     _dump_area_opts_cols.add(m._dump_area_dump_all_ckbtn)
@@ -1167,14 +1165,14 @@ class UI_Window(g.Window):
     self._dump_area.add(_dump_area_opts)
 
   def _build_page1_enumeration_enum(self):
-    self._enum_area = g.Frame.new('枚举')
+    self._enum_area = Frame.new('枚举')
 
-    _enum_area_opts = g.Box(spacing=6)
+    _enum_area_opts = Box(spacing=6)
 
     # Do not use: [g.Box()] * 3, 会有闭包现象
-    _enu_area_opts_cols = [g.Box(orientation=VERTICAL),
-                           g.Box(orientation=VERTICAL),
-                           g.Box(orientation=VERTICAL)]
+    _enu_area_opts_cols = [Box(orientation=VERTICAL),
+                           Box(orientation=VERTICAL),
+                           Box(orientation=VERTICAL)]
 
     for _x in range(len(m._enum_area_opts_ckbtns)):
       for _y in m._enum_area_opts_ckbtns[_x]:
@@ -1186,26 +1184,26 @@ class UI_Window(g.Window):
     self._enum_area.add(_enum_area_opts)
 
   def _build_page1_file(self):
-    self.page1_file = g.Box(orientation=VERTICAL, spacing=6)
+    self.page1_file = Box(orientation=VERTICAL, spacing=6)
 
     self._build_page1_file_read()
     self._build_page1_file_write()
     self._build_page1_file_os_access()
     self._build_page1_file_os_registry()
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.props.margin = 10
     _row1.pack_start(self._file_read_area, True, True, 10)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.props.margin = 10
     _row2.pack_start(self._file_write_area, True, True, 10)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.props.margin = 10
     _row3.pack_start(self._file_os_access_area, True, True, 10)
 
-    _row4 = g.Box()
+    _row4 = Box()
     _row4.props.margin = 10
     _row4.pack_start(self._file_os_registry_area, True, True, 10)
 
@@ -1215,11 +1213,11 @@ class UI_Window(g.Window):
     self.page1_file.add(_row4)
 
   def _build_page1_file_os_registry(self):
-    self._file_os_registry_area = g.Frame.new('访问WIN下注册表')
+    self._file_os_registry_area = Frame.new('访问WIN下注册表')
 
-    _file_os_registry_opts = g.Box(orientation=VERTICAL)
+    _file_os_registry_opts = Box(orientation=VERTICAL)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._file_os_registry_reg_combobox.append('--reg-read', '读取')
     m._file_os_registry_reg_combobox.append('--reg-add', '新增')
     m._file_os_registry_reg_combobox.append('--reg-del', '删除')
@@ -1228,13 +1226,13 @@ class UI_Window(g.Window):
     _row1.pack_start(m._file_os_registry_reg_ckbtn, False, True, 5)
     _row1.pack_start(m._file_os_registry_reg_combobox, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._file_os_registry_reg_key_label, False, True, 5)
     _row2.pack_start(m._file_os_registry_reg_key_entry, True, True, 5)
     _row2.pack_start(m._file_os_registry_reg_value_label, False, True, 5)
     _row2.pack_start(m._file_os_registry_reg_value_entry, True, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._file_os_registry_reg_data_label, False, True, 5)
     _row3.pack_start(m._file_os_registry_reg_data_entry, True, True, 5)
     _row3.pack_start(m._file_os_registry_reg_type_label, False, True, 5)
@@ -1247,22 +1245,22 @@ class UI_Window(g.Window):
     self._file_os_registry_area.add(_file_os_registry_opts)
 
   def _build_page1_file_os_access(self):
-    self._file_os_access_area = g.Frame.new('访问后端OS')
+    self._file_os_access_area = Frame.new('访问后端OS')
 
-    _file_os_access_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _file_os_access_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     _row1.pack_start(m._file_os_access_os_cmd_ckbtn, False, True, 5)
     _row1.pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     _row2.pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
     _row2.pack_start(m._file_os_access_os_pwn_ckbtn, False, True, 5)
     _row2.pack_start(m._file_os_access_os_smbrelay_ckbtn, False, True, 5)
     _row2.pack_start(m._file_os_access_os_bof_ckbtn, False, True, 5)
     _row2.pack_start(m._file_os_access_priv_esc_ckbtn, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     m._file_os_access_msf_path_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -1281,11 +1279,11 @@ class UI_Window(g.Window):
     self._file_os_access_area.add(_file_os_access_opts)
 
   def _build_page1_file_write(self):
-    self._file_write_area = g.Frame.new('文件上传')
+    self._file_write_area = Frame.new('文件上传')
 
-    _file_write_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _file_write_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._file_write_area_shared_lib_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -1297,7 +1295,7 @@ class UI_Window(g.Window):
     _row1.pack_start(m._file_write_area_shared_lib_entry, True, True, 0)
     _row1.pack_start(m._file_write_area_shared_lib_chooser, False, True, 5)
 
-    _row2 = g.Box()
+    _row2 = Box()
     m._file_write_area_file_write_chooser.connect(
       'clicked',
       self.set_file_entry_text,
@@ -1308,7 +1306,7 @@ class UI_Window(g.Window):
     _row2.pack_start(m._file_write_area_file_write_entry, True, True, 0)
     _row2.pack_start(m._file_write_area_file_write_chooser, False, True, 5)
 
-    _row3 = g.Box()
+    _row3 = Box()
     _row3.pack_start(m._file_write_area_file_dest_ckbtn, False, True, 5)
     _row3.pack_start(m._file_write_area_file_dest_entry, True, True, 5)
 
@@ -1318,11 +1316,11 @@ class UI_Window(g.Window):
     self._file_write_area.add(_file_write_area_opts)
 
   def _build_page1_file_read(self):
-    self._file_read_area = g.Frame.new('读取远程文件')
+    self._file_read_area = Frame.new('读取远程文件')
 
-    _file_read_area_opts = g.Box(orientation=VERTICAL, spacing=6)
+    _file_read_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = g.Box()
+    _row1 = Box()
     m._file_read_area_file_read_entry.set_text('/etc/passwd')
     m._file_read_area_file_read_btn.connect('clicked', self._handlers.read_dumped_file)
 
@@ -1338,17 +1336,17 @@ class UI_Window(g.Window):
     用subprocess不可实现与sqlap的交互!
     不管是多线程, 同步还是异步, 都不行, 只能使用pty
     '''
-    self.page2 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page2 = Box(orientation=VERTICAL, spacing=6)
     self.page2.set_border_width(10)
 
-    _row1 = g.Box(spacing = 6)
+    _row1 = Box(spacing = 6)
     # m._page2_cmdline_str_label.set_alignment(0, 0.5)    # 怎么没有垂直居中?
     m._page2_respwan_btn.connect('clicked', self._handlers.respawn_terminal)
 
     # _row1.pack_start(m._page2_cmdline_str_label, True, True, 0)
     _row1.pack_start(m._page2_respwan_btn, False, True, 0)
 
-    _row2 = g.Frame()
+    _row2 = Frame()
     # 等价于_pty = m._page2_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
     _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
     m._page2_terminal.set_pty(_pty)
@@ -1376,10 +1374,10 @@ class UI_Window(g.Window):
     self.page2.pack_end(_row2, True, True, 0)
 
   def _build_page3(self):
-    self.page3 = g.Box(orientation=VERTICAL, spacing=6)
+    self.page3 = Box(orientation=VERTICAL, spacing=6)
     self.page3.set_border_width(10)
 
-    _row1 = g.Frame()
+    _row1 = Frame()
     m._page3_log_view.set_editable(False)
     m._page3_log_view.set_wrap_mode(g.WrapMode.WORD)
 
@@ -1394,7 +1392,7 @@ class UI_Window(g.Window):
     _scrolled.add(m._page3_log_view)
     _row1.add(_scrolled)
 
-    _row2 = g.Box()
+    _row2 = Box()
     m._page3_read_target_btn.connect('clicked', self._handlers.read_target_file)
     m._page3_clear_btn.connect('clicked', self._handlers.clear_log_view_buffer)
     m._page3_read_log_btn.connect('clicked', self._handlers.read_log_file)
@@ -1407,10 +1405,10 @@ class UI_Window(g.Window):
     self.page3.pack_end(_row2, False, True, 0)
 
   def _build_page4(self):
-    self.page4 = g.Box(orientation=VERTICAL)
+    self.page4 = Box(orientation=VERTICAL)
     self.page4.set_border_width(10)
 
-    _row1 = g.Box(spacing = 6)
+    _row1 = Box(spacing = 6)
     m._page4_api_server_entry.set_text('127.0.0.1:8775')
     # set_width_chars: 设置entry长度
     # set_max_length: 设置entry可输入的字符长度(admin token只有32位)
@@ -1420,7 +1418,7 @@ class UI_Window(g.Window):
     _row1.pack_start(m._page4_admin_token_label, False, True, 0)
     _row1.pack_start(m._page4_admin_token_entry, True, True, 0)
 
-    _row2 = g.Box(spacing = 6)
+    _row2 = Box(spacing = 6)
     _arrow_down = g.Image.new_from_icon_name('pan-down-symbolic', 1)
     m._page4_admin_list_btn.set_image(_arrow_down)
     m._page4_admin_list_btn.set_image_position(g.PositionType.RIGHT)
@@ -1436,7 +1434,7 @@ class UI_Window(g.Window):
     _row2.pack_start(m._page4_admin_flush_btn, False, True, 0)
     _row2.pack_start(m._page4_clear_task_view_btn, False, True, 0)
 
-    _row3 = g.Frame()
+    _row3 = Frame()
     _paned = g.Paned()
 
     self._api_admin_list_rows = g.ListBox.new()
@@ -1447,7 +1445,7 @@ class UI_Window(g.Window):
     _lscrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _lscrolled.add(self._api_admin_list_rows)
 
-    _rbox = g.Box(orientation = VERTICAL)
+    _rbox = Box(orientation = VERTICAL)
     m._page4_option_get_entry.set_text('url risk level')
 
     m._page4_option_set_view.set_wrap_mode(g.WrapMode.CHAR)
@@ -1472,7 +1470,7 @@ class UI_Window(g.Window):
     _paned.pack2(_rbox, False, True)
     _row3.add(_paned)
 
-    _row4 = g.Frame()
+    _row4 = Frame()
     m._page4_task_view.set_editable(False)
     m._page4_task_view.set_wrap_mode(g.WrapMode.WORD)
 
@@ -1493,10 +1491,10 @@ class UI_Window(g.Window):
     self.page4.pack_start(_row4, True, True, 5)
 
   def _build_page5(self):
-    self.page5 = g.Box(orientation=VERTICAL)
+    self.page5 = Box(orientation=VERTICAL)
     self.page5.set_border_width(10)
 
-    _row1 = g.Frame()
+    _row1 = Frame()
     m._page5_manual_view.set_editable(False)
     m._page5_manual_view.set_wrap_mode(g.WrapMode.WORD)
 
@@ -1536,7 +1534,7 @@ class UI_Window(g.Window):
       GLib.idle_add(textbuffer.insert, _end, str(e))
 
   def _build_page6(self):
-    self.page6 = g.Box()
+    self.page6 = Box()
 
     _about_str = '''
     update at 2019-05-09 01:02:36
@@ -1549,7 +1547,7 @@ class UI_Window(g.Window):
     4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
     5. 感谢sqm带来的灵感, 其作者: KINGX ( https://github.com/kxcode ), sqm UI 使用的是python2 + tkinter
     '''
-    self.page6.pack_start(g.Label.new(_about_str), True, False, 0)
+    self.page6.pack_start(label.new(_about_str), True, False, 0)
 
 
 def main():

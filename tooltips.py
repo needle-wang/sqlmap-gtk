@@ -627,7 +627,7 @@ class Widget_Mesg(object):
 
 
 def main():
-  from gtk3_header import g
+  from widgets import g
   from sqlmap_ui import UI_Window
 
   win = UI_Window()

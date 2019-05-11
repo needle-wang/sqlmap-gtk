@@ -3,7 +3,7 @@
 # 2018年 11月 09日 星期五 15:06:50 CST
 
 from configparser import ConfigParser
-from gtk3_header import g
+from widgets import g, et
 
 
 LAST_TMP = 'last.tmp'
@@ -40,7 +40,7 @@ class Session(object):
       if _i.endswith('entry'):
         _tmp_entry = getattr(self.m, _i)
 
-        if isinstance(_tmp_entry, g.Entry) and _tmp_entry.get_text().strip():
+        if isinstance(_tmp_entry, et) and _tmp_entry.get_text().strip():
           self._cfg['Entry'][_i] = _tmp_entry.get_text()
 
   def _save_to_tmp_ckbtn(self):
@@ -67,7 +67,7 @@ class Session(object):
       # 不去手动改LAST_TMP, self.m就肯定有_i属性了
       _tmp_entry = getattr(self.m, _i)
 
-      if isinstance(_tmp_entry, g.Entry) and self._cfg['Entry'][_i]:
+      if isinstance(_tmp_entry, et) and self._cfg['Entry'][_i]:
         # print(type(self._cfg['Entry'][_i]))
         _tmp_entry.set_text(self._cfg['Entry'][_i])
 
