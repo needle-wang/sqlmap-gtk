@@ -60,7 +60,7 @@ class Notebook(g.Notebook):
     return True
 
 
-class FileEntry(g.Entry):
+class FileEntry(et):
   def __init__(self):
     super().__init__()
 
@@ -151,7 +151,7 @@ class FileEntry(g.Entry):
     return modelstr.startswith(_entrystr_name)
 
 
-class NumberEntry(g.Entry, g.Editable):
+class NumberEntry(et, g.Editable):
   '''
   Entry是Editable的子类, 如果单继承Entry的话, 由于python的动态特性,
   本类任何重载的方法, 会反应到g.Editable上(啥?? # 自答, 然后自问)

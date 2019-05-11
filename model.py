@@ -139,7 +139,7 @@ class Model(object):
     self._request_area_ignore_redirects_ckbtn = cb('忽略重定向')
     self._request_area_ignore_timeouts_ckbtn = cb('忽略连接超时')
     self._request_area_ignore_code_ckbtn = cb('忽略错误型状态码:')
-    self._request_area_ignore_code_entry = NumberEntry()
+    self._request_area_ignore_code_entry = et()
     self._request_area_skip_urlencode_ckbtn = cb('payload不使用url编码')
     self._request_area_force_ssl_ckbtn = cb('强制使用HTTPS')
     self._request_area_chunked_ckbtn = cb('用Chunked编码发送POST请求')
