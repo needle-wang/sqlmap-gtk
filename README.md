@@ -1,12 +1,11 @@
 ## sqlmap-ui
-sqlmap GUI, using PyGObject(gtk+3) 
-
+sqlmap GUI, using PyGObject(gtk+3)  
+use sqlmap-wx, if you want run it in win  
 
 #### SCREENSHORT
 ![screenshot](https://github.com/needle-wang/sqlmap-ui/blob/master/screenshots/sqlmap-ui1.png)
 
 #### INSTALLATION
-
 1. **REQUIRED**  
   - python3.5+, GTK+3.20(which is hard to install at win)  
   - pygobject: `pip3 install PyGObject` or `apt-get install python3-gi`  

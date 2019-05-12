@@ -33,15 +33,10 @@ class Handler(object):
 
   def build_all(self, button):
     _target = self._get_target()
-
-    self._collect_opts()
-    _opts_list = (
-      self._setting_opts + self._request_opts +
-      self._enumeration_opts + self._file_opts + self._other_opts
-    )
+    _opts_list = self._collect_opts()
 
     _final_line = _target + ''.join(_opts_list)
-
+    # print(_final_line)
     if _final_line is not None:
       self.m._cmd_entry.set_text(_final_line.strip())
       self.m._cmd_entry.grab_focus()
@@ -521,7 +516,7 @@ class Handler(object):
   def _collect_opts(self):
     m = self.m
 
-    self._other_opts = [
+    _other_opts = [
       self._get_text_only_ckbtn("--check-internet",
                                 m._page1_general_check_internet_ckbtn),
       self._get_text_only_ckbtn("--fresh-queries",
@@ -628,7 +623,7 @@ class Handler(object):
                                 m._page1_misc_z_entry),
     ]
 
-    self._file_opts = [
+    _file_opts = [
       self._get_text_from_entry("--file-read=",
                                 m._file_read_area_file_read_ckbtn,
                                 m._file_read_area_file_read_entry),
@@ -678,7 +673,7 @@ class Handler(object):
                                 m._file_os_registry_reg_type_entry),
     ]
 
-    self._enumeration_opts = [
+    _enumeration_opts = [
       self._get_text_only_ckbtn("-b",
                                 m._enum_area_opts_ckbtns[0][0]),
       self._get_text_only_ckbtn("--current-user",
@@ -766,7 +761,7 @@ class Handler(object):
                                 m._brute_force_area_common_columns_ckbtn),
     ]
 
-    self._request_opts = [
+    _request_opts = [
       self._get_text_only_ckbtn("--random-agent",
                                 m._request_area_random_agent_ckbtn),
       self._get_text_from_entry("--user-agent=",
@@ -880,7 +875,7 @@ class Handler(object):
                                 m._request_area_check_tor_ckbtn),
     ]
 
-    self._setting_opts = [
+    _setting_opts = [
       self._get_text_from_entry("-p ",
                                 m._inject_area_param_ckbtn,
                                 m._inject_area_param_entry),
@@ -987,6 +982,12 @@ class Handler(object):
                                 m._page1_misc_wizard_ckbtn),
       self._get_tampers(),
     ]
+
+    return (_setting_opts
+            + _request_opts
+            + _enumeration_opts
+            + _file_opts
+            + _other_opts)
 
   def _get_http_proxy_cred(self):
     m = self.m
