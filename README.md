@@ -14,7 +14,7 @@ from sqlmap's FAQ:
   - python3.5+, GTK+3.20  
   - pygobject: `pip3 install PyGObject` or `apt-get install python3-gi`  
   - requests: `pip3 install requests`  
-  - [sqlmap](https://github.com/sqlmapproject/sqlmap): `pip3 install sqlmap`  
+  - latest [sqlmap](https://github.com/sqlmapproject/sqlmap): `git clone` it.  
 2. **GET**
   - `git clone https://github.com/needle-wang/sqlmap-ui.git`
 3. **RUN**  
