@@ -1537,7 +1537,7 @@ class UI_Window(g.Window):
     self.page6 = Box()
 
     _about_str = '''
-    update at 2019-05-09 01:02:36
+    update at 2019-05-12 16:55
     1. VERSION: 0.3.2
        2019年 04月 29日 星期一 21:20:07 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
