@@ -355,10 +355,12 @@ class Handler(object):
     '''
     only for posix, won't code it for win now.
     '''
+    sqlmap_path = self.get_sqlmap_path()
     _sqlmap_opts = self.m._cmd_entry.get_text().strip()
+
     if IS_POSIX:
       self.w.main_notebook.next_page()
-      _cmdline_str = 'sqlmap %s\n' % _sqlmap_opts
+      _cmdline_str = '%s %s\n' % (sqlmap_path, _sqlmap_opts)
       # print(_cmdline_str)
       # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
       self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str))
@@ -395,6 +397,13 @@ class Handler(object):
 
     # print(_cmdline_str)
     Popen(_cmdline_str, shell = True)
+
+  def get_sqlmap_path(self, path = 'sqlmap'):
+    path_in_entry = self.m._sqlmap_path_entry.get_text().strip()
+    if path_in_entry:
+      path = path_in_entry
+
+    return path
 
   def clear_log_view_buffer(self, button):
     self.m._page3_log_view.get_buffer().set_text(

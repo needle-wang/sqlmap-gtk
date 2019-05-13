@@ -26,6 +26,8 @@ class Model(object):
   # sqlmap命令语句:
     self._cmd_entry = et()
   # 测试(Q)
+    self._sqlmap_path_entry = et()
+    self._sqlmap_path_chooser = btn.new_with_label('打开')
     # 注入选项
     self._inject_area_param_ckbtn = cb('可测试的参数')
     self._inject_area_param_entry = et()

@@ -18,6 +18,7 @@ class Session(object):
     self.m = m
 
   def save_to_tmp(self):
+    self._save_to_tmp_target()
     self._save_to_tmp_ckbtn()
     self._save_to_tmp_entry()
 
@@ -27,8 +28,20 @@ class Session(object):
   def load_from_tmp(self):
     self._cfg.read(LAST_TMP, 'utf8')
 
+    self._load_from_tmp_target()
     self._load_from_tmp_ckbtn()
     self._load_from_tmp_entry()
+
+  def _save_to_tmp_target(self):
+    if self._cfg.has_section('Target'):
+      self._cfg.remove_section('Target')
+
+    self._cfg.add_section('Target')
+
+    _tmp_url = self.m._url_combobox.get_child().get_text().strip()
+
+    if _tmp_url:
+      self._cfg['Target']['_url_combobox'] = _tmp_url
 
   def _save_to_tmp_entry(self):
     if self._cfg.has_section('Entry'):
@@ -58,6 +71,20 @@ class Session(object):
           _checked.append(_i)
 
     self._cfg['CheckButton']['checked'] = ','.join(_checked)
+
+  def _load_from_tmp_target(self):
+    if not self._cfg.has_section('Target'):
+      self._cfg.add_section('Target')
+
+    for _i in self._cfg.options('Target'):
+      if _i == '_url_combobox':
+        # 不去手动改LAST_TMP, self.m就肯定有_i属性了
+        _tmp_url = self.m._url_combobox.get_child()
+
+        if self._cfg['Target'][_i]:
+          _tmp_url.set_text(self._cfg['Target'][_i])
+
+      break
 
   def _load_from_tmp_entry(self):
     if not self._cfg.has_section('Entry'):

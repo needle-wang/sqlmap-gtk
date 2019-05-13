@@ -32,6 +32,7 @@ class UI_Window(g.Window):
   def __init__(self):
     super().__init__(title='sqlmap-gtk')
     self.connect('key_press_event', self.on_window_key_press_event)
+    self.set_icon_from_file("sqlmap_gtk.ico")
 
     self._handlers = Handler(self, m)
 
@@ -130,7 +131,7 @@ class UI_Window(g.Window):
     for _i in dir(m):
       if _i.endswith('entry'):
         _tmp_entry = getattr(m, _i)
-        if isinstance(_tmp_entry, g.Entry):
+        if isinstance(_tmp_entry, g.Entry) and _tmp_entry is not m._sqlmap_path_entry:
           _tmp_entry.set_text('')
 
   def unselect_all_ckbtn(self, button):
@@ -482,6 +483,19 @@ class UI_Window(g.Window):
   def _build_page1_setting(self):
     _page1_setting = Box(orientation=VERTICAL)
 
+    _row0 = Box()
+    _sqlmap_path_label = label(label = '指定sqlmap路径:')
+    m._sqlmap_path_entry.set_text('sqlmap')
+    m._sqlmap_path_chooser.connect(
+      'clicked',
+      self.set_file_entry_text,
+      [m._sqlmap_path_entry]
+    )
+
+    _row0.pack_start(_sqlmap_path_label, False, True, 5)
+    _row0.pack_start(m._sqlmap_path_entry, True, True, 5)
+    _row0.pack_start(m._sqlmap_path_chooser, False, True, 5)
+
     _row1 = Box()
     self._build_page1_setting_inject()
     self._build_page1_setting_detection()
@@ -500,7 +514,8 @@ class UI_Window(g.Window):
     _row2.pack_start(self._optimize_area, False, True, 5)
     _row2.pack_start(self._general_area, False, True, 5)
 
-    _page1_setting.pack_start(_row1, False, True, 5)
+    _page1_setting.pack_start(_row0, False, True, 5)
+    _page1_setting.pack_start(_row1, False, True, 0)
     _page1_setting.pack_start(_row2, False, True, 5)
 
     self.page1_setting = g.ScrolledWindow()
@@ -1494,44 +1509,76 @@ class UI_Window(g.Window):
     self.page5 = Box(orientation=VERTICAL)
     self.page5.set_border_width(10)
 
-    _row1 = Frame()
+    _row1 = Box()
+    self._get_sqlmap_path_btn = btn.new_with_label('获取帮助')
+    self._get_sqlmap_path_btn.set_sensitive(False)
+    self._get_sqlmap_path_btn.connect('clicked', self._make_help_thread)
+
+    _row1.pack_start(self._get_sqlmap_path_btn, False, True, 5)
+
+    _row2 = Frame()
     m._page5_manual_view.set_editable(False)
     m._page5_manual_view.set_wrap_mode(g.WrapMode.WORD)
 
-    # 使用线程 填充 帮助标签, 加快启动速度
-    t = Thread(target = self._set_manual_view,
-               args = (m._page5_manual_view.get_buffer(),))
-    # t.daemon = True   # 死了也会存在
-    t.start()
+    self._make_help_thread(None)
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _scrolled.add(m._page5_manual_view)
 
-    _row1.add(_scrolled)
+    _row2.add(_scrolled)
 
-    self.page5.pack_start(_row1, True, True, 5)
+    self.page5.pack_start(_row1, False, True, 5)
+    self.page5.pack_start(_row2, True, True, 5)
 
-  def _set_manual_view(self, textbuffer):
+  def _make_help_thread(self, button):
+    isClick = True if button else False
+    # 使用线程 填充 帮助标签, 加快启动速度
+    t = Thread(target = self._set_manual_view,
+               args = (m._page5_manual_view.get_buffer(), isClick))
+    # t.daemon = True   # 死了也会存在
+    t.start()
+
+  def _set_manual_view(self, textbuffer, isClick):
     '''
     不用多线程能行嘛? 想要获得输出结果就一定会有阻塞的可能!
     https://www.jianshu.com/p/11090e197648
     https://wiki.gnome.org/Projects/PyGObject/Threading
+    needle注: 操作的共享对象有两个: _get_sqlmap_path_btn, textbuffer
+              原则一样, 所有对共用对象的操作都要用GLib.idle_add
+              这样写是不是很丑?
+              另外, 如果没运行完, 主线程就退出了, 会卡住哦, 属于正常
     '''
-    _end = textbuffer.get_end_iter()
-    # _manual_hh = '/home/needle/bin/output_interval.sh'
+    if isClick:
+      GLib.idle_add(self._get_sqlmap_path_btn.set_sensitive, False)
+      GLib.idle_add(textbuffer.set_text, '')
+
     # WIN下不能用此行
     # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
-    _manual_hh = 'echo y|sqlmap -hh'
+    # _manual_hh = '/home/needle/bin/output_interval.sh'
+    _manual_hh = [self._handlers.get_sqlmap_path(), '-hh']
     try:
-      _subprocess = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT, bufsize=1, shell = True)
+      _subprocess = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT, bufsize=1)
 
       for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
-        GLib.idle_add(textbuffer.insert, _end, _an_bytes_line_tmp.decode('utf8'))
-      _subprocess.stdout.close()
+        GLib.idle_add(self.textbuffer_insert,
+                      textbuffer,
+                      _an_bytes_line_tmp.decode('utf8'))
       _subprocess.wait()
     except FileNotFoundError as e:
-      GLib.idle_add(textbuffer.insert, _end, str(e))
+      GLib.idle_add(self.textbuffer_insert, textbuffer, str(e))
+    except Exception as e:
+      print(e)
+    finally:
+      _subprocess.stdout.close()
+      GLib.idle_add(self._get_sqlmap_path_btn.set_sensitive, True)
+
+    if isClick:
+      GLib.idle_add(self._get_sqlmap_path_btn.grab_focus)
+
+  def textbuffer_insert(self, textbuffer, line):
+    # get_end_iter也要加锁, py有没有变量锁? 锁btn和textbuffer就行了嘛
+    textbuffer.insert(textbuffer.get_end_iter(), line)
 
   def _build_page6(self):
     self.page6 = Box()
