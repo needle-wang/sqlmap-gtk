@@ -1564,13 +1564,14 @@ class UI_Window(g.Window):
         GLib.idle_add(self.textbuffer_insert,
                       textbuffer,
                       _an_bytes_line_tmp.decode('utf8'))
+
       _subprocess.wait()
+      _subprocess.stdout.close()
     except FileNotFoundError as e:
       GLib.idle_add(self.textbuffer_insert, textbuffer, str(e))
     except Exception as e:
       print(e)
     finally:
-      _subprocess.stdout.close()
       GLib.idle_add(self._get_sqlmap_path_btn.set_sensitive, True)
 
     if isClick:
