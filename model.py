@@ -26,7 +26,7 @@ class Model(object):
   # sqlmap命令语句:
     self._cmd_entry = et()
   # 测试(Q)
-    self._sqlmap_path_entry = et()
+    self._sqlmap_path_entry = FileEntry()
     self._sqlmap_path_chooser = btn.new_with_label('打开')
     # 注入选项
     self._inject_area_param_ckbtn = cb('可测试的参数')
@@ -84,6 +84,8 @@ class Model(object):
     self._tech_area_second_req_ckbtn = cb('使用含二阶HTTP请求的文件:')
     self._tech_area_second_req_entry = FileEntry()
     self._tech_area_second_req_chooser = btn.new_with_label('打开')
+    # tamper脚本
+    self._tamper_area_tamper_view = tv()
     # 性能优化
     self._optimize_area_turn_all_ckbtn = cb('启用所有优化选项')
     self._optimize_area_thread_num_ckbtn = cb('使用线程数:')

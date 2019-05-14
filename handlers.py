@@ -3,16 +3,14 @@
 #
 # 2018年 08月 29日 星期三 15:34:10 CST
 
-import ast
 import time
 from os import environ, name as OS_NAME
 # python3.5+
 from pathlib import Path
-from subprocess import Popen
 from urllib.parse import urlparse
-import requests
 
 from widgets import g, GLib, Vte
+from handler_api import Api
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
 
@@ -21,15 +19,16 @@ QUOTE = "'%s'" if OS_NAME == 'posix' else '"%s"'  # dos下只能用双引号
 
 
 class Handler(object):
-  def __init__(self, w, m):
+  def __init__(self, window, m):
     '''
-    w: sqlmap_ui.UI_Window
+    w: Gtk.Window
     m: model.Model
     还不能用注解, 会相互import
     '''
-    self.w = w
+    self.w = window
     self.m = m
     self.shell = environ["SHELL"]
+    self.api = Api(window, m)
 
   def build_all(self, button):
     _target = self._get_target()
@@ -40,316 +39,6 @@ class Handler(object):
     if _final_line is not None:
       self.m._cmd_entry.set_text(_final_line.strip())
       self.m._cmd_entry.grab_focus()
-
-  def api_task_new(self, button):
-    '''
-    rest api获取自: https://github.com/PyxYuYu/MyBlog/issues/69
-    @get("/task/new") 创建新任务
-    '''
-    _host = self.m._page4_api_server_entry.get_text().strip()
-    if _host:
-      try:
-        _resp = requests.get('http://%s/task/new' % _host)
-        _resp = _resp.json()
-        if _resp['success']:
-          self._task_view_append('%s: 创建成功.' % _resp['taskid'])
-      except Exception as e:
-        self._task_view_append(e)
-
-  def api_admin_list(self, button):
-    '''
-    @get("/admin/<taskid>/list") 查看所有任务，并显示运行状态
-    '''
-    _host = self.m._page4_api_server_entry.get_text().strip()
-    _token = self.m._page4_admin_token_entry.get_text().strip()
-    if _host and _token:
-      try:
-        _resp = requests.get('http://%s/admin/%s/list' % (_host, _token))
-        _resp = _resp.json()
-        # print(_resp)
-        if _resp['success']:
-          # self._task_view_append('总任务数: %s' % _resp['tasks_num'])
-          # 清空之前的任务列表
-          for _a_child in self.w._api_admin_list_rows.get_children():
-            # self.w._api_admin_list_rows.remove(_a_child)
-            _a_child.destroy()
-          # 填充任务列表
-          _id = 0
-          for _taskid, _status in _resp['tasks'].items():
-            _a_task_row = g.ListBoxRow()
-            _a_row_box_tmp = g.Box()
-            _a_task_row.add(_a_row_box_tmp)
-
-            _task_del_btn = g.Button.new_with_label('删除')
-            _task_del_btn.connect('clicked', self.api_task_delete, _a_task_row, _taskid)
-            _scan_kill_btn = g.Button.new_with_label('杀死')
-            _scan_kill_btn.connect('clicked', self.api_scan_kill, _taskid)
-            _scan_stop_btn = g.Button.new_with_label('停止')
-            _scan_stop_btn.connect('clicked', self.api_scan_stop, _taskid)
-            _scan_start_btn = g.Button.new_with_label('启动')
-            _scan_start_btn.connect('clicked', self.api_scan_start, _taskid)
-            _scan_data_btn = g.Button.new_with_label('data')
-            _scan_data_btn.connect('clicked', self.api_scan_data, _taskid)
-            _scan_log_btn = g.Button.new_with_label('log')
-            _scan_log_btn.connect('clicked', self.api_scan_log, _taskid)
-            _option_list_btn = g.Button.new_with_label('所有选项')
-            _option_list_btn.connect('clicked', self.api_option_list, _taskid)
-            _option_get_btn = g.Button.new_with_label('选项:')
-            _option_get_btn.connect('clicked', self.api_option_get, _taskid)
-            _option_set_btn = g.Button.new_with_label('设置:')
-            _option_set_btn.connect('clicked', self.api_option_set, _taskid)
-
-            _id += 1
-            _a_row_box_tmp.pack_start(g.Label.new('%s. %s' % (_id, _taskid)), False, True, 5)
-            _a_row_box_tmp.pack_start(g.Label.new('(%s)' % _status), False, True, 0)
-            _a_row_box_tmp.pack_start(_task_del_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(_scan_kill_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(_scan_stop_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(_scan_start_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(g.Label.new('查看:('), False, True, 1)
-            _a_row_box_tmp.pack_start(_scan_data_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(_scan_log_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(_option_list_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(_option_get_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(g.Label.new(')'), False, True, 1)
-            _a_row_box_tmp.pack_start(_option_set_btn, False, True, 1)
-
-            self.w._api_admin_list_rows.add(_a_task_row)
-
-          self.w._api_admin_list_rows.show_all()
-      except Exception as e:
-        self._task_view_append(e)
-
-  def api_option_list(self, button, taskid):
-    '''
-    @get("/option/<taskid>/list") 获取指定任务的options
-    '''
-    _host = self.m._page4_api_server_entry.get_text().strip()
-    if _host:
-      try:
-        _resp = requests.get('http://%s/option/%s/list' % (_host, taskid))
-        _resp = _resp.json()
-        if _resp['success']:
-          for _key, _value in _resp['options'].items():
-            if _value:
-              self._task_view_append('%s: %s' % (_key, _value))
-      except Exception as e:
-        self._task_view_append(e)
-
-  def api_option_get(self, button, taskid):
-    '''
-    @post("/option/<taskid>/get") 获取指定任务的option(s)
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    _buffer_text = self.m._page4_option_get_entry.get_text()
-    _options = {}
-    for _tmp in _buffer_text.split():
-      _options[_tmp] = None
-    if _host and _options:
-      _mesg = '%s:\n' % taskid
-      try:
-        _headers = {'Content-Type': 'application/json'}
-        _resp = requests.post('http://%s/option/%s/get' % (_host, taskid),
-                              json = _options,
-                              headers = _headers)
-        _resp = _resp.json()
-        if _resp['success']:
-          if _resp['options'].items():
-            for _key, _value in _resp['options'].items():
-              _mesg += '%s: %s, ' % (_key, _value)
-          else:
-            _mesg += 'None'
-        else:
-          _mesg += _resp['message']
-      except Exception as e:
-        _mesg += str(e)
-      self._task_view_append(_mesg.strip())
-
-  def api_option_set(self, button, taskid):
-    '''
-    @post("/option/<taskid>/set") 设置指定任务的option(s)
-    Warning: any option can be set, even a invalid option which
-             is unable to remove, except deleting the task.
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    _buffer_text = self._get_buffer_text(self.m._page4_option_set_view)
-    try:
-      _json = ast.literal_eval(_buffer_text)
-    except Exception as e:
-      _json = str(e)
-
-    _mesg = '%s: ' % taskid
-    if _json and isinstance(_json, dict):
-      if _host:
-        try:
-          _headers = {'Content-Type': 'application/json'}
-          _resp = requests.post('http://%s/option/%s/set' % (_host, taskid),
-                                json = _json,
-                                headers = _headers)
-          _resp = _resp.json()
-          if _resp['success']:
-            _mesg += '设置成功'
-        except Exception as e:
-          _mesg += str(e)
-    else:
-      _mesg += '需要一个有效的python dict'
-
-    self._task_view_append(_mesg)
-
-  def api_admin_flush(self, button):
-    '''
-    @get("/admin/<taskid>/flush") 删除所有任务
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    _token = self.m._page4_admin_token_entry.get_text()
-    if _host and _token:
-      try:
-        _resp = requests.get('http://%s/admin/%s/flush' % (_host, _token))
-        _resp = _resp.json()
-        if _resp['success']:
-          for _a_child in self.w._api_admin_list_rows.get_children():
-            self.w._api_admin_list_rows.remove(_a_child)
-          self._task_view_append('清空全部任务: 成功')
-      except Exception as e:
-        self._task_view_append(e)
-
-  def api_task_delete(self, button, *data):
-    '''
-    @get("/task/<taskid>/delete") 删除指定任务
-    '''
-    _host = self.m._page4_api_server_entry.get_text().strip()
-    if _host:
-      try:
-        _resp = requests.get('http://%s/task/%s/delete' % (_host, data[1]))
-        _resp = _resp.json()
-        if _resp['success']:
-          self.w._api_admin_list_rows.remove(data[0])
-          self._task_view_append('%s: 删除成功' % data[1])
-      except Exception as e:
-        self._task_view_append(e)
-
-  def api_scan_start(self, button, taskid):
-    '''
-    @post("/scan/<taskid>/start") 指定任务 开始扫描
-    要求发送json, 会执行/option/<taskid>/set
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    if _host:
-      _mesg = '%s: ' % taskid
-      try:
-        _headers = {'Content-Type': 'application/json'}
-        _resp = requests.post('http://%s/scan/%s/start' % (_host, taskid),
-                              json = {},
-                              headers = _headers)
-        _resp = _resp.json()
-        if _resp['success']:
-          _mesg = '%sengineid: %s' % (_mesg, _resp['engineid'])
-        else:
-          _mesg += _resp['message']
-      except Exception as e:
-        _mesg += str(e)
-
-      self._task_view_append(_mesg)
-
-  def api_scan_stop(self, button, taskid):
-    '''
-    @get("/scan/<taskid>/stop") 指定任务 停止扫描
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    if _host:
-      _mesg = '%s: ' % taskid
-      try:
-        _resp = requests.get('http://%s/scan/%s/stop' % (_host, taskid))
-        _resp = _resp.json()
-        if _resp['success']:
-          _mesg += 'ok, stoped.'
-        else:
-          _mesg += _resp['message']
-      except Exception as e:
-        _mesg += str(e)
-      self._task_view_append(_mesg)
-
-  def api_scan_kill(self, button, taskid):
-    '''
-    @get("/scan/<taskid>/kill") kill -9 指定任务
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    if _host:
-      _mesg = '%s: ' % taskid
-      try:
-        _resp = requests.get('http://%s/scan/%s/kill' % (_host, taskid))
-        _resp = _resp.json()
-        if _resp['success']:
-          _mesg += 'ok, killed.'
-        else:
-          _mesg += _resp['message']
-      except Exception as e:
-        _mesg += str(e)
-      self._task_view_append(_mesg)
-
-  def api_scan_data(self, button, taskid):
-    '''
-    @get("/scan/<taskid>/data") 查看指定任务的扫描数据,
-                                data若有内容说明存在注入
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    if _host:
-      _mesg = '%s:\n' % taskid
-      try:
-        _resp = requests.get('http://%s/scan/%s/data' % (_host, taskid))
-        _resp = _resp.json()
-        # print(_resp)    # _resp['data'], _resp['error'] are list
-        if _resp['success']:
-          del[_resp['success']]
-          _mesg = '%s%s' % (_mesg, _resp)
-      except Exception as e:
-        _mesg += str(e)
-      self._task_view_append(_mesg)
-
-  def api_scan_log(self, button, taskid):
-    '''
-    @get("/scan/<taskid>/log") 查看指定任务的扫描日志
-    '''
-    _host = self.m._page4_api_server_entry.get_text()
-    if _host:
-      _mesg = '%s:\n' % taskid
-      try:
-        _resp = requests.get('http://%s/scan/%s/log' % (_host, taskid))
-        _resp = _resp.json()
-        if _resp['success']:
-          _logs = ''
-          for _tmp in _resp['log']:
-            _log = '%s %s: %s\n' % (_tmp['time'], _tmp['level'], _tmp['message'])
-            _logs = ''.join((_logs, _log))
-          if _logs:
-            _mesg += _logs.strip()
-          else:
-            _mesg += "没有log."
-        else:
-          _mesg += _resp['message']
-      except Exception as e:
-        _mesg += str(e)
-      self._task_view_append(_mesg)
-
-  def _get_buffer_text(self, textview):
-    _buffer = textview.get_buffer()
-    _start = _buffer.get_start_iter()
-    _end = _buffer.get_end_iter()
-    return _buffer.get_text(_start, _end, False).strip()
-
-  def _task_view_append(self, output):
-    _task_view_textbuffer = self.m._page4_task_view.get_buffer()
-
-    _mark = _task_view_textbuffer.get_mark('end')
-    _end = _task_view_textbuffer.get_iter_at_mark(_mark)
-
-    _task_view_textbuffer.insert(_end, '%s\n' % output)
-
-    # 获取焦点
-    # self.w.set_focus(self.m._page4_task_view)
-    self.m._page4_task_view.grab_focus()
-    # https://stackoverflow.com/questions/48934458/gtk-sourceview-scroll-to-mark-not-working
-    GLib.idle_add(self.m._page4_task_view.scroll_mark_onscreen, _mark)
 
   def run_cmdline(self, button):
     '''
@@ -385,19 +74,6 @@ class Handler(object):
                      lambda pty, task: None)
     self.m._page2_terminal.grab_focus()
 
-  def run_cmdline_old(self, button):
-    '''
-     -  -  -  - 废弃 -  -  -  -
-    '''
-    _sqlmap_opts = self.m._cmd_entry.get_text().strip()
-    if IS_POSIX:
-      _cmdline_str = '/usr/bin/env xterm -hold -e sqlmap %s' % _sqlmap_opts
-    else:
-      _cmdline_str = 'start cmd /k sqlmap %s' % _sqlmap_opts
-
-    # print(_cmdline_str)
-    Popen(_cmdline_str, shell = True)
-
   def get_sqlmap_path(self, path = 'sqlmap'):
     path_in_entry = self.m._sqlmap_path_entry.get_text().strip()
     if path_in_entry:
@@ -405,32 +81,35 @@ class Handler(object):
 
     return path
 
-  def clear_log_view_buffer(self, button):
-    self.m._page3_log_view.get_buffer().set_text(
-      'sqlmap的运行记录都放在这: %s\n' % (Path.home() / '.sqlmap/output'))
+  def set_file_entry_text(self, button, data):
+    '''
+    data: [file_entry, 'title of chooser']
+    '''
+    if len(data) > 1:   # 选择目录
+      dialog = g.FileChooserDialog(data[1], self.w,
+                                   g.FileChooserAction.SELECT_FOLDER,
+                                   ('_Cancel', g.ResponseType.CANCEL,
+                                    '_Select', g.ResponseType.OK))
+    else:
+      # 点击左侧的 最近使用 可以选择目录, 小问题, 不用管.
+      dialog = g.FileChooserDialog("选择文件", self.w,
+                                   g.FileChooserAction.OPEN,
+                                   ('_Cancel', g.ResponseType.CANCEL,
+                                    '_OK', g.ResponseType.OK))
+    try:
+      if dialog.run() == g.ResponseType.OK:
+        data[0].set_text(dialog.get_filename())
+        data[0].grab_focus()
+    finally:
+      dialog.destroy()
 
   def clear_task_view_buffer(self, button):
     _task_view_textbuffer = self.m._page4_task_view.get_buffer()
     _task_view_textbuffer.set_text('')
 
-  def cb_single(self, widget, ckbtn):
-    if widget.get_active():
-      ckbtn.set_active(False)
-
-  def optimize_area_controller(self, button):
-    m = self.m
-    if m._optimize_area_turn_all_ckbtn.get_active():
-      m._optimize_area_predict_ckbtn.set_active(False)
-      m._optimize_area_keep_alive_ckbtn.set_active(False)
-      m._optimize_area_null_connect_ckbtn.set_active(False)
-
-      m._optimize_area_predict_ckbtn.set_sensitive(False)
-      m._optimize_area_keep_alive_ckbtn.set_sensitive(False)
-      m._optimize_area_null_connect_ckbtn.set_sensitive(False)
-    else:
-      m._optimize_area_predict_ckbtn.set_sensitive(True)
-      m._optimize_area_keep_alive_ckbtn.set_sensitive(True)
-      m._optimize_area_null_connect_ckbtn.set_sensitive(True)
+  def clear_log_view_buffer(self, button):
+    self.m._page3_log_view.get_buffer().set_text(
+      'sqlmap的运行记录都放在这: %s\n' % (Path.home() / '.sqlmap/output'))
 
   def _get_url_dir(self):
     '''
@@ -1023,7 +702,7 @@ class Handler(object):
 
   def _get_tampers(self):
     ''' --tamper=TAMPER     Use given script(s) for tampering injection data '''
-    _tamper_textbuffer = self.w._tamper_area_tamper_view.get_buffer()
+    _tamper_textbuffer = self.m._tamper_area_tamper_view.get_buffer()
     _tampers = ''
 
     _start = _tamper_textbuffer.get_start_iter()
@@ -1078,9 +757,9 @@ class Handler(object):
 
 
 def main():
-  from sqlmap_ui import UI_Window
+  from sqlmap_gtk import Window
 
-  win = UI_Window()
+  win = Window()
   win.connect('destroy', g.main_quit)
   win.show_all()
   g.main()

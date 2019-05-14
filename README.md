@@ -18,7 +18,7 @@ from sqlmap's FAQ:
 2. **GET**
   - `git clone https://github.com/needle-wang/sqlmap-ui.git`
 3. **RUN**  
-  - `./sqlmap_ui.py`
+  - `./sqlmap_gtk.py`
 
 #### TODO
 - ~~UI重新排版~~
@@ -36,9 +36,8 @@ from sqlmap's FAQ:
 - 继续重构, 优化
 
 #### ABOUT
-1. update at update at 2019-05-12 16:55  
-   V0.3.2  
-   2019年 04月 29日 星期一 21:20:07 CST  
+1. V0.3.3  
+   2019-05-14 23:56:35  
    作者: needle wang ( needlewang2011@gmail.com )
 2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py
 3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)带来的灵感, 其作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)

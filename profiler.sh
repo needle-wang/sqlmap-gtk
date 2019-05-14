@@ -2,5 +2,5 @@
 #
 # 2018年 11月 01日 星期四 04:18:20 CST
 
-kernprof -l -v sqlmap_ui.py
+kernprof -l -v sqlmap_gtk.py
 

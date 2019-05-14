@@ -5,13 +5,10 @@
 
 
 class Widget_Mesg(object):
-  def __init__(self, w, m):
+  def __init__(self, m):
     '''
-    w: sqlmap_ui.UI_Window
     m: model.Model
     '''
-    self.w = w
-
     self.set_all_tooltips(m)
     self.set_all_placeholders(m)
 
@@ -199,7 +196,7 @@ class Widget_Mesg(object):
                       m._tech_area_second_req_ckbtn,
                       m._tech_area_second_req_entry)
     self._set_tooltip('此处填写要使用的tamper脚本名\n详见: sqlmap --list-tamper\n回车或逗号拼接',
-                      self.w._tamper_area)
+                      m._tamper_area_tamper_view)
     self._set_tooltip('-o',
                       m._optimize_area_turn_all_ckbtn)
     self._set_tooltip('--threads=默认为1',
@@ -628,9 +625,9 @@ class Widget_Mesg(object):
 
 def main():
   from widgets import g
-  from sqlmap_ui import UI_Window
+  from sqlmap import Window
 
-  win = UI_Window()
+  win = Window()
   win.connect('destroy', g.main_quit)
   win.show_all()
   g.main()
