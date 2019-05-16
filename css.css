@@ -1,0 +1,19 @@
+/* 2019年 05月 17日 星期五 00:11:44 CST */
+
+checkbutton:checked {
+  background-color: #f6d488;
+  border-radius: 6px;
+  transition: 250ms ease-in-out;
+}
+
+button {
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+button:active {
+  transition: 250ms ease-in-out;
+  border-style: inset;
+}
+

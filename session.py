@@ -14,8 +14,13 @@ class Session(object):
     '''
     m: model.Model
     '''
-    self._cfg = ConfigParser()
     self.m = m
+
+    self._cfg = ConfigParser()
+    # https://stackoverflow.com/questions/19359556/configparser-reads-capital-keys-and-make-them-lower-case
+    # 所有选项的key, 都会传给optionxform(), 该方法会将key转成小写!
+    # 将optionxform替换成str, 表示不做转换
+    self._cfg.optionxform = str
 
   def save_to_tmp(self):
     self._save_to_tmp_target()

@@ -296,7 +296,7 @@ class Model(object):
     self._page1_general_charset_entry = et()
     self._page1_general_encoding_ckbtn = cb('字符编码(用于数据获取)')
     self._page1_general_encoding_entry = et()
-    self._page1_general_session_file_ckbtn = cb('指定会话文件')
+    self._page1_general_session_file_ckbtn = cb('载入会话文件')
     self._page1_general_session_file_entry = FileEntry()
     self._page1_general_session_file_chooser = btn.new_with_label('打开')
     self._page1_general_output_dir_ckbtn = cb('输出的保存目录')

@@ -138,7 +138,7 @@ class Notebook(g.Notebook):
     _row7.pack_end(m._tech_area_second_url_entry, True, True, 5)
 
     _row8 = Box()
-    _row8.pack_start(m._tech_area_second_req_ckbtn, True, True, 5)
+    _row8.pack_start(m._tech_area_second_req_ckbtn, False, True, 5)
 
     _row9 = Box()
     m._tech_area_second_req_chooser.connect(
@@ -295,7 +295,7 @@ class Notebook(g.Notebook):
     # set_active(True)为选中状态
     m._inject_area_skip_static_ckbtn.set_active(True)
 
-    _row2.pack_start(m._inject_area_skip_static_ckbtn, True, True, 5)
+    _row2.pack_start(m._inject_area_skip_static_ckbtn, False, True, 5)
 
     _row3 = Box()
     _row3.pack_start(m._inject_area_prefix_ckbtn, False, True, 5)
@@ -1175,18 +1175,26 @@ class Notebook(g.Notebook):
 
 
 def main():
+  from widgets import d
   from model import Model
   from handlers import Handler
 
   win = g.Window(title = 'sqlmap-options')
-  m = Model()
 
+  css_provider = g.CssProvider.new()
+  css_provider.load_from_path('css.css')
+  g.StyleContext.add_provider_for_screen(
+    d.Screen.get_default(),
+    css_provider,
+    g.STYLE_PROVIDER_PRIORITY_APPLICATION
+  )
+
+  m = Model()
   n = Notebook(m, Handler(win, m))
   win.add(n)
 
   win.connect('destroy', g.main_quit)
   win.show_all()
-
   g.main()
 
 

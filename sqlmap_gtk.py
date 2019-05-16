@@ -529,10 +529,18 @@ class Window(g.Window):
 
 def main():
   win = Window()
+
+  css_provider = g.CssProvider.new()
+  css_provider.load_from_path('css.css')
+  g.StyleContext.add_provider_for_screen(
+    d.Screen.get_default(),
+    css_provider,
+    g.STYLE_PROVIDER_PRIORITY_APPLICATION
+  )
+
   win.connect('destroy', lambda x: win.on_window_destroy())
   # win.maximize()
   win.show_all()
-
   g.main()
 
 

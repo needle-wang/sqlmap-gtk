@@ -624,10 +624,19 @@ class Widget_Mesg(object):
 
 
 def main():
-  from widgets import g
-  from sqlmap import Window
+  from widgets import d, g
+  from sqlmap_gtk import Window
 
   win = Window()
+
+  css_provider = g.CssProvider.new()
+  css_provider.load_from_path('css.css')
+  g.StyleContext.add_provider_for_screen(
+    d.Screen.get_default(),
+    css_provider,
+    g.STYLE_PROVIDER_PRIORITY_APPLICATION
+  )
+
   win.connect('destroy', g.main_quit)
   win.show_all()
   g.main()

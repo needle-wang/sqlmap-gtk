@@ -38,7 +38,7 @@ class Handler(object):
     # print(_final_line)
     if _final_line is not None:
       self.m._cmd_entry.set_text(_final_line.strip())
-      self.m._cmd_entry.grab_focus()
+      # self.m._cmd_entry.grab_focus()
 
   def run_cmdline(self, button):
     '''
@@ -50,9 +50,13 @@ class Handler(object):
     if IS_POSIX:
       self.w.main_notebook.next_page()
       _cmdline_str = '%s %s\n' % (sqlmap_path, _sqlmap_opts)
-      # print(_cmdline_str)
+      # print(_cmdline_str, len(_cmdline_str.encode('utf8')))
       # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
-      self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str))
+      if Vte.MAJOR_VERSION >= 0 and Vte.MINOR_VERSION > 52:
+        self.m._page2_terminal.feed_child_binary(_cmdline_str.encode('utf8'))
+      else:
+        # 旧版本的api, len()还要用encode后的长度
+        self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str.encode('utf8')))
       self.m._page2_terminal.grab_focus()
 
   def respawn_terminal(self, button):
@@ -757,9 +761,19 @@ class Handler(object):
 
 
 def main():
+  from widgets import d
   from sqlmap_gtk import Window
 
   win = Window()
+
+  css_provider = g.CssProvider.new()
+  css_provider.load_from_path('css.css')
+  g.StyleContext.add_provider_for_screen(
+    d.Screen.get_default(),
+    css_provider,
+    g.STYLE_PROVIDER_PRIORITY_APPLICATION
+  )
+
   win.connect('destroy', g.main_quit)
   win.show_all()
   g.main()
