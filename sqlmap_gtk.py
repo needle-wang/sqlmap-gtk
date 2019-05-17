@@ -524,7 +524,7 @@ class Window(g.Window):
        2019年 05月 17日 星期五 21:35:32 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
        作者: needle wang ( needlewang2011@gmail.com )
-       https://github.com/needle-wang/sqlmap-ui/\n
+       https://github.com/needle-wang/sqlmap-gtk/\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
     3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
     4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n

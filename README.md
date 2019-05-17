@@ -1,4 +1,4 @@
-## sqlmap-ui
+## sqlmap-gtk
 sqlmap GUI, using PyGObject(gtk+3)  
 use sqlmap-wx, if you want to run it in win  
 
@@ -7,7 +7,7 @@ from sqlmap's FAQ:
 "Both Python 2 and 3 are supported from May of 2019"  
 
 #### SCREENSHORT
-![screenshot](https://github.com/needle-wang/sqlmap-ui/blob/master/screenshots/sqlmap-ui1.png)
+![screenshot](https://github.com/needle-wang/sqlmap-gtk/blob/master/screenshots/sqlmap-ui1.png)
 
 #### INSTALLATION
 1. **REQUIRED**  
@@ -16,7 +16,7 @@ from sqlmap's FAQ:
   - requests: `pip3 install requests`  
   - latest [sqlmap](https://github.com/sqlmapproject/sqlmap): `git clone` it.  
 2. **GET**
-  - `git clone https://github.com/needle-wang/sqlmap-ui.git`
+  - `git clone https://github.com/needle-wang/sqlmap-gtk.git`
 3. **RUN**  
   - `./sqlmap_gtk.py`
 
