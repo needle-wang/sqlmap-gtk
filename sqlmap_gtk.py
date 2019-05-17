@@ -375,6 +375,10 @@ class Window(g.Window):
     _row2.pack_start(m._page4_admin_list_btn, False, True, 0)
     _row2.pack_start(m._page4_admin_flush_btn, False, True, 0)
     _row2.pack_start(m._page4_clear_task_view_btn, False, True, 0)
+    _row2.pack_end(m._page4_password_entry, False, True, 0)
+    _row2.pack_end(m._page4_password_label, False, True, 0)
+    _row2.pack_end(m._page4_username_entry, False, True, 0)
+    _row2.pack_end(m._page4_username_label, False, True, 0)
 
     _row3 = Frame()
     _paned = g.Paned()
@@ -389,13 +393,14 @@ class Window(g.Window):
 
     _rbox = Box(orientation=VERTICAL)
     m._page4_option_get_entry.set_text('url risk level')
-
+    _page4_option_set_view_tip = label(label = '所有选项见sqlmap目录中的optiondict.py',
+                                       halign = g.Align.START)
     m._page4_option_set_view.set_wrap_mode(g.WrapMode.CHAR)
     _option_set_view_textbuffer = m._page4_option_set_view.get_buffer()
     _options_example = ("{\n"
                         "  'url': 'http://www.site.com/vuln.php?id=1',\n"
                         "  'level': 1, 'risk': 1,\n\n"
-                        "}\n# 所有选项见sqlmap目录中的optiondict.py\n")
+                        "}\n")
     _option_set_view_textbuffer.set_text(_options_example, len(_options_example.encode('utf8')))
     # 貌似scrollwindow要直接包含textview,
     # 不然一直回车后, 页面不会向上滚
@@ -405,6 +410,7 @@ class Window(g.Window):
     _option_set_scrolled.add(m._page4_option_set_view)
 
     _rbox.pack_start(m._page4_option_get_entry, False, True, 2)
+    _rbox.pack_start(_page4_option_set_view_tip, False, True, 2)
     _rbox.pack_start(_option_set_scrolled, True, True, 2)
 
     # Warning: don't edit pack1(), pack2() again, or it would be strange.
@@ -514,10 +520,11 @@ class Window(g.Window):
     box = Box()
 
     _about_str = '''
-    1. VERSION: 0.3.3
-       2019年 05月 14日 星期二 23:56:35 CST
+    1. VERSION: 0.3.4
+       2019年 05月 17日 星期五 21:35:32 CST
        required: python3.5+, python3-gi, sqlmap(require: python2.6+)
-       作者: needle wang ( needlewang2011@gmail.com )\n
+       作者: needle wang ( needlewang2011@gmail.com )
+       https://github.com/needle-wang/sqlmap-ui/\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
     3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
     4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n

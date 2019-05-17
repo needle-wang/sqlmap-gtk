@@ -24,9 +24,15 @@ class Api(object):
     @get("/task/new") 创建新任务
     '''
     _host = self.m._page4_api_server_entry.get_text().strip()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       try:
-        _resp = requests.get('http://%s/task/new' % _host)
+        _resp = requests.get('http://%s/task/new' % _host,
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           self.task_view_append('%s: 创建成功.' % _resp['taskid'])
@@ -39,9 +45,15 @@ class Api(object):
     '''
     _host = self.m._page4_api_server_entry.get_text().strip()
     _token = self.m._page4_admin_token_entry.get_text().strip()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host and _token:
       try:
-        _resp = requests.get('http://%s/admin/%s/list' % (_host, _token))
+        _resp = requests.get('http://%s/admin/%s/list' % (_host, _token),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         # print(_resp)
         if _resp['success']:
@@ -104,9 +116,15 @@ class Api(object):
     @get("/option/<taskid>/list") 获取指定任务的options
     '''
     _host = self.m._page4_api_server_entry.get_text().strip()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       try:
-        _resp = requests.get('http://%s/option/%s/list' % (_host, taskid))
+        _resp = requests.get('http://%s/option/%s/list' % (_host, taskid),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           for _key, _value in _resp['options'].items():
@@ -121,6 +139,8 @@ class Api(object):
     '''
     _host = self.m._page4_api_server_entry.get_text()
     _buffer_text = self.m._page4_option_get_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     _options = {}
     for _tmp in _buffer_text.split():
       _options[_tmp] = None
@@ -130,7 +150,11 @@ class Api(object):
         _headers = {'Content-Type': 'application/json'}
         _resp = requests.post('http://%s/option/%s/get' % (_host, taskid),
                               json = _options,
-                              headers = _headers)
+                              headers = _headers,
+                              auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           if _resp['options'].items():
@@ -152,6 +176,8 @@ class Api(object):
     '''
     _host = self.m._page4_api_server_entry.get_text()
     _buffer_text = self._get_buffer_text(self.m._page4_option_set_view)
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     try:
       _json = ast.literal_eval(_buffer_text)
     except Exception as e:
@@ -162,9 +188,15 @@ class Api(object):
       if _host:
         try:
           _headers = {'Content-Type': 'application/json'}
+          # data, json参数都要求是字典类型, 而非字符串
+          # 另外, 字典的格式比json的宽松(json不能使用单引号, 不能多个逗号)
           _resp = requests.post('http://%s/option/%s/set' % (_host, taskid),
                                 json = _json,
-                                headers = _headers)
+                                headers = _headers,
+                                auth = (_username, _password))
+          if not _resp:
+            _resp.raise_for_status()
+
           _resp = _resp.json()
           if _resp['success']:
             _mesg += '设置成功'
@@ -181,9 +213,15 @@ class Api(object):
     '''
     _host = self.m._page4_api_server_entry.get_text()
     _token = self.m._page4_admin_token_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host and _token:
       try:
-        _resp = requests.get('http://%s/admin/%s/flush' % (_host, _token))
+        _resp = requests.get('http://%s/admin/%s/flush' % (_host, _token),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           for _a_child in self.w._api_admin_list_rows.get_children():
@@ -197,9 +235,15 @@ class Api(object):
     @get("/task/<taskid>/delete") 删除指定任务
     '''
     _host = self.m._page4_api_server_entry.get_text().strip()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       try:
-        _resp = requests.get('http://%s/task/%s/delete' % (_host, data[1]))
+        _resp = requests.get('http://%s/task/%s/delete' % (_host, data[1]),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           self.w._api_admin_list_rows.remove(data[0])
@@ -213,13 +257,19 @@ class Api(object):
     要求发送json, 会执行/option/<taskid>/set
     '''
     _host = self.m._page4_api_server_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       _mesg = '%s: ' % taskid
       try:
         _headers = {'Content-Type': 'application/json'}
         _resp = requests.post('http://%s/scan/%s/start' % (_host, taskid),
                               json = {},
-                              headers = _headers)
+                              headers = _headers,
+                              auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           _mesg = '%sengineid: %s' % (_mesg, _resp['engineid'])
@@ -235,10 +285,16 @@ class Api(object):
     @get("/scan/<taskid>/stop") 指定任务 停止扫描
     '''
     _host = self.m._page4_api_server_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       _mesg = '%s: ' % taskid
       try:
-        _resp = requests.get('http://%s/scan/%s/stop' % (_host, taskid))
+        _resp = requests.get('http://%s/scan/%s/stop' % (_host, taskid),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           _mesg += 'ok, stoped.'
@@ -253,10 +309,16 @@ class Api(object):
     @get("/scan/<taskid>/kill") kill -9 指定任务
     '''
     _host = self.m._page4_api_server_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       _mesg = '%s: ' % taskid
       try:
-        _resp = requests.get('http://%s/scan/%s/kill' % (_host, taskid))
+        _resp = requests.get('http://%s/scan/%s/kill' % (_host, taskid),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           _mesg += 'ok, killed.'
@@ -272,10 +334,16 @@ class Api(object):
                                 data若有内容说明存在注入
     '''
     _host = self.m._page4_api_server_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       _mesg = '%s:\n' % taskid
       try:
-        _resp = requests.get('http://%s/scan/%s/data' % (_host, taskid))
+        _resp = requests.get('http://%s/scan/%s/data' % (_host, taskid),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         # print(_resp)    # _resp['data'], _resp['error'] are list
         if _resp['success']:
@@ -290,10 +358,16 @@ class Api(object):
     @get("/scan/<taskid>/log") 查看指定任务的扫描日志
     '''
     _host = self.m._page4_api_server_entry.get_text()
+    _username = self.m._page4_username_entry.get_text().strip()
+    _password = self.m._page4_password_entry.get_text().strip()
     if _host:
       _mesg = '%s:\n' % taskid
       try:
-        _resp = requests.get('http://%s/scan/%s/log' % (_host, taskid))
+        _resp = requests.get('http://%s/scan/%s/log' % (_host, taskid),
+                             auth = (_username, _password))
+        if not _resp:
+          _resp.raise_for_status()
+
         _resp = _resp.json()
         if _resp['success']:
           _logs = ''
