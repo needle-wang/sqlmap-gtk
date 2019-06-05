@@ -522,7 +522,7 @@ class Window(g.Window):
     _about_str = '''
     1. VERSION: 0.3.4
        2019年 05月 17日 星期五 21:35:32 CST
-       required: python3.5+, python3-gi, sqlmap(require: python2.6+)
+       required: python3.5+, python3-gi, sqlmap
        作者: needle wang ( needlewang2011@gmail.com )
        https://github.com/needle-wang/sqlmap-gtk/\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n

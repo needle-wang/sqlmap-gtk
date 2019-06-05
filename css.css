@@ -3,7 +3,7 @@
 checkbutton:checked {
   background-color: #f6d488;
   border-radius: 6px;
-  transition: 250ms ease-in-out;
+  transition: 100ms ease-in-out;
 }
 
 button {

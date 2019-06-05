@@ -194,8 +194,8 @@ class Notebook(g.Notebook):
       'clicked',
       self.cb_single, m._detection_area_text_only_ckbtn)
 
-    _row7.pack_start(m._detection_area_text_only_ckbtn, True, True, 5)
-    _row7.pack_start(m._detection_area_titles_ckbtn, True, True, 5)
+    _row7.pack_start(m._detection_area_text_only_ckbtn, False, True, 5)
+    _row7.pack_start(m._detection_area_titles_ckbtn, True, False, 5)
 
     # 添加行: _row1 - _row7
     for _i in range(1, 8):
@@ -717,8 +717,12 @@ class Notebook(g.Notebook):
     _row2.pack_start(_col2, False, True, 5)
 
     _row3 = Box()
-    _row3.pack_start(m._meta_area_where_ckbtn, False, True, 10)
-    _row3.pack_start(m._meta_area_where_entry, True, True, 10)
+
+    _col1 = Box()
+    _col1.pack_start(m._meta_area_where_ckbtn, False, True, 10)
+    _col1.pack_start(m._meta_area_where_entry, True, True, 10)
+
+    _row3.pack_start(_col1, True, True, 5)
 
     _meta_area_opts.pack_start(_row1, False, True, 5)
     _meta_area_opts.pack_start(_row2, False, True, 5)
@@ -777,10 +781,13 @@ class Notebook(g.Notebook):
     _dump_area_opts_cols = Box(orientation=VERTICAL)
 
     _dump_area_opts_cols.add(m._dump_area_dump_ckbtn)
-    _dump_area_opts_cols.add(m._dump_area_dump_all_ckbtn)
-    _dump_area_opts_cols.add(m._dump_area_search_ckbtn)
-    _dump_area_opts_cols.add(m._dump_area_no_sys_db_ckbtn)
     _dump_area_opts_cols.add(m._dump_area_repair_ckbtn)
+    _dump_area_opts_cols.add(m._dump_area_statements_ckbtn)
+    _ = Box()
+    _.pack_start(m._dump_area_search_ckbtn, False, True, 0)
+    _.pack_start(m._dump_area_no_sys_db_ckbtn, True, False, 0)
+    _dump_area_opts_cols.add(_)
+    _dump_area_opts_cols.add(m._dump_area_dump_all_ckbtn)
 
     _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
 

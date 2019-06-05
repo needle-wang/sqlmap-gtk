@@ -372,14 +372,16 @@ class Widget_Mesg(object):
                       m._enum_area_opts_ckbtns[2][4])
     self._set_tooltip('--dump',
                       m._dump_area_dump_ckbtn)
-    self._set_tooltip('--dump-all',
-                      m._dump_area_dump_all_ckbtn)
+    self._set_tooltip('--repair',
+                      m._dump_area_repair_ckbtn)
+    self._set_tooltip('--statements',
+                      m._dump_area_statements_ckbtn)
     self._set_tooltip('--search',
                       m._dump_area_search_ckbtn)
     self._set_tooltip('--exclude-sysdb',
                       m._dump_area_no_sys_db_ckbtn)
-    self._set_tooltip('--repair',
-                      m._dump_area_repair_ckbtn)
+    self._set_tooltip('--dump-all',
+                      m._dump_area_dump_all_ckbtn)
     self._set_tooltip('--start=',
                       m._limit_area_start_ckbtn,
                       m._limit_area_start_entry)

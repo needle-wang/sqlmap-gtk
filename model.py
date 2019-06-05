@@ -146,7 +146,7 @@ class Model(object):
     self._request_area_ignore_code_entry = et()
     self._request_area_skip_urlencode_ckbtn = cb('payload不使用url编码')
     self._request_area_force_ssl_ckbtn = cb('强制使用HTTPS')
-    self._request_area_chunked_ckbtn = cb('用Chunked编码发送POST请求')
+    self._request_area_chunked_ckbtn = cb('"分块传输"发送POST请求')
     self._request_area_hpp_ckbtn = cb('使用HTTP参数污染')
     self._request_area_delay_ckbtn = cb('请求间隔(秒)')
     self._request_area_delay_entry = NumberEntry()
@@ -190,16 +190,17 @@ class Model(object):
   # 枚举(E)
     # 枚举
     self._enum_area_opts_ckbtns = (
-      (cb('DB banner'), cb('当前用户'), cb('当前数据库'), cb('主机名'), cb('是否是DBA')),
+      (cb('DB banner'), cb('当前用户'), cb('当前数据库'), cb('主机名'), cb('是否为DBA')),
       (cb('用户'), cb('密码'), cb('权限'), cb('角色'), cb('数据库')),
-      (cb('表'), cb('字段'), cb('架构'), cb('计数'), cb('备注')),
+      (cb('表名'), cb('列名'), cb('架构'), cb('行数'), cb('备注')),
     )
     # Dump(转储)
     self._dump_area_dump_ckbtn = cb('dump(某库某表的条目)')
-    self._dump_area_dump_all_ckbtn = cb('全部dump(拖库)')
+    self._dump_area_repair_ckbtn = cb('重新获取有未知符号(?)的条目')
+    self._dump_area_statements_ckbtn = cb('获取正在运行的sql语句')
     self._dump_area_search_ckbtn = cb('搜索')
     self._dump_area_no_sys_db_ckbtn = cb('排除系统库')
-    self._dump_area_repair_ckbtn = cb('重新获取有未知符号(?)的条目')
+    self._dump_area_dump_all_ckbtn = cb('全部dump(拖库)')
     # limit(dump时的限制)
     self._limit_area_start_ckbtn = cb('始于第')
     self._limit_area_start_entry = NumberEntry()
@@ -228,7 +229,7 @@ class Model(object):
     # 执行SQL语句
     self._runsql_area_sql_query_ckbtn = cb('SQL语句:')
     self._runsql_area_sql_query_entry = et()
-    self._runsql_area_sql_shell_ckbtn = cb('打开个SQL交互shell')
+    self._runsql_area_sql_shell_ckbtn = cb('打开一个SQL交互shell')
     self._runsql_area_sql_file_ckbtn = cb('本地SQL文件:')
     self._runsql_area_sql_file_entry = FileEntry()
     self._runsql_area_sql_file_chooser = btn.new_with_label('打开')
