@@ -90,10 +90,12 @@ class Notebook(g.Notebook):
     _tamper_area = self._build_page1_setting_tamper(self.m)
     _optimize_area = self._build_page1_setting_optimize(self.m)
     _general_area = self._build_page1_setting_general(self.m)
+    _hidden_area = self._build_page1_setting_hidden(self.m)
 
     _row2.pack_start(_tamper_area, False, True, 5)
     _row2.pack_start(_optimize_area, False, True, 5)
     _row2.pack_start(_general_area, False, True, 5)
+    _row2.pack_start(_hidden_area, False, True, 5)
 
     box.pack_start(_row0, False, True, 5)
     box.pack_start(_row1, False, True, 0)
@@ -103,186 +105,6 @@ class Notebook(g.Notebook):
     scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     scrolled.add(box)
     return scrolled
-
-  def _build_page1_setting_tech(self, m):
-    f = Frame.new('各注入技术的选项')
-
-    _tech_area_opts = Box(orientation=VERTICAL, spacing=6)
-
-    _row1 = Box()
-    _row1.pack_start(m._tech_area_tech_ckbtn, False, True, 5)
-    _row1.pack_end(m._tech_area_tech_entry, False, True, 5)
-
-    _row2 = Box()
-    _row2.pack_start(m._tech_area_time_sec_ckbtn, False, True, 5)
-    _row2.pack_end(m._tech_area_time_sec_entry, False, True, 5)
-
-    _row3 = Box()
-    _row3.pack_start(m._tech_area_union_col_ckbtn, False, True, 5)
-    _row3.pack_end(m._tech_area_union_col_entry, False, True, 5)
-
-    _row4 = Box()
-    _row4.pack_start(m._tech_area_union_chr_ckbtn, False, True, 5)
-    _row4.pack_end(m._tech_area_union_chr_entry, False, True, 5)
-
-    _row5 = Box()
-    _row5.pack_start(m._tech_area_union_from_ckbtn, False, True, 5)
-    _row5.pack_end(m._tech_area_union_from_entry, False, True, 5)
-
-    _row6 = Box()
-    _row6.pack_start(m._tech_area_dns_ckbtn, True, True, 5)
-    _row6.pack_end(m._tech_area_dns_entry, True, True, 5)
-
-    _row7 = Box()
-    _row7.pack_start(m._tech_area_second_url_ckbtn, True, True, 5)
-    _row7.pack_end(m._tech_area_second_url_entry, True, True, 5)
-
-    _row8 = Box()
-    _row8.pack_start(m._tech_area_second_req_ckbtn, False, True, 5)
-
-    _row9 = Box()
-    m._tech_area_second_req_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._tech_area_second_req_entry]
-    )
-
-    _row9.pack_end(m._tech_area_second_req_chooser, False, True, 5)
-    _row9.pack_end(m._tech_area_second_req_entry, True, True, 5)
-
-    # 添加行: _row1 - _row9
-    for _i in range(1, 10):
-      _tech_area_opts.add(locals()[''.join(('_row', str(_i)))])
-
-    f.add(_tech_area_opts)
-    return f
-
-  def _build_page1_setting_detection(self, m):
-    f = Frame.new('探测选项')
-
-    _detection_area_opts = Box(orientation=VERTICAL, spacing=6)
-
-    _row1 = Box()
-    _row1.pack_start(m._detection_area_level_ckbtn, False, True, 5)
-    _row1.pack_start(m._detection_area_level_scale, True, True, 5)
-
-    _row2 = Box()
-    _row2.pack_start(m._detection_area_risk_ckbtn, False, True, 5)
-    _row2.pack_start(m._detection_area_risk_scale, True, True, 10)
-
-    _row3 = Box()
-    _row3.pack_start(m._detection_area_str_ckbtn, False, True, 5)
-    _row3.pack_end(m._detection_area_str_entry, True, True, 5)
-
-    _row4 = Box()
-    _row4.pack_start(m._detection_area_not_str_ckbtn, False, True, 5)
-    _row4.pack_end(m._detection_area_not_str_entry, True, True, 5)
-
-    _row5 = Box()
-    _row5.pack_start(m._detection_area_re_ckbtn, False, True, 5)
-    _row5.pack_end(m._detection_area_re_entry, True, True, 5)
-
-    _row6 = Box()
-    _row6.pack_start(m._detection_area_code_ckbtn, False, True, 5)
-    _row6.pack_start(m._detection_area_code_entry, False, True, 5)
-
-    _row7 = Box()
-    m._detection_area_text_only_ckbtn.connect(
-      'clicked',
-      self.cb_single, m._detection_area_titles_ckbtn)
-    m._detection_area_titles_ckbtn.connect(
-      'clicked',
-      self.cb_single, m._detection_area_text_only_ckbtn)
-
-    _row7.pack_start(m._detection_area_text_only_ckbtn, False, True, 5)
-    _row7.pack_start(m._detection_area_titles_ckbtn, True, False, 5)
-
-    # 添加行: _row1 - _row7
-    for _i in range(1, 8):
-      _detection_area_opts.add(locals()[''.join(('_row', str(_i)))])
-
-    f.add(_detection_area_opts)
-    return f
-
-  def _build_page1_setting_general(self, m):
-    f = Frame.new('常用选项')
-    _general_area_opts = Box(orientation=VERTICAL, spacing=6)
-
-    _row1 = Box()
-    m._general_area_verbose_scale.set_value(1.0)
-
-    _row1.pack_start(m._general_area_verbose_ckbtn, False, True, 5)
-    _row1.pack_start(m._general_area_verbose_scale, True, True, 5)
-
-    _row2 = Box()
-    _row2.pack_start(m._general_area_finger_ckbtn, False, True, 5)
-
-    _row3 = Box()
-    _row3.pack_start(m._general_area_hex_ckbtn, False, True, 5)
-
-    _row4 = Box()
-    _row4.pack_start(m._general_area_batch_ckbtn, False, True, 5)
-
-    _row5 = Box()
-    _row5.pack_start(m._page1_misc_wizard_ckbtn, False, True, 5)
-
-    _general_area_opts.add(_row1)
-    _general_area_opts.add(_row2)
-    _general_area_opts.add(_row3)
-    _general_area_opts.add(_row4)
-    _general_area_opts.add(_row5)
-
-    f.add(_general_area_opts)
-    return f
-
-  def _build_page1_setting_optimize(self, m):
-    f = Frame.new('性能优化')
-
-    _optimize_area_opts = Box(orientation=VERTICAL, spacing=6)
-
-    _row1 = Box()
-    m._optimize_area_turn_all_ckbtn.connect('clicked', self.optimize_area_controller)
-
-    _row1.pack_start(m._optimize_area_turn_all_ckbtn, False, True, 5)
-
-    _row2 = Box()
-    _row2.pack_start(m._optimize_area_thread_num_ckbtn, False, True, 5)
-    _row2.pack_start(m._optimize_area_thread_num_spinbtn, True, True, 5)
-
-    _row3 = Box()
-    _row3.pack_start(m._optimize_area_predict_ckbtn, False, True, 5)
-
-    _row4 = Box()
-    _row4.pack_start(m._optimize_area_keep_alive_ckbtn, False, True, 5)
-
-    _row5 = Box()
-    _row5.pack_start(m._optimize_area_null_connect_ckbtn, False, True, 5)
-
-    # 添加行: _row1 - _row5
-    for _i in range(1, 6):
-      _optimize_area_opts.add(locals()[''.join(('_row', str(_i)))])
-
-    f.add(_optimize_area_opts)
-    return f
-
-  def _build_page1_setting_tamper(self, m):
-    '''
-    frame套box, box再套scroll会出现:
-    一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
-    即内容的显示没有 下滑 滚轮的效果.
-    '''
-    f = Frame.new('tamper脚本')
-
-    m._tamper_area_tamper_view = tv()
-    m._tamper_area_tamper_view.set_wrap_mode(g.WrapMode.CHAR)
-
-    _scrolled = g.ScrolledWindow()
-    _scrolled.set_size_request(300, -1)
-    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
-    _scrolled.add(m._tamper_area_tamper_view)
-
-    f.add(_scrolled)
-    return f
 
   def _build_page1_setting_inject(self, m):
     f = Frame.new('注入选项')
@@ -355,6 +177,226 @@ class Notebook(g.Notebook):
     f.add(_inject_area_opts)
     return f
 
+  def _build_page1_setting_detection(self, m):
+    f = Frame.new('探测选项')
+
+    _detection_area_opts = Box(orientation=VERTICAL, spacing=6)
+
+    _row1 = Box()
+    _row1.pack_start(m._detection_area_level_ckbtn, False, True, 5)
+    _row1.pack_start(m._detection_area_level_scale, True, True, 5)
+
+    _row2 = Box()
+    _row2.pack_start(m._detection_area_risk_ckbtn, False, True, 5)
+    _row2.pack_start(m._detection_area_risk_scale, True, True, 10)
+
+    _row3 = Box()
+    _row3.pack_start(m._detection_area_str_ckbtn, False, True, 5)
+    _row3.pack_end(m._detection_area_str_entry, True, True, 5)
+
+    _row4 = Box()
+    _row4.pack_start(m._detection_area_not_str_ckbtn, False, True, 5)
+    _row4.pack_end(m._detection_area_not_str_entry, True, True, 5)
+
+    _row5 = Box()
+    _row5.pack_start(m._detection_area_re_ckbtn, False, True, 5)
+    _row5.pack_end(m._detection_area_re_entry, True, True, 5)
+
+    _row6 = Box()
+    _row6.pack_start(m._detection_area_code_ckbtn, False, True, 5)
+    _row6.pack_start(m._detection_area_code_entry, False, True, 5)
+
+    _row7 = Box()
+    m._detection_area_text_only_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._detection_area_titles_ckbtn)
+    m._detection_area_titles_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._detection_area_text_only_ckbtn)
+
+    _row7.pack_start(m._detection_area_text_only_ckbtn, False, True, 5)
+    _row7.pack_start(m._detection_area_titles_ckbtn, True, False, 5)
+
+    # 添加行: _row1 - _row7
+    for _i in range(1, 8):
+      _detection_area_opts.add(locals()[''.join(('_row', str(_i)))])
+
+    f.add(_detection_area_opts)
+    return f
+
+  def _build_page1_setting_tech(self, m):
+    f = Frame.new('各注入技术的选项')
+
+    _tech_area_opts = Box(orientation=VERTICAL, spacing=6)
+
+    _row1 = Box()
+    _row1.pack_start(m._tech_area_tech_ckbtn, False, True, 5)
+    _row1.pack_end(m._tech_area_tech_entry, False, True, 5)
+
+    _row2 = Box()
+    _row2.pack_start(m._tech_area_time_sec_ckbtn, False, True, 5)
+    _row2.pack_end(m._tech_area_time_sec_entry, False, True, 5)
+
+    _row3 = Box()
+    _row3.pack_start(m._tech_area_union_col_ckbtn, False, True, 5)
+    _row3.pack_end(m._tech_area_union_col_entry, False, True, 5)
+
+    _row4 = Box()
+    _row4.pack_start(m._tech_area_union_chr_ckbtn, False, True, 5)
+    _row4.pack_end(m._tech_area_union_chr_entry, False, True, 5)
+
+    _row5 = Box()
+    _row5.pack_start(m._tech_area_union_from_ckbtn, False, True, 5)
+    _row5.pack_end(m._tech_area_union_from_entry, False, True, 5)
+
+    _row6 = Box()
+    _row6.pack_start(m._tech_area_dns_ckbtn, True, True, 5)
+    _row6.pack_end(m._tech_area_dns_entry, True, True, 5)
+
+    _row7 = Box()
+    _row7.pack_start(m._tech_area_second_url_ckbtn, True, True, 5)
+    _row7.pack_end(m._tech_area_second_url_entry, True, True, 5)
+
+    _row8 = Box()
+    _row8.pack_start(m._tech_area_second_req_ckbtn, False, True, 5)
+
+    _row9 = Box()
+    m._tech_area_second_req_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._tech_area_second_req_entry]
+    )
+
+    _row9.pack_end(m._tech_area_second_req_chooser, False, True, 5)
+    _row9.pack_end(m._tech_area_second_req_entry, True, True, 5)
+
+    # 添加行: _row1 - _row9
+    for _i in range(1, 10):
+      _tech_area_opts.add(locals()[''.join(('_row', str(_i)))])
+
+    f.add(_tech_area_opts)
+    return f
+
+  def _build_page1_setting_tamper(self, m):
+    '''
+    frame套box, box再套scroll会出现:
+    一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
+    即内容的显示没有 下滑 滚轮的效果.
+    '''
+    f = Frame.new('tamper脚本')
+
+    m._tamper_area_tamper_view = tv()
+    m._tamper_area_tamper_view.set_wrap_mode(g.WrapMode.CHAR)
+
+    _scrolled = g.ScrolledWindow()
+    _scrolled.set_size_request(300, -1)
+    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+    _scrolled.add(m._tamper_area_tamper_view)
+
+    f.add(_scrolled)
+    return f
+
+  def _build_page1_setting_optimize(self, m):
+    f = Frame.new('性能优化')
+
+    _optimize_area_opts = Box(orientation=VERTICAL, spacing=6)
+
+    _row1 = Box()
+    m._optimize_area_turn_all_ckbtn.connect('clicked', self.optimize_area_controller)
+
+    _row1.pack_start(m._optimize_area_turn_all_ckbtn, False, True, 5)
+
+    _row2 = Box()
+    _row2.pack_start(m._optimize_area_thread_num_ckbtn, False, True, 5)
+    _row2.pack_start(m._optimize_area_thread_num_spinbtn, True, True, 5)
+
+    _row3 = Box()
+    _row3.pack_start(m._optimize_area_predict_ckbtn, False, True, 5)
+
+    _row4 = Box()
+    _row4.pack_start(m._optimize_area_keep_alive_ckbtn, False, True, 5)
+
+    _row5 = Box()
+    _row5.pack_start(m._optimize_area_null_connect_ckbtn, False, True, 5)
+
+    # 添加行: _row1 - _row5
+    for _i in range(1, 6):
+      _optimize_area_opts.add(locals()[''.join(('_row', str(_i)))])
+
+    f.add(_optimize_area_opts)
+    return f
+
+  def _build_page1_setting_general(self, m):
+    f = Frame.new('常用选项')
+    _general_area_opts = Box(orientation=VERTICAL, spacing=6)
+
+    _row1 = Box()
+    m._general_area_verbose_scale.set_value(1.0)
+
+    _row1.pack_start(m._general_area_verbose_ckbtn, False, True, 5)
+    _row1.pack_start(m._general_area_verbose_scale, True, True, 5)
+
+    _row2 = Box()
+    _row2.pack_start(m._general_area_finger_ckbtn, False, True, 5)
+
+    _row3 = Box()
+    _row3.pack_start(m._general_area_hex_ckbtn, False, True, 5)
+
+    _row4 = Box()
+    _row4.pack_start(m._general_area_batch_ckbtn, False, True, 5)
+
+    _row5 = Box()
+    _row5.pack_start(m._page1_misc_wizard_ckbtn, False, True, 5)
+
+    # 添加行: _row1 - _row5
+    for _i in range(1, 6):
+      _general_area_opts.add(locals()[''.join(('_row', str(_i)))])
+
+    f.add(_general_area_opts)
+    return f
+
+  def _build_page1_setting_hidden(self, m):
+    f = Frame.new('隐藏选项')
+    _hidden_area_opts = Box(orientation=VERTICAL, spacing=5)
+
+    _row1 = Box()
+    _row1.pack_start(m._hidden_area_base64_ckbtn, False, True, 5)
+    _row1.pack_start(m._hidden_area_crack_ckbtn, False, True, 5)
+    _row1.pack_start(m._hidden_area_debug_ckbtn, False, True, 5)
+    _row1.pack_start(m._hidden_area_profile_ckbtn, False, True, 5)
+
+    _row2 = Box()
+    _row2.pack_start(m._hidden_area_disable_stats_ckbtn, False, True, 5)
+    _row2.pack_start(m._hidden_area_disable_precon_ckbtn, False, True, 5)
+
+    _row3 = Box()
+    _row3.pack_start(m._hidden_area_force_dbms_ckbtn, False, True, 5)
+    _row3.pack_start(m._hidden_area_force_dns_ckbtn, False, True, 0)
+    _row3.pack_start(m._hidden_area_force_pivoting_ckbtn, False, True, 5)
+
+    _row4 = Box()
+    _row4.pack_start(m._hidden_area_smoke_test_ckbtn, False, True, 5)
+    _row4.pack_start(m._hidden_area_live_test_ckbtn, False, True, 5)
+    _row4.pack_start(m._hidden_area_vuln_test_ckbtn, False, True, 5)
+
+    _row5 = Box()
+    _row5.pack_start(m._hidden_area_murphy_rate_ckbtn, False, True, 5)
+    _row5.pack_start(m._hidden_area_stop_fail_ckbtn, False, True, 5)
+    _row5.pack_start(m._hidden_area_run_case_ckbtn, False, True, 5)
+
+    _row6 = Box()
+    _row6.pack_start(m._hidden_area_dummy_ckbtn, False, True, 5)
+    _row6.pack_start(m._hidden_area_api_ckbtn, False, True, 5)
+    _row6.pack_start(m._hidden_area_taskid_ckbtn, False, True, 5)
+    _row6.pack_start(m._hidden_area_database_ckbtn, False, True, 5)
+
+    # 添加行: _row1 - _row6
+    for _i in range(1, 7):
+      _hidden_area_opts.add(locals()[''.join(('_row', str(_i)))])
+
+    f.add(_hidden_area_opts)
+    return f
+
   def _build_page1_request(self):
     box = Box(orientation=VERTICAL)
 
@@ -378,10 +420,9 @@ class Notebook(g.Notebook):
 
     _row4.pack_start(_request_proxy_area, True, True, 5)
 
-    box.pack_start(_row1, False, True, 5)
-    box.pack_start(_row2, False, True, 5)
-    box.pack_start(_row3, False, True, 5)
-    box.pack_start(_row4, False, True, 5)
+    # 添加行: _row1 - _row4
+    for _i in range(1, 5):
+      box.pack_start(locals()[''.join(('_row', str(_i)))], False, True, 5)
 
     scrolled = g.ScrolledWindow()
     scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
@@ -1047,11 +1088,9 @@ class Notebook(g.Notebook):
     _row5.pack_start(m._page1_misc_z_ckbtn, False, True, 5)
     _row5.pack_start(m._page1_misc_z_entry, True, True, 5)
 
-    _page1_other_misc_opts.add(_row1)
-    _page1_other_misc_opts.add(_row2)
-    _page1_other_misc_opts.add(_row3)
-    _page1_other_misc_opts.add(_row4)
-    _page1_other_misc_opts.add(_row5)
+    # 添加行: _row1 - _row5
+    for _i in range(1, 6):
+      _page1_other_misc_opts.add(locals()[''.join(('_row', str(_i)))])
     # _page1_other_misc_opts.add(g.Separator.new(HORIZONTAL))
     f.add(_page1_other_misc_opts)
     return f
