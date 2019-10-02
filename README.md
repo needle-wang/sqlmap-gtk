@@ -3,7 +3,7 @@ sqlmap GUI, using PyGObject(gtk+3)
 
 包含sqlmap所有选项(除了-d, 不定时更新sqlmap选项)  
 支持sqlmapapi客户端(API区)  
-内置终端!  
+内置终端  
 会话功能, 自动保存和载入上一次的选项  
 
 此GUI只能在linux下运行, 已在kali, debian系中测试通过.  
@@ -46,8 +46,8 @@ sqlmap已经移植到了python3!
 - 继续重构, 优化
 
 #### 关于
-1. V0.3.4  
-   2019-05-17 21:35  
+1. V0.3.4.1  
+   2019年10月02日 23:39:57  
    作者: needle wang ( needlewang2011@gmail.com )  
 2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py  
 3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)带来的灵感, 其作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)  

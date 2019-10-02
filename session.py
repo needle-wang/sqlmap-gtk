@@ -3,7 +3,7 @@
 # 2018年 11月 09日 星期五 15:06:50 CST
 
 from configparser import ConfigParser
-from widgets import g, et
+from widgets import (g, et)
 
 
 LAST_TMP = 'last.tmp'

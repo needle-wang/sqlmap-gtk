@@ -6,7 +6,7 @@
 import ast
 import requests
 
-from widgets import g, GLib
+from widgets import (g, GLib)
 
 
 class Api(object):

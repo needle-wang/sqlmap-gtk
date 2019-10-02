@@ -3,8 +3,8 @@
 #
 # 2019年 05月 14日 星期二 19:44:19 CST
 
-from widgets import g, Box, Frame, label, tv
-from widgets import HORIZONTAL, VERTICAL
+from widgets import (g, Box, Frame, label, tv)
+from widgets import (HORIZONTAL, VERTICAL)
 
 
 class Notebook(g.Notebook):
@@ -36,17 +36,17 @@ class Notebook(g.Notebook):
   def optimize_area_controller(self, button):
     m = self.m
     if m._optimize_area_turn_all_ckbtn.get_active():
-      m._optimize_area_predict_ckbtn.set_active(False)
       m._optimize_area_keep_alive_ckbtn.set_active(False)
       m._optimize_area_null_connect_ckbtn.set_active(False)
+      m._request_area_proxy_ckbtn.set_active(False)
 
-      m._optimize_area_predict_ckbtn.set_sensitive(False)
       m._optimize_area_keep_alive_ckbtn.set_sensitive(False)
       m._optimize_area_null_connect_ckbtn.set_sensitive(False)
+      m._request_area_proxy_ckbtn.set_sensitive(False)
     else:
-      m._optimize_area_predict_ckbtn.set_sensitive(True)
       m._optimize_area_keep_alive_ckbtn.set_sensitive(True)
       m._optimize_area_null_connect_ckbtn.set_sensitive(True)
+      m._request_area_proxy_ckbtn.set_sensitive(True)
 
   def _show_warn(self, button):
     if button.get_active():
@@ -65,7 +65,7 @@ class Notebook(g.Notebook):
     box = Box(orientation=VERTICAL)
 
     _row0 = Box()
-    _sqlmap_path_label = label(label = '指定sqlmap路径:')
+    _sqlmap_path_label = label.new('指定sqlmap路径:')
     m._sqlmap_path_entry.set_text('sqlmap')
     m._sqlmap_path_chooser.connect(
       'clicked',
@@ -110,6 +110,9 @@ class Notebook(g.Notebook):
     f = Frame.new('注入选项')
 
     _row1 = Box()
+    m._inject_area_param_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._detection_area_level_ckbtn)
     _row1.pack_start(m._inject_area_param_ckbtn, False, True, 5)
     _row1.pack_start(m._inject_area_param_entry, True, True, 5)
 
@@ -137,9 +140,9 @@ class Notebook(g.Notebook):
 
     _row7 = Box()
     _db_store = g.ListStore(str)
-    _db_store.append(["mysql"])
-    _db_store.append(["sqlite"])
-    _db_store.append(["sqlserver"])
+    _db_store.append(["postgresql"])
+    _db_store.append(["MySQL <version>"])
+    _db_store.append(["Microsoft SQL Server <version>"])
 
     m._inject_area_dbms_combobox.set_model(_db_store)
     m._inject_area_dbms_combobox.set_entry_text_column(0)
@@ -160,7 +163,8 @@ class Notebook(g.Notebook):
     _row10.pack_start(m._inject_area_no_escape_ckbtn, False, True, 5)
 
     _row11 = Box()
-    _invalid_label = label.new('对payload中的废值:')
+    _invalid_label = label.new('对payload中无效值:')
+    _invalid_label.set_tooltip_text('默认情况下, 要使原参数值无效时 会改成相反数')
 
     _row11.pack_start(_invalid_label, False, True, 5)
     _row11.pack_end(m._inject_area_invalid_logic_ckbtn, False, True, 5)
@@ -183,6 +187,9 @@ class Notebook(g.Notebook):
     _detection_area_opts = Box(orientation=VERTICAL, spacing=6)
 
     _row1 = Box()
+    m._detection_area_level_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._inject_area_param_ckbtn)
     _row1.pack_start(m._detection_area_level_ckbtn, False, True, 5)
     _row1.pack_start(m._detection_area_level_scale, True, True, 5)
 
@@ -209,6 +216,9 @@ class Notebook(g.Notebook):
     _row7 = Box()
     m._detection_area_text_only_ckbtn.connect(
       'clicked',
+      self.cb_single, m._optimize_area_null_connect_ckbtn)
+    m._detection_area_text_only_ckbtn.connect(
+      'clicked',
       self.cb_single, m._detection_area_titles_ckbtn)
     m._detection_area_titles_ckbtn.connect(
       'clicked',
@@ -217,8 +227,25 @@ class Notebook(g.Notebook):
     _row7.pack_start(m._detection_area_text_only_ckbtn, False, True, 5)
     _row7.pack_start(m._detection_area_titles_ckbtn, True, False, 5)
 
-    # 添加行: _row1 - _row7
-    for _i in range(1, 8):
+    _row8 = g.Separator.new(HORIZONTAL)
+
+    _row9 = Box(orientation = HORIZONTAL, spacing = 6)
+    _level_note = label(label = 'Level 1(默认): 所有GET, POST参数\n'
+                                'Level 2  追加: Cookie\n'
+                                'Level 3  追加: User-Agent/Referer\n'
+                                'Level 4  追加: 啥?\n'
+                                'Level 5  追加: Host报头',
+                        halign = g.Align.START)
+    _risk_note2 = label(label = 'Risk 1(默认): 基本无风险\n'
+                                'Risk 2  追加: 大量时间型盲注\n'
+                                'Risk 3  追加: OR型布尔盲注',
+                        halign = g.Align.START)
+    # _risk_note2.override_background_color(g.StateFlags.NORMAL, d.RGBA(255, 0, 0, 1))
+    _row9.pack_start(_level_note, True, True, 5)
+    _row9.pack_start(_risk_note2, True, True, 5)
+
+    # 添加行: _row1 - _row9
+    for _i in range(1, 10):
       _detection_area_opts.add(locals()[''.join(('_row', str(_i)))])
 
     f.add(_detection_area_opts)
@@ -242,8 +269,8 @@ class Notebook(g.Notebook):
     _row3.pack_end(m._tech_area_union_col_entry, False, True, 5)
 
     _row4 = Box()
-    _row4.pack_start(m._tech_area_union_chr_ckbtn, False, True, 5)
-    _row4.pack_end(m._tech_area_union_chr_entry, False, True, 5)
+    _row4.pack_start(m._tech_area_union_char_ckbtn, False, True, 5)
+    _row4.pack_end(m._tech_area_union_char_entry, False, True, 5)
 
     _row5 = Box()
     _row5.pack_start(m._tech_area_union_from_ckbtn, False, True, 5)
@@ -307,16 +334,28 @@ class Notebook(g.Notebook):
     _row1.pack_start(m._optimize_area_turn_all_ckbtn, False, True, 5)
 
     _row2 = Box()
+    m._optimize_area_thread_num_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._optimize_area_predict_ckbtn)
     _row2.pack_start(m._optimize_area_thread_num_ckbtn, False, True, 5)
     _row2.pack_start(m._optimize_area_thread_num_spinbtn, True, True, 5)
 
     _row3 = Box()
+    m._optimize_area_predict_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._optimize_area_thread_num_ckbtn)
     _row3.pack_start(m._optimize_area_predict_ckbtn, False, True, 5)
 
     _row4 = Box()
+    m._optimize_area_keep_alive_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._request_area_proxy_ckbtn)
     _row4.pack_start(m._optimize_area_keep_alive_ckbtn, False, True, 5)
 
     _row5 = Box()
+    m._optimize_area_null_connect_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._detection_area_text_only_ckbtn)
     _row5.pack_start(m._optimize_area_null_connect_ckbtn, False, True, 5)
 
     # 添加行: _row1 - _row5
@@ -455,6 +494,9 @@ class Notebook(g.Notebook):
     _row3 = g.Separator.new(HORIZONTAL)
 
     _row4 = Box()
+    m._request_area_proxy_ckbtn.connect(
+      'clicked',
+      self.cb_single, m._optimize_area_keep_alive_ckbtn)
     m._request_area_proxy_file_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
@@ -634,9 +676,7 @@ class Notebook(g.Notebook):
   def _build_page1_enumeration(self):
     box = Box(orientation=VERTICAL)
 
-    _row1 = Box()
-    _row1.props.margin = 10
-
+    _row1 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _enum_area = self._build_page1_enumeration_enum(self.m)
     _dump_area = self._build_page1_enumeration_dump(self.m)
     _limit_area = self._build_page1_enumeration_limit(self.m)
@@ -647,22 +687,17 @@ class Notebook(g.Notebook):
     _row1.pack_start(_limit_area, False, True, 10)
     _row1.pack_start(_blind_area, False, True, 10)
 
-    _row2 = Box()
-    _row2.props.margin = 10
-
+    _row2 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _meta_area = self._build_page1_enumeration_meta(self.m)
 
     _row2.pack_start(_meta_area, True, True, 10)
 
-    _row3 = Box()
-    _row3.props.margin = 10
-
+    _row3 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _runsql_area = self._build_page1_enumeration_runsql(self.m)
 
     _row3.pack_start(_runsql_area, True, True, 10)
 
-    _row4 = Box()
-    _row4.props.margin = 10
+    _row4 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _brute_force_area = self._build_page1_enumeration_brute_force(self.m)
 
     _row4.pack_start(_brute_force_area, False, True, 10)
@@ -739,8 +774,8 @@ class Notebook(g.Notebook):
     _col4.pack_start(m._meta_area_U_ckbtn, False, True, 10)
     _col4.pack_start(m._meta_area_U_entry, True, True, 10)
 
-    _row1.pack_start(_col1, False, True, 5)
-    _row1.pack_start(_col2, False, True, 5)
+    _row1.pack_start(_col1, True, True, 5)
+    _row1.pack_start(_col2, True, True, 5)
     _row1.pack_start(_col3, False, True, 5)
     _row1.pack_start(_col4, False, True, 5)
 
@@ -779,15 +814,19 @@ class Notebook(g.Notebook):
 
     _row1 = Box()
     _row1.pack_start(m._blind_area_first_ckbtn, False, True, 5)
-    _row1.pack_start(m._blind_area_first_entry, False, True, 10)
-
-    _blind_area_opts.pack_start(_row1, False, True, 10)
+    _row1.pack_start(m._blind_area_first_entry, False, True, 0)
+    _row1.pack_start(label.new('列'), False, True, 5)
 
     _row2 = Box()
     _row2.pack_start(m._blind_area_last_ckbtn, False, True, 5)
-    _row2.pack_start(m._blind_area_last_entry, False, True, 10)
+    _row2.pack_start(m._blind_area_last_entry, False, True, 0)
+    _row2.pack_start(label.new('列'), False, True, 5)
 
+    _blind_note = label.new('只适用于盲注,\n因为报错,union注入要求列数相同')
+
+    _blind_area_opts.pack_start(_row1, False, True, 10)
     _blind_area_opts.pack_start(_row2, False, True, 10)
+    _blind_area_opts.pack_start(_blind_note, False, True, 10)
 
     f.add(_blind_area_opts)
     return f
@@ -800,12 +839,12 @@ class Notebook(g.Notebook):
     _row1 = Box()
     _row1.pack_start(m._limit_area_start_ckbtn, False, True, 5)
     _row1.pack_start(m._limit_area_start_entry, False, True, 0)
-    _row1.pack_start(label.new('条'), False, True, 5)
+    _row1.pack_start(label.new('行'), False, True, 5)
 
     _row2 = Box()
     _row2.pack_start(m._limit_area_stop_ckbtn, False, True, 5)
     _row2.pack_start(m._limit_area_stop_entry, False, True, 0)
-    _row2.pack_start(label.new('条'), False, True, 5)
+    _row2.pack_start(label.new('行'), False, True, 5)
 
     _limit_area_opts.pack_start(_row1, False, True, 10)
     _limit_area_opts.pack_start(_row2, False, True, 10)
@@ -858,29 +897,38 @@ class Notebook(g.Notebook):
   def _build_page1_file(self):
     box = Box(orientation=VERTICAL, spacing=6)
 
-    _row1 = Box()
-    _row1.props.margin = 10
+    _file_note = label(
+        label = '注: 存在Stacked queries(堆查询注入)时, '
+                '才能使用该标签下的功能(udf功能除外)!',
+        halign = g.Align.START,
+        margin_start = 16)
+    # http://www.sqlinjection.net/stacked-queries/
+    # https://www.cnblogs.com/hongfei/p/3895980.html
+    _file_note.set_tooltip_text('MySQL/PHP - 不支持(supported by MySQL for other API)\n'
+                                'Oracle/Any API - 不支持\n'
+                                'SQL Server/Any API - 支持')
+
+    _row1 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _file_read_area = self._build_page1_file_read(self.m)
 
-    _row1.pack_start(_file_read_area, True, True, 10)
+    _row1.pack_start(_file_read_area, True, True, 6)
 
-    _row2 = Box()
-    _row2.props.margin = 10
+    _row2 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _file_write_area = self._build_page1_file_write(self.m)
 
-    _row2.pack_start(_file_write_area, True, True, 10)
+    _row2.pack_start(_file_write_area, True, True, 6)
 
-    _row3 = Box()
-    _row3.props.margin = 10
+    _row3 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _file_os_access_area = self._build_page1_file_os_access(self.m)
-    _row3.pack_start(_file_os_access_area, True, True, 10)
 
-    _row4 = Box()
-    _row4.props.margin = 10
+    _row3.pack_start(_file_os_access_area, True, True, 6)
+
+    _row4 = Box(margin_top = 10, margin_start = 10, margin_end = 10)
     _file_os_registry_area = self._build_page1_file_os_registry(self.m)
 
-    _row4.pack_start(_file_os_registry_area, True, True, 10)
+    _row4.pack_start(_file_os_registry_area, True, True, 6)
 
+    box.add(_file_note)
     box.add(_row1)
     box.add(_row2)
     box.add(_row3)
@@ -930,7 +978,9 @@ class Notebook(g.Notebook):
     _row1.pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
 
     _row2 = Box()
+    _for_msf_label = label(label = 'Meterpreter相关:', margin_start = 50)
     _row2.pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
+    _row2.pack_start(_for_msf_label, False, True, 5)
     _row2.pack_start(m._file_os_access_os_pwn_ckbtn, False, True, 5)
     _row2.pack_start(m._file_os_access_os_smbrelay_ckbtn, False, True, 5)
     _row2.pack_start(m._file_os_access_os_bof_ckbtn, False, True, 5)

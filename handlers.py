@@ -9,7 +9,7 @@ from os import environ, name as OS_NAME
 from pathlib import Path
 from urllib.parse import urlparse
 
-from widgets import g, GLib, Vte
+from widgets import (g, GLib, Vte)
 from handler_api import Api
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
@@ -31,13 +31,12 @@ class Handler(object):
     self.api = Api(window, m)
 
   def build_all(self, button):
-    _target = self._get_target()
     _opts_list = self._collect_opts()
 
-    _final_line = _target + ''.join(_opts_list)
-    # print(_final_line)
-    if _final_line is not None:
-      self.m._cmd_entry.set_text(_final_line.strip())
+    _opts_list = ''.join(_opts_list)
+    # print(_opts_list)
+    if _opts_list is not None:
+      self.m._cmd_entry.set_text(_opts_list.strip())
       # self.m._cmd_entry.grab_focus()
 
   def run_cmdline(self, button):
@@ -45,11 +44,12 @@ class Handler(object):
     only for posix, won't code it for win now.
     '''
     sqlmap_path = self.get_sqlmap_path()
+    _target = self._get_target()
     _sqlmap_opts = self.m._cmd_entry.get_text().strip()
 
     if IS_POSIX:
       self.w.main_notebook.next_page()
-      _cmdline_str = '%s %s\n' % (sqlmap_path, _sqlmap_opts)
+      _cmdline_str = '%s %s %s\n' % (sqlmap_path, _target, _sqlmap_opts)
       # print(_cmdline_str, len(_cmdline_str.encode('utf8')))
       # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
       if Vte.MAJOR_VERSION >= 0 and Vte.MINOR_VERSION > 52:
@@ -584,7 +584,7 @@ class Handler(object):
       self._get_text_from_entry("--skip=",
                                 m._inject_area_skip_ckbtn,
                                 m._inject_area_skip_entry),
-      self._get_text_from_entry("--para-exclude=",
+      self._get_text_from_entry("--param-exclude=",
                                 m._inject_area_param_exclude_ckbtn,
                                 m._inject_area_param_exclude_entry),
       self._get_text_from_entry("--dbms=",
@@ -638,8 +638,8 @@ class Handler(object):
                                 m._tech_area_union_col_ckbtn,
                                 m._tech_area_union_col_entry, None),
       self._get_text_from_entry("--union-char=",
-                                m._tech_area_union_chr_ckbtn,
-                                m._tech_area_union_chr_entry),
+                                m._tech_area_union_char_ckbtn,
+                                m._tech_area_union_char_entry),
       self._get_text_from_entry("--union-from=",
                                 m._tech_area_union_from_ckbtn,
                                 m._tech_area_union_from_entry),
