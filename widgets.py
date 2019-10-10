@@ -17,6 +17,7 @@ from gi.repository import Gio, GLib
 from gi.repository import Gtk as g
 from gi.repository import Vte
 
+# Box默认方向就是HORIZONTAL, 忘了在哪看的了
 HORIZONTAL = g.Orientation.HORIZONTAL
 VERTICAL = g.Orientation.VERTICAL
 
@@ -26,6 +27,9 @@ Frame = g.Frame
 btn = g.Button
 cb = g.CheckButton.new_with_label
 cbb = g.ComboBox.new_with_entry
+# set_width_chars: 设置entry长度
+# set_max_width_chars: 设置entry最大长度, 当设置的值大于默认长度时才有效
+# set_max_length: 设置entry可输入的字符长度(如admin token只有32位)
 et = g.Entry
 label = g.Label
 sl = g.Scale.new_with_range

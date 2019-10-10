@@ -106,7 +106,7 @@ class Window(g.Window):
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_Select', g.ResponseType.OK))
     else:
-      # 点击左侧的 最近使用 可以选择目录, 小问题, 不用管.
+      # 点击左侧的 最近使用 可选择目录, 小问题, 不用管.
       dialog = g.FileChooserDialog("选择文件", self,
                                    g.FileChooserAction.OPEN,
                                    ('_Cancel', g.ResponseType.CANCEL,
@@ -118,13 +118,13 @@ class Window(g.Window):
     finally:
       dialog.destroy()
 
-  def _show_warn(self, button):
+  def _show_warn(self, button, mesg):
     if button.get_active():
       _warn_dialog = g.MessageDialog(parent = self,
                                      flags = g.DialogFlags.MODAL,
                                      type = g.MessageType.WARNING,
                                      buttons = g.ButtonsType.OK_CANCEL,
-                                     message_format = '这将清除所有记录!\n确定勾选?')
+                                     message_format = mesg)
       _response = _warn_dialog.run()
       if _response in (g.ResponseType.CANCEL, g.ResponseType.DELETE_EVENT):
         button.set_active(False)
@@ -243,6 +243,10 @@ class Window(g.Window):
 
     # 主构造区
     _notebook = Notebook(m, self._handlers)
+
+    m._page1_misc_purge_ckbtn.connect('toggled', self._show_warn, '这将抹除所有本地记录!\n确定勾选?')
+    m._page1_general_flush_session_ckbtn.connect('toggled', self._show_warn, '这将清除本地缓存!\n确定勾选?')
+
     _notebook.add_events(d.EventMask.SCROLL_MASK
                          | d.EventMask.SMOOTH_SCROLL_MASK)
     _notebook.connect('scroll-event', self.scroll_page)
@@ -319,8 +323,6 @@ class Window(g.Window):
     box.set_border_width(10)
 
     _row1 = Frame()
-    m._page3_log_view.set_editable(False)
-    m._page3_log_view.set_wrap_mode(g.WrapMode.WORD)
 
     _log_view_textbuffer = m._page3_log_view.get_buffer()
     self._handlers.clear_log_view_buffer(None)
@@ -351,10 +353,6 @@ class Window(g.Window):
     box.set_border_width(10)
 
     _row1 = Box(spacing = 6)
-    m._page4_api_server_entry.set_text('127.0.0.1:8775')
-    # set_width_chars: 设置entry长度
-    # set_max_length: 设置entry可输入的字符长度(admin token只有32位)
-    m._page4_admin_token_entry.set_max_length(32)
     _row1.pack_start(m._page4_api_server_label, False, True, 0)
     _row1.pack_start(m._page4_api_server_entry, True, True, 0)
     _row1.pack_start(m._page4_admin_token_label, False, True, 0)
@@ -392,10 +390,8 @@ class Window(g.Window):
     _lscrolled.add(self._api_admin_list_rows)
 
     _rbox = Box(orientation=VERTICAL)
-    m._page4_option_get_entry.set_text('url risk level')
     _page4_option_set_view_tip = label(label = '所有选项见sqlmap目录中的optiondict.py',
                                        halign = g.Align.START)
-    m._page4_option_set_view.set_wrap_mode(g.WrapMode.CHAR)
     _option_set_view_textbuffer = m._page4_option_set_view.get_buffer()
     _options_example = ("{\n"
                         "  'url': 'http://www.site.com/vuln.php?id=1',\n"
@@ -419,8 +415,6 @@ class Window(g.Window):
     _row3.add(_paned)
 
     _row4 = Frame()
-    m._page4_task_view.set_editable(False)
-    m._page4_task_view.set_wrap_mode(g.WrapMode.WORD)
 
     _task_view_textbuffer = m._page4_task_view.get_buffer()
     _end = _task_view_textbuffer.get_end_iter()
@@ -451,8 +445,6 @@ class Window(g.Window):
     _row1.pack_start(self._get_sqlmap_path_btn, False, True, 5)
 
     _row2 = Frame()
-    m._page5_manual_view.set_editable(False)
-    m._page5_manual_view.set_wrap_mode(g.WrapMode.WORD)
 
     self._make_help_thread(None)
 
@@ -520,8 +512,8 @@ class Window(g.Window):
     box = Box()
 
     _about_str = '''
-    1. VERSION: 0.3.4.1
-       2019年10月02日 23:39:57
+    1. VERSION: 0.3.4.2
+       2019年10月10日 08:06:05
        required: python3.5+, python3-gi, sqlmap
        作者: needle wang ( needlewang2011@gmail.com )
        https://github.com/needle-wang/sqlmap-gtk/\n
