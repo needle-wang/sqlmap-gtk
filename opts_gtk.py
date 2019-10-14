@@ -397,6 +397,128 @@ class Notebook(g.Notebook):
     scrolled.add(box)
     return scrolled
 
+  def _build_page1_request_header(self, m):
+    f = Frame.new('HTTP header')
+
+    _boxes = [Box() for _ in range(3)]
+
+    m._request_area_random_agent_ckbtn.set_active(True)
+
+    _boxes[0].pack_start(m._request_area_random_agent_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_mobile_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_user_agent_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_user_agent_entry, True, True, 5)
+    _boxes[1].pack_start(m._request_area_host_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_host_entry, True, True, 5)
+    _boxes[1].pack_start(m._request_area_referer_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_referer_entry, True, True, 5)
+    _boxes[2].pack_start(m._request_area_header_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._request_area_header_entry, True, True, 5)
+    _boxes[2].pack_start(m._request_area_headers_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._request_area_headers_entry, True, True, 5)
+
+    _request_header_opts = Box(orientation=VERTICAL, spacing = 5)
+    for _ in _boxes:
+      _request_header_opts.add(_)
+
+    f.add(_request_header_opts)
+    return f
+
+  def _build_page1_request_data(self, m):
+    f = Frame.new('HTTP data')
+
+    _boxes = [Box() for _ in range(8)]
+
+    _boxes[0].pack_start(m._request_area_method_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_method_entry, False, True, 5)
+    _boxes[0].pack_start(m._request_area_param_del_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_param_del_entry, False, True, 5)
+    _boxes[0].pack_start(m._request_area_chunked_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_post_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_post_entry, True, True, 5)
+    _boxes[2].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
+    _boxes[3].pack_start(m._request_area_cookie_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._request_area_cookie_entry, True, True, 5)
+    _boxes[3].pack_start(m._request_area_cookie_del_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._request_area_cookie_del_entry, False, True, 5)
+
+    m._request_area_load_cookies_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._request_area_load_cookies_entry]
+    )
+
+    _boxes[4].pack_start(m._request_area_load_cookies_ckbtn, False, True, 5)
+    _boxes[4].pack_start(m._request_area_load_cookies_entry, True, True, 0)
+    _boxes[4].pack_start(m._request_area_load_cookies_chooser, False, True, 5)
+    _boxes[4].pack_start(m._request_area_drop_set_cookie_ckbtn, False, True, 5)
+    _boxes[5].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
+
+    m._request_area_auth_file_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._request_area_auth_file_entry]
+    )
+
+    _boxes[6].pack_start(m._request_area_auth_type_ckbtn, False, True, 5)
+    _boxes[6].pack_start(m._request_area_auth_type_entry, True, True, 5)
+    _boxes[6].pack_start(m._request_area_auth_cred_ckbtn, False, True, 5)
+    _boxes[6].pack_start(m._request_area_auth_cred_entry, True, True, 5)
+    _boxes[6].pack_start(m._request_area_auth_file_ckbtn, False, True, 5)
+    _boxes[6].pack_start(m._request_area_auth_file_entry, True, True, 0)
+    _boxes[6].pack_start(m._request_area_auth_file_chooser, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_method_ckbtn, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_method_entry, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_token_ckbtn, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_token_entry, True, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_url_ckbtn, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_url_entry, True, True, 5)
+
+    _request_data_opts = Box(orientation=VERTICAL, spacing = 5)
+    for _ in _boxes:
+      _request_data_opts.add(_)
+
+    f.add(_request_data_opts)
+    return f
+
+  def _build_page1_request_custom(self, m):
+    f = Frame.new('request定制')
+
+    _boxes = [Box() for _ in range(3)]
+
+    _boxes[0].pack_start(m._request_area_ignore_timeouts_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_ignore_redirects_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_ignore_code_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_ignore_code_entry, False, True, 5)
+    _boxes[0].pack_start(m._request_area_skip_urlencode_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_force_ssl_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._request_area_hpp_ckbtn, False, True, 5)
+
+    m._request_area_delay_entry.set_width_chars(10)
+    m._request_area_timeout_entry.set_width_chars(10)
+    m._request_area_timeout_entry.set_text('30')
+    m._request_area_retries_entry.set_width_chars(10)
+    m._request_area_retries_entry.set_text('3')
+
+    _boxes[1].pack_start(m._request_area_delay_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_delay_entry, False, True, 5)
+    _boxes[1].pack_start(m._request_area_timeout_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_timeout_entry, False, True, 5)
+    _boxes[1].pack_start(m._request_area_retries_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_retries_entry, False, True, 5)
+    _boxes[1].pack_start(m._request_area_randomize_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._request_area_randomize_entry, True, True, 5)
+
+    _boxes[2].pack_start(m._request_area_eval_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._request_area_eval_entry, True, True, 5)
+
+    _request_custom_opts = Box(orientation=VERTICAL, spacing = 5)
+    for _ in _boxes:
+      _request_custom_opts.add(_)
+
+    f.add(_request_custom_opts)
+    return f
+
   def _build_page1_request_proxy(self, m):
     f = Frame.new('隐匿/代理')
 
@@ -459,128 +581,6 @@ class Notebook(g.Notebook):
     f.add(_request_proxy_opts)
     return f
 
-  def _build_page1_request_custom(self, m):
-    f = Frame.new('request定制')
-
-    _boxes = [Box() for _ in range(3)]
-
-    _boxes[0].pack_start(m._request_area_ignore_timeouts_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_ignore_redirects_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_ignore_code_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_ignore_code_entry, False, True, 5)
-    _boxes[0].pack_start(m._request_area_skip_urlencode_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_force_ssl_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_hpp_ckbtn, False, True, 5)
-
-    m._request_area_delay_entry.set_width_chars(10)
-    m._request_area_timeout_entry.set_width_chars(10)
-    m._request_area_timeout_entry.set_text('30')
-    m._request_area_retries_entry.set_width_chars(10)
-    m._request_area_retries_entry.set_text('3')
-
-    _boxes[1].pack_start(m._request_area_delay_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_delay_entry, False, True, 5)
-    _boxes[1].pack_start(m._request_area_timeout_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_timeout_entry, False, True, 5)
-    _boxes[1].pack_start(m._request_area_retries_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_retries_entry, False, True, 5)
-    _boxes[1].pack_start(m._request_area_randomize_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_randomize_entry, True, True, 5)
-
-    _boxes[2].pack_start(m._request_area_eval_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._request_area_eval_entry, True, True, 5)
-
-    _request_custom_opts = Box(orientation=VERTICAL, spacing = 5)
-    for _ in _boxes:
-      _request_custom_opts.add(_)
-
-    f.add(_request_custom_opts)
-    return f
-
-  def _build_page1_request_data(self, m):
-    f = Frame.new('HTTP data')
-
-    _boxes = [Box() for _ in range(8)]
-
-    _boxes[0].pack_start(m._request_area_method_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_method_entry, False, True, 5)
-    _boxes[0].pack_start(m._request_area_param_del_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_param_del_entry, False, True, 5)
-    _boxes[0].pack_start(m._request_area_chunked_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_post_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_post_entry, True, True, 5)
-    _boxes[2].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
-    _boxes[3].pack_start(m._request_area_cookie_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._request_area_cookie_entry, True, True, 5)
-    _boxes[3].pack_start(m._request_area_cookie_del_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._request_area_cookie_del_entry, False, True, 5)
-
-    m._request_area_load_cookies_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._request_area_load_cookies_entry]
-    )
-
-    _boxes[4].pack_start(m._request_area_load_cookies_ckbtn, False, True, 5)
-    _boxes[4].pack_start(m._request_area_load_cookies_entry, True, True, 0)
-    _boxes[4].pack_start(m._request_area_load_cookies_chooser, False, True, 5)
-    _boxes[4].pack_start(m._request_area_drop_set_cookie_ckbtn, False, True, 5)
-    _boxes[5].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
-
-    m._request_area_auth_file_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._request_area_auth_file_entry]
-    )
-
-    _boxes[6].pack_start(m._request_area_auth_type_ckbtn, False, True, 5)
-    _boxes[6].pack_start(m._request_area_auth_type_entry, True, True, 5)
-    _boxes[6].pack_start(m._request_area_auth_cred_ckbtn, False, True, 5)
-    _boxes[6].pack_start(m._request_area_auth_cred_entry, True, True, 5)
-    _boxes[6].pack_start(m._request_area_auth_file_ckbtn, False, True, 5)
-    _boxes[6].pack_start(m._request_area_auth_file_entry, True, True, 0)
-    _boxes[6].pack_start(m._request_area_auth_file_chooser, False, True, 5)
-    _boxes[7].pack_start(m._request_area_csrf_method_ckbtn, False, True, 5)
-    _boxes[7].pack_start(m._request_area_csrf_method_entry, False, True, 5)
-    _boxes[7].pack_start(m._request_area_csrf_token_ckbtn, False, True, 5)
-    _boxes[7].pack_start(m._request_area_csrf_token_entry, True, True, 5)
-    _boxes[7].pack_start(m._request_area_csrf_url_ckbtn, False, True, 5)
-    _boxes[7].pack_start(m._request_area_csrf_url_entry, True, True, 5)
-
-    _request_data_opts = Box(orientation=VERTICAL, spacing = 5)
-    for _ in _boxes:
-      _request_data_opts.add(_)
-
-    f.add(_request_data_opts)
-    return f
-
-  def _build_page1_request_header(self, m):
-    f = Frame.new('HTTP header')
-
-    _boxes = [Box() for _ in range(3)]
-
-    m._request_area_random_agent_ckbtn.set_active(True)
-
-    _boxes[0].pack_start(m._request_area_random_agent_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_mobile_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_user_agent_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._request_area_user_agent_entry, True, True, 5)
-    _boxes[1].pack_start(m._request_area_host_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_host_entry, True, True, 5)
-    _boxes[1].pack_start(m._request_area_referer_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._request_area_referer_entry, True, True, 5)
-    _boxes[2].pack_start(m._request_area_header_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._request_area_header_entry, True, True, 5)
-    _boxes[2].pack_start(m._request_area_headers_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._request_area_headers_entry, True, True, 5)
-
-    _request_header_opts = Box(orientation=VERTICAL, spacing = 5)
-    for _ in _boxes:
-      _request_header_opts.add(_)
-
-    f.add(_request_header_opts)
-    return f
-
   def _build_page1_enumeration(self):
     box = Box(orientation=VERTICAL)
 
@@ -613,47 +613,82 @@ class Notebook(g.Notebook):
 
     return box
 
-  def _build_page1_enumeration_brute_force(self, m):
-    f = Frame.new('暴破表名/列名')
+  def _build_page1_enumeration_enum(self, m):
+    f = Frame.new('枚举')
 
-    _brute_force_area_opts = Box(orientation=VERTICAL)
+    _enum_area_opts = Box(spacing=6)
 
-    _row1 = Box()
+    _enu_area_opts_cols = [Box(orientation=VERTICAL) for _ in range(3)]
 
-    _row1.pack_start(label.new('检查是否存在:'), False, True, 10)
-    _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
-    _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 5)
-    _row1.pack_start(m._brute_force_area_common_files_ckbtn, False, True, 0)
+    for _x in range(len(m._enum_area_opts_ckbtns)):
+      for _y in m._enum_area_opts_ckbtns[_x]:
+        # 每列, 至上往下add
+        _enu_area_opts_cols[_x].add(_y)
+      # 添加三列, 方便对齐...
+      _enum_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
 
-    _brute_force_area_opts.pack_start(_row1, False, True, 5)
-
-    f.add(_brute_force_area_opts)
+    f.add(_enum_area_opts)
     return f
 
-  def _build_page1_enumeration_runsql(self, m):
-    f = Frame.new('执行SQL语句')
+  def _build_page1_enumeration_dump(self, m):
+    f = Frame.new('Dump(转储)')
+
+    _dump_area_opts = Box(spacing=6)
+
+    # 加这一层, 只是为了横向上有padding
+    _dump_area_opts_cols = Box(orientation=VERTICAL)
+
+    _dump_area_opts_cols.add(m._dump_area_dump_ckbtn)
+    _dump_area_opts_cols.add(m._dump_area_repair_ckbtn)
+    _dump_area_opts_cols.add(m._dump_area_statements_ckbtn)
+    _ = Box()
+    _.pack_start(m._dump_area_search_ckbtn, False, True, 0)
+    _.pack_start(m._dump_area_no_sys_db_ckbtn, True, False, 0)
+    _dump_area_opts_cols.add(_)
+    _dump_area_opts_cols.add(m._dump_area_dump_all_ckbtn)
+
+    _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
+
+    f.add(_dump_area_opts)
+    return f
+
+  def _build_page1_enumeration_limit(self, m):
+    f = Frame.new('limit(dump时的限制)')
 
     _boxes = [Box() for _ in range(2)]
 
-    _boxes[0].pack_start(m._runsql_area_sql_query_ckbtn, False, True, 10)
-    _boxes[0].pack_start(m._runsql_area_sql_query_entry, True, True, 10)
+    _boxes[0].pack_start(m._limit_area_start_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._limit_area_start_entry, False, True, 0)
+    _boxes[0].pack_start(label.new('行'), False, True, 5)
+    _boxes[1].pack_start(m._limit_area_stop_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._limit_area_stop_entry, False, True, 0)
+    _boxes[1].pack_start(label.new('行'), False, True, 5)
 
-    m._runsql_area_sql_file_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._runsql_area_sql_file_entry]
-    )
-
-    _boxes[1].pack_start(m._runsql_area_sql_shell_ckbtn, False, True, 10)
-    _boxes[1].pack_start(m._runsql_area_sql_file_ckbtn, False, True, 10)
-    _boxes[1].pack_start(m._runsql_area_sql_file_entry, True, True, 0)
-    _boxes[1].pack_start(m._runsql_area_sql_file_chooser, False, True, 10)
-
-    _runsql_area_opts = Box(orientation=VERTICAL)
+    _limit_area_opts = Box(orientation=VERTICAL)
     for _ in _boxes:
-      _runsql_area_opts.pack_start(_, False, True, 5)
+      _limit_area_opts.pack_start(_, False, True, 10)
 
-    f.add(_runsql_area_opts)
+    f.add(_limit_area_opts)
+    return f
+
+  def _build_page1_enumeration_blind(self, m):
+    f = Frame.new('盲注选项')
+
+    _boxes = [Box() for _ in range(3)]
+
+    _boxes[0].pack_start(m._blind_area_first_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._blind_area_first_entry, False, True, 0)
+    _boxes[0].pack_start(label.new('个字符'), False, True, 5)
+    _boxes[1].pack_start(m._blind_area_last_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._blind_area_last_entry, False, True, 0)
+    _boxes[1].pack_start(label.new('个字符'), False, True, 5)
+    _boxes[2].pack_start(label.new('只适用于盲注,\n因为报错,union注入要求列数相同'), False, True, 5)
+
+    _blind_area_opts = Box(orientation=VERTICAL)
+    for _ in _boxes:
+      _blind_area_opts.pack_start(_, False, True, 10)
+
+    f.add(_blind_area_opts)
     return f
 
   def _build_page1_enumeration_meta(self, m):
@@ -683,82 +718,47 @@ class Notebook(g.Notebook):
     f.add(_meta_area_opts)
     return f
 
-  def _build_page1_enumeration_blind(self, m):
-    f = Frame.new('盲注选项')
-
-    _boxes = [Box() for _ in range(3)]
-
-    _boxes[0].pack_start(m._blind_area_first_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._blind_area_first_entry, False, True, 0)
-    _boxes[0].pack_start(label.new('个字符'), False, True, 5)
-    _boxes[1].pack_start(m._blind_area_last_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._blind_area_last_entry, False, True, 0)
-    _boxes[1].pack_start(label.new('个字符'), False, True, 5)
-    _boxes[2].pack_start(label.new('只适用于盲注,\n因为报错,union注入要求列数相同'), False, True, 5)
-
-    _blind_area_opts = Box(orientation=VERTICAL)
-    for _ in _boxes:
-      _blind_area_opts.pack_start(_, False, True, 10)
-
-    f.add(_blind_area_opts)
-    return f
-
-  def _build_page1_enumeration_limit(self, m):
-    f = Frame.new('limit(dump时的限制)')
+  def _build_page1_enumeration_runsql(self, m):
+    f = Frame.new('执行SQL语句')
 
     _boxes = [Box() for _ in range(2)]
 
-    _boxes[0].pack_start(m._limit_area_start_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._limit_area_start_entry, False, True, 0)
-    _boxes[0].pack_start(label.new('行'), False, True, 5)
-    _boxes[1].pack_start(m._limit_area_stop_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._limit_area_stop_entry, False, True, 0)
-    _boxes[1].pack_start(label.new('行'), False, True, 5)
+    _boxes[0].pack_start(m._runsql_area_sql_query_ckbtn, False, True, 10)
+    _boxes[0].pack_start(m._runsql_area_sql_query_entry, True, True, 10)
 
-    _limit_area_opts = Box(orientation=VERTICAL)
+    m._runsql_area_sql_file_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._runsql_area_sql_file_entry]
+    )
+
+    _boxes[1].pack_start(m._runsql_area_sql_shell_ckbtn, False, True, 10)
+    _boxes[1].pack_start(m._runsql_area_sql_file_ckbtn, False, True, 10)
+    _boxes[1].pack_start(m._runsql_area_sql_file_entry, True, True, 0)
+    _boxes[1].pack_start(m._runsql_area_sql_file_chooser, False, True, 10)
+
+    _runsql_area_opts = Box(orientation=VERTICAL)
     for _ in _boxes:
-      _limit_area_opts.pack_start(_, False, True, 10)
+      _runsql_area_opts.pack_start(_, False, True, 5)
 
-    f.add(_limit_area_opts)
+    f.add(_runsql_area_opts)
     return f
 
-  def _build_page1_enumeration_dump(self, m):
-    f = Frame.new('Dump(转储)')
+  def _build_page1_enumeration_brute_force(self, m):
+    f = Frame.new('暴破表名/列名')
 
-    _dump_area_opts = Box(spacing=6)
+    _brute_force_area_opts = Box(orientation=VERTICAL)
 
-    # 加这一层, 只是为了横向上有padding
-    _dump_area_opts_cols = Box(orientation=VERTICAL)
+    _row1 = Box()
 
-    _dump_area_opts_cols.add(m._dump_area_dump_ckbtn)
-    _dump_area_opts_cols.add(m._dump_area_repair_ckbtn)
-    _dump_area_opts_cols.add(m._dump_area_statements_ckbtn)
-    _ = Box()
-    _.pack_start(m._dump_area_search_ckbtn, False, True, 0)
-    _.pack_start(m._dump_area_no_sys_db_ckbtn, True, False, 0)
-    _dump_area_opts_cols.add(_)
-    _dump_area_opts_cols.add(m._dump_area_dump_all_ckbtn)
+    _row1.pack_start(label.new('检查是否存在:'), False, True, 10)
+    _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
+    _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 5)
+    _row1.pack_start(m._brute_force_area_common_files_ckbtn, False, True, 0)
 
-    _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
+    _brute_force_area_opts.pack_start(_row1, False, True, 5)
 
-    f.add(_dump_area_opts)
-    return f
-
-  def _build_page1_enumeration_enum(self, m):
-    f = Frame.new('枚举')
-
-    _enum_area_opts = Box(spacing=6)
-
-    _enu_area_opts_cols = [Box(orientation=VERTICAL) for _ in range(3)]
-
-    for _x in range(len(m._enum_area_opts_ckbtns)):
-      for _y in m._enum_area_opts_ckbtns[_x]:
-        # 每列, 至上往下add
-        _enu_area_opts_cols[_x].add(_y)
-      # 添加三列, 方便对齐...
-      _enum_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
-
-    f.add(_enum_area_opts)
+    f.add(_brute_force_area_opts)
     return f
 
   def _build_page1_file(self):
@@ -794,68 +794,21 @@ class Notebook(g.Notebook):
       box.add(_)
     return box
 
-  def _build_page1_file_os_registry(self, m):
-    f = Frame.new('访问WIN下注册表')
+  def _build_page1_file_read(self, m):
+    f = Frame.new('读取远程文件')
 
-    _boxes = [Box() for _ in range(3)]
+    _file_read_area_opts = Box(orientation=VERTICAL, spacing=6)
 
-    m._file_os_registry_reg_combobox.append('--reg-read', '读取')
-    m._file_os_registry_reg_combobox.append('--reg-add', '新增')
-    m._file_os_registry_reg_combobox.append('--reg-del', '删除')
-    m._file_os_registry_reg_combobox.set_active(0)
+    _row1 = Box()
+    m._file_read_area_file_read_btn.connect('clicked', self._handlers.read_dumped_file)
 
-    _boxes[0].pack_start(m._file_os_registry_reg_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._file_os_registry_reg_combobox, False, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_key_label, False, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_key_entry, True, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_value_label, False, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_value_entry, True, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_data_label, False, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_data_entry, True, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_type_label, False, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_type_entry, True, True, 5)
+    _row1.pack_start(m._file_read_area_file_read_ckbtn, False, True, 5)
+    _row1.pack_start(m._file_read_area_file_read_entry, True, True, 0)
+    _row1.pack_start(m._file_read_area_file_read_btn, False, True, 5)
 
-    _file_os_registry_opts = Box(orientation=VERTICAL)
-    for _ in _boxes:
-      _file_os_registry_opts.add(_)
+    _file_read_area_opts.pack_start(_row1, False, True, 5)
 
-    f.add(_file_os_registry_opts)
-    return f
-
-  def _build_page1_file_os_access(self, m):
-    f = Frame.new('访问后端OS')
-
-    _boxes = [Box() for _ in range(3)]
-
-    _boxes[0].pack_start(m._file_os_access_os_cmd_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
-
-    _for_msf_label = label(label = 'Meterpreter相关(TCP连接):', margin_start = 50)
-
-    _boxes[1].pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
-    _boxes[1].pack_start(_for_msf_label, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_os_pwn_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_os_smbrelay_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_os_bof_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_priv_esc_ckbtn, False, True, 5)
-
-    m._file_os_access_msf_path_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._file_os_access_msf_path_entry, '选择 本地Metasploit安装目录']
-    )
-
-    _boxes[2].pack_start(m._file_os_access_msf_path_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._file_os_access_msf_path_entry, True, True, 0)
-    _boxes[2].pack_start(m._file_os_access_msf_path_chooser, False, True, 5)
-    _boxes[2].pack_start(m._file_os_access_tmp_path_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._file_os_access_tmp_path_entry, True, True, 5)
-
-    _file_os_access_opts = Box(orientation=VERTICAL, spacing=6)
-    for _ in _boxes:
-      _file_os_access_opts.add(_)
-
-    f.add(_file_os_access_opts)
+    f.add(_file_read_area_opts)
     return f
 
   def _build_page1_file_write(self, m):
@@ -894,21 +847,68 @@ class Notebook(g.Notebook):
     f.add(_file_write_area_opts)
     return f
 
-  def _build_page1_file_read(self, m):
-    f = Frame.new('读取远程文件')
+  def _build_page1_file_os_access(self, m):
+    f = Frame.new('访问后端OS')
 
-    _file_read_area_opts = Box(orientation=VERTICAL, spacing=6)
+    _boxes = [Box() for _ in range(3)]
 
-    _row1 = Box()
-    m._file_read_area_file_read_btn.connect('clicked', self._handlers.read_dumped_file)
+    _boxes[0].pack_start(m._file_os_access_os_cmd_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
 
-    _row1.pack_start(m._file_read_area_file_read_ckbtn, False, True, 5)
-    _row1.pack_start(m._file_read_area_file_read_entry, True, True, 0)
-    _row1.pack_start(m._file_read_area_file_read_btn, False, True, 5)
+    _for_msf_label = label(label = 'Meterpreter相关(TCP连接):', margin_start = 50)
 
-    _file_read_area_opts.pack_start(_row1, False, True, 5)
+    _boxes[1].pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
+    _boxes[1].pack_start(_for_msf_label, False, True, 5)
+    _boxes[1].pack_start(m._file_os_access_os_pwn_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._file_os_access_os_smbrelay_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._file_os_access_os_bof_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._file_os_access_priv_esc_ckbtn, False, True, 5)
 
-    f.add(_file_read_area_opts)
+    m._file_os_access_msf_path_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._file_os_access_msf_path_entry, '选择 本地Metasploit安装目录']
+    )
+
+    _boxes[2].pack_start(m._file_os_access_msf_path_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._file_os_access_msf_path_entry, True, True, 0)
+    _boxes[2].pack_start(m._file_os_access_msf_path_chooser, False, True, 5)
+    _boxes[2].pack_start(m._file_os_access_tmp_path_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._file_os_access_tmp_path_entry, True, True, 5)
+
+    _file_os_access_opts = Box(orientation=VERTICAL, spacing=6)
+    for _ in _boxes:
+      _file_os_access_opts.add(_)
+
+    f.add(_file_os_access_opts)
+    return f
+
+  def _build_page1_file_os_registry(self, m):
+    f = Frame.new('访问WIN下注册表')
+
+    _boxes = [Box() for _ in range(3)]
+
+    m._file_os_registry_reg_combobox.append('--reg-read', '读取')
+    m._file_os_registry_reg_combobox.append('--reg-add', '新增')
+    m._file_os_registry_reg_combobox.append('--reg-del', '删除')
+    m._file_os_registry_reg_combobox.set_active(0)
+
+    _boxes[0].pack_start(m._file_os_registry_reg_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._file_os_registry_reg_combobox, False, True, 5)
+    _boxes[1].pack_start(m._file_os_registry_reg_key_label, False, True, 5)
+    _boxes[1].pack_start(m._file_os_registry_reg_key_entry, True, True, 5)
+    _boxes[1].pack_start(m._file_os_registry_reg_value_label, False, True, 5)
+    _boxes[1].pack_start(m._file_os_registry_reg_value_entry, True, True, 5)
+    _boxes[2].pack_start(m._file_os_registry_reg_data_label, False, True, 5)
+    _boxes[2].pack_start(m._file_os_registry_reg_data_entry, True, True, 5)
+    _boxes[2].pack_start(m._file_os_registry_reg_type_label, False, True, 5)
+    _boxes[2].pack_start(m._file_os_registry_reg_type_entry, True, True, 5)
+
+    _file_os_registry_opts = Box(orientation=VERTICAL)
+    for _ in _boxes:
+      _file_os_registry_opts.add(_)
+
+    f.add(_file_os_registry_opts)
     return f
 
   def _build_page1_other(self):
@@ -934,47 +934,6 @@ class Notebook(g.Notebook):
     box.add(_row1)
     box.add(_row2)
     return box
-
-  def _build_page1_other_misc(self, m):
-    f = Frame.new('杂项')
-
-    _boxes = [Box() for _ in range(4)]
-
-    _boxes[0].pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_list_tampers_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_sqlmap_shell_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_disable_color_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_general_eta_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_gpage_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_gpage_spinbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_beep_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_offline_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_purge_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_dependencies_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_update_ckbtn, False, True, 5)
-
-    m._page1_misc_tmp_dir_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._page1_misc_tmp_dir_entry, '选择 本地临时目录']
-    )
-
-    _boxes[2].pack_start(m._page1_misc_alert_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._page1_misc_alert_entry, True, True, 5)
-    _boxes[2].pack_start(m._page1_misc_tmp_dir_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._page1_misc_tmp_dir_entry, True, True, 0)
-    _boxes[2].pack_start(m._page1_misc_tmp_dir_chooser, False, True, 5)
-    _boxes[3].pack_start(m._page1_misc_answers_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._page1_misc_answers_entry, True, True, 5)
-    _boxes[3].pack_start(m._page1_misc_z_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._page1_misc_z_entry, True, True, 5)
-
-    _page1_other_misc_opts = Box(orientation=VERTICAL, spacing=6)
-    for _ in _boxes:
-      _page1_other_misc_opts.add(_)
-
-    f.add(_page1_other_misc_opts)
-    return f
 
   def _build_page1_other_general(self, m):
     f = Frame.new('通用项')
@@ -1089,13 +1048,57 @@ class Notebook(g.Notebook):
     f.add(_page1_other_general_opts)
     return f
 
+  def _build_page1_other_misc(self, m):
+    f = Frame.new('杂项')
+
+    _boxes = [Box() for _ in range(4)]
+
+    _boxes[0].pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._page1_misc_list_tampers_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._page1_misc_sqlmap_shell_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._page1_misc_disable_color_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._page1_general_eta_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_gpage_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_gpage_spinbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_beep_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_offline_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_purge_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_dependencies_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_misc_update_ckbtn, False, True, 5)
+
+    m._page1_misc_tmp_dir_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._page1_misc_tmp_dir_entry, '选择 本地临时目录']
+    )
+
+    _boxes[2].pack_start(m._page1_misc_alert_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._page1_misc_alert_entry, True, True, 5)
+    _boxes[2].pack_start(m._page1_misc_tmp_dir_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._page1_misc_tmp_dir_entry, True, True, 0)
+    _boxes[2].pack_start(m._page1_misc_tmp_dir_chooser, False, True, 5)
+    _boxes[3].pack_start(m._page1_misc_answers_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._page1_misc_answers_entry, True, True, 5)
+    _boxes[3].pack_start(m._page1_misc_z_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._page1_misc_z_entry, True, True, 5)
+
+    _page1_other_misc_opts = Box(orientation=VERTICAL, spacing=6)
+    for _ in _boxes:
+      _page1_other_misc_opts.add(_)
+
+    f.add(_page1_other_misc_opts)
+    return f
+
 
 def main():
+  import time
   from widgets import d
   from model import Model
   from handlers import Handler
 
-  win = g.Window(title = 'sqlmap-options')
+  start = time.process_time()
+  # --------
+  win = g.Window(title = 'options-gtk')
 
   css_provider = g.CssProvider.new()
   css_provider.load_from_path('css.css')
@@ -1111,6 +1114,9 @@ def main():
 
   win.connect('destroy', g.main_quit)
   win.show_all()
+  # --------
+  end = time.process_time()
+  print('loading cost: %s Seconds' % (end - start))
   g.main()
 
 

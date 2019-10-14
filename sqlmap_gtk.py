@@ -79,9 +79,13 @@ class Window(g.Window):
     self.session.load_from_tmp()
 
   def on_window_destroy(self):
-    # 保存 此次所有选项
-    self.session.save_to_tmp()
-    g.main_quit()
+    try:
+      # 保存 此次所有选项
+      self.session.save_to_tmp()
+    except Exception as e:
+      raise e
+    finally:
+      g.main_quit()
 
   def scroll_page(self, notebook, event):
     '''
@@ -463,7 +467,7 @@ class Window(g.Window):
     # 使用线程 填充 帮助标签, 加快启动速度
     t = Thread(target = self._set_manual_view,
                args = (m._page5_manual_view.get_buffer(), isClick))
-    # t.daemon = True   # 死了也会存在
+    t.daemon = True  # 主线程退出了, 当然守护进程也要退出
     t.start()
 
   def _set_manual_view(self, textbuffer, isClick):
@@ -516,7 +520,7 @@ class Window(g.Window):
        2019年10月10日 08:06:05
        required: python3.5+, python3-gi, sqlmap
        作者: needle wang ( needlewang2011@gmail.com )
-       https://github.com/needle-wang/sqlmap-gtk/\n
+       https://github.com/needle-wang/sqlmap-gtk\n
     2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
     3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
     4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
@@ -527,6 +531,10 @@ class Window(g.Window):
 
 
 def main():
+  import time
+
+  start = time.process_time()
+  # --------
   win = Window()
 
   css_provider = g.CssProvider.new()
@@ -540,6 +548,9 @@ def main():
   win.connect('destroy', lambda x: win.on_window_destroy())
   # win.maximize()
   win.show_all()
+  # --------
+  end = time.process_time()
+  print('loading cost: %s Seconds' % (end - start))
   g.main()
 
 

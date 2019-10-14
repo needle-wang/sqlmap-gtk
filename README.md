@@ -2,7 +2,7 @@
 sqlmap GUI, using PyGObject(gtk+3)  
 
 此GUI只能在linux下运行, 已在kali, debian系中测试通过.  
-如果想在win下使用, 可以使用[sqlmap-wx](https://github.com/needle-wang/sqlmap-wx/)(维护慢, 还有很大的改善空间).  
+如果想在win下使用, 可以使用[sqlmap-wx](https://github.com/needle-wang/sqlmap-wx)(维护慢, 还有很大的改善空间).  
 欢迎使用, 反馈!  
 
 sqlmap已经移植到了python3!  
@@ -36,7 +36,7 @@ sqlmap已经移植到了python3!
   - 最新的[sqlmap](https://github.com/sqlmapproject/sqlmap): `git clone` it.  
 2. **下载本GUI**  
   - `git clone https://github.com/needle-wang/sqlmap-gtk.git`  
-  或 从这下载: [releases](https://github.com/needle-wang/sqlmap-gtk/releases/)(不一定最新)  
+  或 从这下载: [releases](https://github.com/needle-wang/sqlmap-gtk/releases)(不一定最新)  
 3. **运行**  
   - `./sqlmap_gtk.py`
 
