@@ -204,7 +204,6 @@ class Notebook(g.Notebook):
     _boxes[6].pack_start(m._detection_area_smart_ckbtn, False, True, 5)
 
     _boxes[7].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
-
     _boxes[8].set_spacing(6)
     _level_note = label(label = 'Level 1(默认): 所有GET, POST参数\n'
                                 'Level 2  追加: Cookie\n'
@@ -212,13 +211,13 @@ class Notebook(g.Notebook):
                                 'Level 4  追加: 啥?\n'
                                 'Level 5  追加: Host报头',
                         halign = g.Align.START)
-    _risk_note2 = label(label = 'Risk 1(默认): 基本无风险\n'
+    _risk_note = label(label = 'Risk 1(默认): 基本无风险\n'
                                 'Risk 2  追加: 大量时间型盲注\n'
                                 'Risk 3  追加: OR型布尔盲注',
                         halign = g.Align.START)
-    # _risk_note2.override_background_color(g.StateFlags.NORMAL, d.RGBA(255, 0, 0, 1))
+    # _risk_note.override_background_color(g.StateFlags.NORMAL, d.RGBA(255, 0, 0, 1))
     _boxes[8].pack_start(_level_note, True, True, 5)
-    _boxes[8].pack_start(_risk_note2, True, True, 5)
+    _boxes[8].pack_start(_risk_note, True, True, 5)
 
     _detection_area_opts = Box(orientation=VERTICAL, spacing=3)
     for _ in _boxes:

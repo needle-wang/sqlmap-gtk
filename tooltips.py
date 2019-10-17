@@ -13,9 +13,6 @@ class Widget_Mesg(object):
     self.set_all_placeholders(m)
 
   def set_all_placeholders(self, m):
-    '''
-    m: model.Model
-    '''
     # 0.target区
     self._set_placeholder('通常是从 目标url/burp日志/HTTP请求... 中任选一项',
                           m._url_combobox.get_child())
@@ -160,7 +157,7 @@ class Widget_Mesg(object):
         '当情况复杂(如注入点位于嵌套JOIN查询中)时, 需要手动处理',
                       m._inject_area_prefix_ckbtn,
                       m._inject_area_prefix_entry)
-    self._set_tooltip('--suffix=SUFFIX\n',
+    self._set_tooltip('--suffix=SUFFIX',
                       m._inject_area_suffix_ckbtn,
                       m._inject_area_suffix_entry)
     self._set_tooltip('--dbms=DBMS\n很确定是哪种DBMS时使用',

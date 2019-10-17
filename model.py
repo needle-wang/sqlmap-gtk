@@ -52,7 +52,7 @@ class Model(object):
     self._inject_area_no_escape_ckbtn = cb('关掉string转义')
     self._inject_area_invalid_logic_ckbtn = cb('使用布尔运算')
     self._inject_area_invalid_bignum_ckbtn = cb('使用大数')
-    self._inject_area_invalid_str_ckbtn = cb('使用随机字符')
+    self._inject_area_invalid_str_ckbtn = cb('使用随机字串')
     # 探测选项
     self._detection_area_level_ckbtn = cb('探测等级(范围)')
     self._detection_area_level_scale = sl(HORIZONTAL, 1, 5, 1)
