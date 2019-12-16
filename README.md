@@ -41,7 +41,7 @@ sqlmap已经移植到了python3!
   - `./sqlmap_gtk.py`
 
 #### 功能
-1. 包含sqlmap(1.3.10.7#dev)所有选项(除了-d, 不定时更新sqlmap选项)  
+1. 包含sqlmap(1.3.12.1#dev)所有选项(除了-d, 不定时更新sqlmap选项)  
 2. 支持sqlmapapi客户端(API区)  
 3. 内置终端  
 4. 会话功能, 自动保存和载入上一次的选项  
