@@ -147,7 +147,7 @@ class Widget_Mesg(object):
         '另外: sqlmap不会针对(伪)静态网页(/param1/value1/),\n'
         '在任意(get/post/header等)可能的注入参数后加*即可',
                       m._inject_area_skip_static_ckbtn)
-    self._set_tooltip('--skip=...,...\tSkip testing for given parameter(s)',
+    self._set_tooltip('--skip=...,...  Skip testing for given parameter(s)',
                       m._inject_area_skip_ckbtn,
                       m._inject_area_skip_entry)
     self._set_tooltip('--param-exclude=.. Regexp to exclude parameters from testing',
@@ -394,7 +394,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--safe-req=',
                       m._request_area_safe_req_ckbtn,
                       m._request_area_safe_req_entry)
-    self._set_tooltip('--safe-freq=SAFE.. Test requests between two visits to a given safe URL',
+    self._set_tooltip('--safe-freq=SAFE..  Test requests between two visits to a given safe URL',
                       m._request_area_safe_freq_ckbtn,
                       m._request_area_safe_freq_entry)
     self._set_tooltip('--ignore-proxy',
@@ -662,10 +662,10 @@ class Widget_Mesg(object):
     self._set_tooltip('--crawl-exclude=',
                       m._page1_general_crawl_exclude_ckbtn,
                       m._page1_general_crawl_exclude_entry)
-    self._set_tooltip('-t TRAFFICFILE      Log all HTTP traffic into a textual file',
+    self._set_tooltip('-t TRAFFICFILE  Log all HTTP traffic into a textual file',
                       m._page1_general_traffic_file_ckbtn,
                       m._page1_general_traffic_file_entry)
-    self._set_tooltip('--har=HARFILE       Log all HTTP traffic into a HAR file',
+    self._set_tooltip('--har=HARFILE  Log all HTTP traffic into a HAR file',
                       m._page1_general_har_ckbtn,
                       m._page1_general_har_entry)
     self._set_tooltip('--flush-session',
@@ -676,10 +676,10 @@ class Widget_Mesg(object):
     self._set_tooltip('--csv-del=',
                       m._page1_general_csv_del_ckbtn,
                       m._page1_general_csv_del_entry)
-    self._set_tooltip('--save=SAVECONFIG Save options to a configuration INI file',
+    self._set_tooltip('--save=SAVECONFIG  Save options to a configuration INI file',
                       m._page1_general_save_ckbtn,
                       m._page1_general_save_entry)
-    self._set_tooltip('-s SESSIONFILE      Load session from a stored (.sqlite) file',
+    self._set_tooltip('-s SESSIONFILE  Load session from a stored (.sqlite) file',
                       m._page1_general_session_file_ckbtn,
                       m._page1_general_session_file_entry)
     self._set_tooltip('--output-dir=',
@@ -689,6 +689,8 @@ class Widget_Mesg(object):
         '默认情况, 会发送一个可疑的payload(所以有时明显没有防护还报警告)\n'
         '勾选以禁用此默认机制',
                       m._page1_misc_skip_waf_ckbtn)
+    self._set_tooltip('--unstable  Adjust options for unstable connections',
+                      m._page1_misc_unstable_ckbtn)
     self._set_tooltip('--list-tampers',
                       m._page1_misc_list_tampers_ckbtn)
     self._set_tooltip('--sqlmap-shell',
@@ -722,6 +724,9 @@ class Widget_Mesg(object):
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
                       m._page1_misc_z_ckbtn,
                       m._page1_misc_z_entry)
+    self._set_tooltip('--results-file=R..  Location of CSV results file in multiple targets mode',
+                      m._page1_misc_results_file_ckbtn,
+                      m._page1_misc_results_file_entry)
     # 二、日志区(page3)
     self._set_tooltip('不会修改文件',
                       m._page3_clear_btn)

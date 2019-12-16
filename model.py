@@ -355,6 +355,7 @@ class Model(object):
     self._page1_general_output_dir_chooser = btn.new_with_label('打开')
     # 杂项
     self._page1_misc_skip_waf_ckbtn = cb('跳过WAF/IPS侦测')
+    self._page1_misc_unstable_ckbtn = cb('为不稳定的连接调整选项')
     self._page1_misc_list_tampers_ckbtn = cb('列出可用的tamper脚本')
     self._page1_misc_sqlmap_shell_ckbtn = cb('打开sqlmap交互shell')
     self._page1_misc_disable_color_ckbtn = cb('禁用终端输出的颜色')
@@ -375,6 +376,9 @@ class Model(object):
     self._page1_misc_answers_entry = et(text = 'quit=N,follow=N')
     self._page1_misc_z_ckbtn = cb('使用短的助记符')
     self._page1_misc_z_entry = et(text = 'flu,bat,ban,tec=EU...')
+    self._page1_misc_results_file_ckbtn = cb('指定CSV文件位置:')
+    self._page1_misc_results_file_entry = FileEntry()
+    self._page1_misc_results_file_chooser = btn.new_with_label('打开')
   # 输出区(2)
     # self._page2_cmdline_str_label = label.new('')
     self._page2_respwan_btn = btn.new_with_label('重开终端')

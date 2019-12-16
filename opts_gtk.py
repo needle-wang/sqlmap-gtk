@@ -1050,9 +1050,10 @@ class Notebook(g.Notebook):
   def _build_page1_other_misc(self, m):
     f = Frame.new('杂项')
 
-    _boxes = [Box() for _ in range(4)]
+    _boxes = [Box() for _ in range(5)]
 
     _boxes[0].pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._page1_misc_unstable_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_list_tampers_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_sqlmap_shell_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_disable_color_ckbtn, False, True, 5)
@@ -1070,7 +1071,6 @@ class Notebook(g.Notebook):
       self._handlers.set_file_entry_text,
       [m._page1_misc_tmp_dir_entry, '选择 本地临时目录']
     )
-
     _boxes[2].pack_start(m._page1_misc_alert_ckbtn, False, True, 5)
     _boxes[2].pack_start(m._page1_misc_alert_entry, True, True, 5)
     _boxes[2].pack_start(m._page1_misc_tmp_dir_ckbtn, False, True, 5)
@@ -1080,6 +1080,15 @@ class Notebook(g.Notebook):
     _boxes[3].pack_start(m._page1_misc_answers_entry, True, True, 5)
     _boxes[3].pack_start(m._page1_misc_z_ckbtn, False, True, 5)
     _boxes[3].pack_start(m._page1_misc_z_entry, True, True, 5)
+
+    m._page1_misc_results_file_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._page1_misc_results_file_entry]
+    )
+    _boxes[4].pack_start(m._page1_misc_results_file_ckbtn, False, True, 5)
+    _boxes[4].pack_start(m._page1_misc_results_file_entry, True, True, 0)
+    _boxes[4].pack_start(m._page1_misc_results_file_chooser, False, True, 5)
 
     _page1_other_misc_opts = Box(orientation=VERTICAL, spacing=6)
     for _ in _boxes:

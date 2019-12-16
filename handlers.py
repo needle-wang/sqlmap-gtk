@@ -277,6 +277,8 @@ class Handler(object):
                                 m._page1_general_output_dir_entry),
       self._get_text_only_ckbtn("--skip-waf",
                                 m._page1_misc_skip_waf_ckbtn),
+      self._get_text_only_ckbtn("--unstable",
+                                m._page1_misc_unstable_ckbtn),
       self._get_text_only_ckbtn("--list-tampers",
                                 m._page1_misc_list_tampers_ckbtn),
       self._get_text_only_ckbtn("--sqlmap-shell",
@@ -310,6 +312,9 @@ class Handler(object):
       self._get_text_from_entry("-z ",
                                 m._page1_misc_z_ckbtn,
                                 m._page1_misc_z_entry),
+      self._get_text_from_entry("--results-file=",
+                                m._page1_misc_results_file_ckbtn,
+                                m._page1_misc_results_file_entry),
     ]
 
     _file_opts = [
