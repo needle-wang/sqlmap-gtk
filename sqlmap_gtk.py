@@ -281,7 +281,7 @@ class Window(g.Window):
 
   def _build_page2(self):
     '''
-    用subprocess不可实现与sqlap的交互!
+    用subprocess不可实现与sqlmap的交互!
     不管是多线程, 同步还是异步, 都不行, 只能使用pty
     '''
     box = Box(orientation=VERTICAL, spacing=6)
@@ -489,7 +489,7 @@ class Window(g.Window):
     # _manual_hh = '/home/needle/bin/output_interval.sh'
     _manual_hh = [self._handlers.get_sqlmap_path(), '-hh']
     try:
-      _subprocess = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT, bufsize=1)
+      _subprocess = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT)
 
       for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
         GLib.idle_add(self.textbuffer_insert,
@@ -497,7 +497,6 @@ class Window(g.Window):
                       _an_bytes_line_tmp.decode('utf8'))
 
       _subprocess.wait()
-      _subprocess.stdout.close()
     except FileNotFoundError as e:
       GLib.idle_add(self.textbuffer_insert, textbuffer, str(e))
     except Exception as e:
@@ -515,18 +514,24 @@ class Window(g.Window):
   def _build_page6(self):
     box = Box()
 
-    _about_str = '''
-    1. VERSION: 0.3.4.2
+    _url_self = 'https://github.com/needle-wang/sqlmap-gtk'
+    _url_tutorial = 'https://python-gtk-3-tutorial.readthedocs.io/en/latest'
+    _url_api = 'https://lazka.github.io/pgi-docs/Gtk-3.0/'
+    _url_idea = 'https://github.com/kxcode'
+    _about_str = f'''
+    1. <a href="{_url_self}" title = "{_url_self}">本项目首页</a> VERSION: 0.3.4.2
        2019年10月10日 08:06:05
-       required: python3.5+, python3-gi, sqlmap
-       作者: needle wang ( needlewang2011@gmail.com )
-       https://github.com/needle-wang/sqlmap-gtk\n
-    2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py\n
-    3. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest\n
-    4. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/\n\n
-    5. 感谢sqm带来的灵感, 其作者: KINGX ( https://github.com/kxcode ), sqm UI 使用的是python2 + tkinter
+       required: python3.6+, gtk+3.20+,
+                 python3-gi, requests, sqlmap\n
+    2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py
+    3. 感谢sqm带来的灵感, 其作者: <a href="{_url_idea}" title="{_url_idea}">KINGX</a>, sqm UI 使用的是python2 + tkinter\n
+    4. Python GTK+3教程: <a href="{_url_tutorial}">{_url_tutorial}</a>
+    5. PyGObject API: <a href="{_url_api}">{_url_api}</a>
     '''
-    box.pack_start(label.new(_about_str), True, False, 0)
+    _ = label.new('')
+    _.set_markup(_about_str)
+    # _.set_selectable(True)
+    box.pack_start(_, True, False, 0)
     return box
 
 
@@ -550,7 +555,7 @@ def main():
   win.show_all()
   # --------
   end = time.process_time()
-  print('loading cost: %s Seconds' % (end - start))
+  print('loading cost: %.3f Seconds' % (end - start))
   g.main()
 
 

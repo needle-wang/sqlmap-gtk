@@ -30,7 +30,7 @@ sqlmap已经移植到了python3!
 
 #### 安装与使用
 1. **要求**  
-  - python3.5+, GTK+3.20  
+  - python3.6+, GTK+3.20  
   - pygobject: `pip3 install PyGObject` or `apt-get install python3-gi`  
   - requests: `pip3 install requests`  
   - 最新的[sqlmap](https://github.com/sqlmapproject/sqlmap): `git clone` it.  
@@ -41,18 +41,18 @@ sqlmap已经移植到了python3!
   - `./sqlmap_gtk.py`
 
 #### 功能
-1. 包含sqlmap(1.3.12.1#dev)所有选项(除了-d, 不定时更新sqlmap选项)  
-2. 支持sqlmapapi客户端(API区)  
-3. 内置终端  
-4. 会话功能, 自动保存和载入上一次的选项  
+- 包含sqlmap(1.3.12.1#dev)所有选项(除了-d, 不定时更新sqlmap选项)  
+- 支持sqlmapapi客户端(API区)  
+- 内置终端  
+- 会话功能, 自动保存和载入上一次的选项  
 
 #### 关于
-1. V0.3.4.2  
+- V0.3.4.2  
    2019年10月10日 08:06:05  
-   作者: needle wang ( needlewang2011@gmail.com )  
-2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py  
-3. 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)带来的灵感, 其作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)  
+   作者: needle wang
+- 使用PyGObject(Gtk+3 + python3-gi)重写sqm.py  
+- 感谢[sqm](https://github.com/kxcode/gui-for-sqlmap)带来的灵感, 其作者: [KINGX](https://github.com/kxcode) (sqm UI 使用的是python2 + tkinter)  
 
 #### 参考文献
-1. Gtk+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest/  
-2. Gtk+3 API: https://lazka.github.io/pgi-docs/Gtk-3.0/  
+- Python GTK+3教程: https://python-gtk-3-tutorial.readthedocs.io/en/latest/  
+- PyGObject API: https://lazka.github.io/pgi-docs/Gtk-3.0/  
