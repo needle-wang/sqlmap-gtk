@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 #
 # 2019年 05月 14日 星期二 19:44:19 CST
 
@@ -212,9 +211,9 @@ class Notebook(g.Notebook):
                                 'Level 5  追加: Host报头',
                         halign = g.Align.START)
     _risk_note = label(label = 'Risk 1(默认): 基本无风险\n'
-                                'Risk 2  追加: 大量时间型盲注\n'
-                                'Risk 3  追加: OR型布尔盲注',
-                        halign = g.Align.START)
+                               'Risk 2  追加: 大量时间型盲注\n'
+                               'Risk 3  追加: OR型布尔盲注',
+                       halign = g.Align.START)
     # _risk_note.override_background_color(g.StateFlags.NORMAL, d.RGBA(255, 0, 0, 1))
     _boxes[8].pack_start(_level_note, True, True, 5)
     _boxes[8].pack_start(_risk_note, True, True, 5)
@@ -1012,6 +1011,8 @@ class Notebook(g.Notebook):
       [m._page1_general_save_entry]
     )
 
+    m._page1_general_flush_session_ckbtn.get_children()[0].set_use_markup(True)
+
     _boxes[8].pack_start(m._page1_general_flush_session_ckbtn, False, True, 5)
     _boxes[8].pack_start(m._page1_general_dump_format_ckbtn, False, True, 5)
     _boxes[8].pack_start(m._page1_general_dump_format_entry, False, True, 5)
@@ -1051,6 +1052,8 @@ class Notebook(g.Notebook):
     f = Frame.new('杂项')
 
     _boxes = [Box() for _ in range(5)]
+
+    m._page1_misc_purge_ckbtn.get_children()[0].set_use_markup(True)
 
     _boxes[0].pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_unstable_ckbtn, False, True, 5)
@@ -1124,7 +1127,7 @@ def main():
   win.show_all()
   # --------
   end = time.process_time()
-  print('loading cost: %s Seconds' % (end - start))
+  print('loading cost: %.3f Seconds' % (end - start))
   g.main()
 
 

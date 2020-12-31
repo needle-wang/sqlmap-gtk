@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 #
 # 2018年 08月 29日 星期三 15:34:10 CST
 
@@ -41,7 +40,7 @@ class Handler(object):
 
   def run_cmdline(self, button):
     '''
-    only for posix, won't code it for win now.
+    only for posix, won't work for win now.
     '''
     sqlmap_path = self.get_sqlmap_path()
     _target = self._get_target()

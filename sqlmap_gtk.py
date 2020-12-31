@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 #
 # 2018年 08月 26日 星期日 16:54:41 CST
-# sqlmap gui(gtk+3 by needle wang)
-# required: python3.5+, python3-gi, sqlmap
-# sqlmap requires: python 2.6.x and 2.7.x
+# required: python3.6+, python3-gi, sqlmap
 
 # python3.5+
 from pathlib import Path
@@ -32,8 +29,9 @@ class Window(g.Window):
   # @profile
   def __init__(self):
     super().__init__(title='sqlmap-gtk')
-    self.connect('key_press_event', self.on_window_key_press_event)
-    self.set_icon_from_file("sqlmap_gtk.ico")
+    self.connect('key_press_event', self.on_quit_by_key)
+    self.set_icon_from_file("title.ico")
+    self.clipboard = g.Clipboard.get(d.SELECTION_CLIPBOARD)
 
     self._handlers = Handler(self, m)
 
@@ -78,7 +76,7 @@ class Window(g.Window):
     self.session = Session(m)
     self.session.load_from_tmp()
 
-  def on_window_destroy(self):
+  def on_quit(self):
     try:
       # 保存 此次所有选项
       self.session.save_to_tmp()
@@ -86,6 +84,19 @@ class Window(g.Window):
       raise e
     finally:
       g.main_quit()
+
+  # 如果是实现do_key_press_event, 那事件就传不出去了, why?
+  def on_quit_by_key(self, widget, event: d.EventKey):
+    keysym = event.keyval  # see: gdk/gdkkeysyms.h
+    # key_name = d.keyval_name(keysym)
+    # print('(keysym %s, %s)' % (keysym, key_name))
+
+    state = event.state
+    _ctrl = (state & d.ModifierType.CONTROL_MASK)
+
+    if _ctrl and (keysym == d.KEY_q or keysym == d.KEY_w):
+      self.on_quit()
+      return True
 
   def scroll_page(self, notebook, event):
     '''
@@ -122,19 +133,6 @@ class Window(g.Window):
     finally:
       dialog.destroy()
 
-  def _show_warn(self, button, mesg):
-    if button.get_active():
-      _warn_dialog = g.MessageDialog(parent = self,
-                                     flags = g.DialogFlags.MODAL,
-                                     type = g.MessageType.WARNING,
-                                     buttons = g.ButtonsType.OK_CANCEL,
-                                     message_format = mesg)
-      _response = _warn_dialog.run()
-      if _response in (g.ResponseType.CANCEL, g.ResponseType.DELETE_EVENT):
-        button.set_active(False)
-
-      _warn_dialog.destroy()
-
   def clear_all_entry(self, button):
     for _i in dir(m):
       if _i.endswith('entry'):
@@ -152,18 +150,19 @@ class Window(g.Window):
       for _j in _i:
         _j.set_active(False)
 
-  # 如果是实现do_key_press_event, 那事件就传不出去了, why?
-  def on_window_key_press_event(self, widget, event: d.EventKey):
-    keysym = event.keyval  # see: gdk/gdkkeysyms.h
-    # key_name = d.keyval_name(keysym)
-    # print('(keysym %s, %s)' % (keysym, key_name))
+  def _show_warn(self, button, mesg):
+    if button.get_active():
+      # Dialog windows should be set transient for the main application window!
+      _ = g.MessageDialog(transient_for = self,
+                          flags = 0,
+                          message_type = g.MessageType.WARNING,
+                          buttons = g.ButtonsType.OK_CANCEL,
+                          text = mesg)
+      _response = _.run()
+      if _response in (g.ResponseType.CANCEL, g.ResponseType.DELETE_EVENT):
+        button.set_active(False)
 
-    state = event.state
-    _ctrl = (state & d.ModifierType.CONTROL_MASK)
-
-    if _ctrl and(keysym == d.KEY_q or keysym == d.KEY_w):
-      self.on_window_destroy()
-      return True
+      _.destroy()
 
   def _build_target_notebook(self, target_nb):
     target_nb.add_events(d.EventMask.SCROLL_MASK
@@ -290,14 +289,21 @@ class Window(g.Window):
     _row1 = Box(spacing = 6)
     # m._page2_cmdline_str_label.set_alignment(0, 0.5)    # 怎么没有垂直居中?
     m._page2_respwan_btn.connect('clicked', self._handlers.respawn_terminal)
+    m._page2_right_btn.connect("button-press-event", self.on_right_click)
+    # can not disable
+    # m._page2_right_btn.set_sensitive(False)
+    self._build_page2_context()
 
     # _row1.pack_start(m._page2_cmdline_str_label, True, True, 0)
     _row1.pack_start(m._page2_respwan_btn, False, True, 0)
+    _row1.pack_start(m._page2_right_btn, False, True, 0)
 
     _row2 = Frame()
     # 等价于_pty = m._page2_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
     _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
     m._page2_terminal.set_pty(_pty)
+    m._page2_terminal.connect('key_press_event', self.on_clipboard_by_key)
+    m._page2_terminal.connect("button-press-event", self.on_right_click, m._page2_right_btn)
 
     # https://stackoverflow.com/questions/55105447/virtual-python-shell-with-vte-pty-spawn-async
     # https://gtk-d.dpldocs.info/vte.Pty.Pty.spawnAsync.html
@@ -321,6 +327,81 @@ class Window(g.Window):
     box.pack_start(_row1, False, True, 5)
     box.pack_end(_row2, True, True, 0)
     return box
+
+  def _build_page2_context(self):
+    self.popover = g.Popover()
+    self.popover.connect('key_press_event', self.on_right_click_by_accel)
+
+    _vbox = g.Box(orientation=VERTICAL, spacing=6)
+
+    copy = btn.new_with_label('Copy(C)')
+    paste = btn.new_with_label('Paste(V)')
+    copy.connect("clicked", self.on_right_click_copy)
+    paste.connect("clicked", self.on_right_click_paste)
+
+    _vbox.pack_start(copy, False, True, 5)
+    _vbox.pack_start(paste, False, True, 5)
+
+    self.popover.add(_vbox)
+    self.popover.set_position(g.PositionType.BOTTOM)
+
+  def on_right_click(self, button, event, widget = None):
+    if widget:
+      button = widget
+    # right button
+    if event.button == d.BUTTON_SECONDARY:
+      self.popover.set_relative_to(button)
+      self.popover.show_all()
+      # self.popover.popup()
+
+  def on_right_click_copy(self, widget):
+    self._copy()
+    self.popover.hide()
+
+  def on_right_click_paste(self, widget):
+    self._paste()
+    self.popover.hide()
+
+  def on_right_click_by_accel(self, widget, event):
+    keysym = event.keyval  # see: gdk/gdkkeysyms.h
+
+    if keysym == d.KEY_c:
+      self.on_right_click_copy(widget)
+    if keysym == d.KEY_v:
+      self.on_right_click_paste(widget)
+    if keysym == d.KEY_Escape:
+      self.popover.hide()
+    return True
+
+  def on_clipboard_by_key(self, widget, event):
+    _ctrl = event.state & d.ModifierType.CONTROL_MASK
+    keysym = event.keyval  # see: gdk/gdkkeysyms.h
+
+    if _ctrl and keysym == d.KEY_C:
+      return self._copy()
+    if _ctrl and keysym == d.KEY_V:
+      return self._paste()
+
+  def _copy(self):
+    if m._page2_terminal.get_has_selection():
+      m._page2_terminal.copy_clipboard_format(Vte.Format(1))
+      return True
+
+  def _paste(self):
+    _text = self.clipboard.wait_for_text()
+    if _text is not None and '\n' in _text:
+      _ = g.MessageDialog(transient_for = self,
+                          flags = 0,
+                          message_type = g.MessageType.WARNING,
+                          buttons = g.ButtonsType.OK_CANCEL,
+                          text = f'Warning: insecure paste:\n\n{_text}')
+      _response = _.run()
+      _.destroy()
+      if _response != g.ResponseType.OK:
+        return True
+
+    m._page2_terminal.paste_clipboard()
+    return True
 
   def _build_page3(self):
     box = Box(orientation=VERTICAL, spacing=6)
@@ -442,7 +523,7 @@ class Window(g.Window):
     box.set_border_width(10)
 
     _row1 = Box()
-    self._get_sqlmap_path_btn = btn.new_with_label('获取帮助')
+    self._get_sqlmap_path_btn = btn.new_with_label('sqlmap -hh')
     self._get_sqlmap_path_btn.set_sensitive(False)
     self._get_sqlmap_path_btn.connect('clicked', self._make_help_thread)
 
@@ -519,17 +600,18 @@ class Window(g.Window):
     _url_api = 'https://lazka.github.io/pgi-docs/Gtk-3.0/'
     _url_idea = 'https://github.com/kxcode'
     _about_str = f'''
-    1. <a href="{_url_self}" title = "{_url_self}">本项目首页</a> VERSION: 0.3.4.2
-       2019年10月10日 08:06:05
-       required: python3.6+, gtk+3.20+,
+    1. <a href="{_url_self}" title = "{_url_self}">本项目首页</a> VERSION: 0.3.4.3
+       2021年01月01日 02:18:45
+       作者: needle wang
+       required: python3.6+, gtk+3.20以上,
                  python3-gi, requests, sqlmap\n
-    2. 使用PyGObject(Gtk+3: python3-gi)重写sqm.py
+    2. 使用PyGObject(python3-gi + Gtk+3)重写sqm.py
     3. 感谢sqm带来的灵感, 其作者: <a href="{_url_idea}" title="{_url_idea}">KINGX</a>, sqm UI 使用的是python2 + tkinter\n
     4. Python GTK+3教程: <a href="{_url_tutorial}">{_url_tutorial}</a>
     5. PyGObject API: <a href="{_url_api}">{_url_api}</a>
     '''
-    _ = label.new('')
-    _.set_markup(_about_str)
+    _ = label.new(_about_str)
+    _.set_use_markup(True)
     # _.set_selectable(True)
     box.pack_start(_, True, False, 0)
     return box
@@ -550,7 +632,7 @@ def main():
     g.STYLE_PROVIDER_PRIORITY_APPLICATION
   )
 
-  win.connect('destroy', lambda x: win.on_window_destroy())
+  win.connect('destroy', lambda x: win.on_quit())
   # win.maximize()
   win.show_all()
   # --------
