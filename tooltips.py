@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 #
 # 2018年 10月 23日 星期二 05:24:32 CST
 
@@ -28,8 +27,8 @@ class Widget_Mesg(object):
                           m._sitemap_url)
     self._set_placeholder('-g: 将google dork的结果作为目标url',
                           m._google_dork)
-    # 一、选项区(page1)
-    # 1.测试页面
+    # 选项区(page1)
+    # 1.测试页面(Q)
     self._set_placeholder('id,user-agent',
                           m._inject_area_param_entry)
     self._set_placeholder('user-agent,referer',
@@ -60,10 +59,10 @@ class Widget_Mesg(object):
                           m._tech_area_union_from_entry)
     self._set_placeholder('DNS exfiltration',
                           m._tech_area_dns_entry)
-    # 2.请求页面
-    self._set_placeholder('X-Forwarded-For: 127.0.0.1',
+    # 2.请求页面(W)
+    self._set_placeholder('e.g. X-Forwarded-For: 127.0.0.1',
                           m._request_area_header_entry)
-    self._set_placeholder('Accept-Language: fr\\nETag: 123',
+    self._set_placeholder('e.g. Accept-Language: fr\\nETag: 123',
                           m._request_area_headers_entry)
     self._set_placeholder('post',
                           m._request_area_method_entry)
@@ -87,17 +86,17 @@ class Widget_Mesg(object):
                           m._request_area_csrf_token_entry)
     self._set_placeholder('import hashlib;id2=hashlib.md5(id).hexdigest()',
                           m._request_area_eval_entry)
-    # 3.枚举页面
+    # 3.枚举页面(E)
     self._set_placeholder('不包含该行',
                           m._limit_area_start_entry)
     self._set_placeholder('包含该行',
                           m._limit_area_stop_entry)
     self._set_placeholder('id<3',
                           m._meta_area_where_entry)
-    # 4.文件页面
+    # 4.文件页面(R)
     self._set_placeholder('配合 Meterpreter相关 使用',
                           m._file_os_access_msf_path_entry)
-    # 5.其他页面
+    # 5.其他页面(T)
     self._set_placeholder('sqlmap',
                           m._page1_general_table_prefix_entry)
     self._set_placeholder('/var/www',
@@ -110,6 +109,11 @@ class Widget_Mesg(object):
                           m._page1_general_test_skip_entry)
     self._set_placeholder('CSV',
                           m._page1_general_dump_format_entry)
+
+    self._set_placeholder('不要加 http://',
+                          m._page4_api_server_entry)
+    self._set_placeholder('32位token',
+                          m._page4_admin_token_entry)
 
   def set_all_tooltips(self, m):
     '''
@@ -132,11 +136,11 @@ class Widget_Mesg(object):
                       m._sitemap_url)
     self._set_tooltip('-g: 将google dork的结果作为目标url',
                       m._google_dork)
-    # 一、选项区(page1)
+    # 选项区(page1)
     # 0._cmd_entry
     self._set_tooltip('1.勾选, 填写所需的 选项\n2.点击 收集选项\n3.点击 开始',
                       m._cmd_entry)
-    # 1.测试页面
+    # 1.测试页面(Q)
     self._set_tooltip('-p\n逗号分隔, 与--level不兼容',
                       m._inject_area_param_ckbtn,
                       m._inject_area_param_entry)
@@ -160,13 +164,13 @@ class Widget_Mesg(object):
     self._set_tooltip('--suffix=SUFFIX',
                       m._inject_area_suffix_ckbtn,
                       m._inject_area_suffix_entry)
-    self._set_tooltip('--dbms=DBMS\n很确定是哪种DBMS时使用',
+    self._set_tooltip('--dbms=DBMS\n仅在确定是哪种DBMS时使用',
                       m._inject_area_dbms_ckbtn,
                       m._inject_area_dbms_combobox)
     self._set_tooltip('--dbms-cred=DBMS..  DBMS authentication credentials (user:password)',
                       m._inject_area_dbms_cred_ckbtn,
                       m._inject_area_dbms_cred_entry)
-    self._set_tooltip('--os=OS\n仅在确定知道DBMS所在OS名称时使用',
+    self._set_tooltip('--os=OS\n仅在确定知道DBMS所在OS的名称时使用',
                       m._inject_area_os_ckbtn,
                       m._inject_area_os_entry)
     self._set_tooltip('--no-cast\n'
@@ -174,17 +178,17 @@ class Widget_Mesg(object):
         '若数据检索有问题(如某些老版本mysql), 才勾选',
                       m._inject_area_no_cast_ckbtn)
     self._set_tooltip('--no-escape\n'
-        '注: 默认 select \'foobar\'会变成 select char(102)+char(111)...\n'
+        '注: 默认 select \'foobar\' 会变成 select char(102)+char(111)...\n'
         '    优点: 转义引号, 绕过; 缺点: 长度变长',
                       m._inject_area_no_escape_ckbtn)
     self._set_tooltip('--invalid-logical\n'
-        '真: id=13 假: id=13 AND 18=19',
+        '真: id=13, 假: id=13 AND 18=19',
                       m._inject_area_invalid_logic_ckbtn)
     self._set_tooltip('--invalid-bignum\n'
-        '真: id=13 假: id=99999999',
+        '真: id=13, 假: id=99999999',
                       m._inject_area_invalid_bignum_ckbtn)
     self._set_tooltip('--invalid-string\n'
-        '真: id=13 假: id=akewmc',
+        '真: id=13, 假: id=akewmc',
                       m._inject_area_invalid_str_ckbtn)
     self._set_tooltip('--string=STRING',
                       m._detection_area_str_ckbtn,
@@ -200,12 +204,12 @@ class Widget_Mesg(object):
                       m._detection_area_code_entry)
     self._set_tooltip('--text-only\n'
         '有的响应正文包含大量其他内容(如js脚本)\n'
-        '勾选, 可让sqlmap只关注text文件',
+        '勾选, 可让sqlmap仅关注文本内容',
                       m._detection_area_text_only_ckbtn)
     self._set_tooltip('--titles',
                       m._detection_area_titles_ckbtn)
     self._set_tooltip('--smart\n'
-        '用于批量扫描(如-m时), 快速粗略地寻找明显目标,\n'
+        '用于批量扫描(如-m时), 最快速地找出引发DBMS错误的目标,\n'
         '再对 可引发DBMS错误的参数 进一步扫描',
                       m._detection_area_smart_ckbtn)
     self._set_tooltip('--technique=B: Boolean-based blind\n'
@@ -220,13 +224,13 @@ class Widget_Mesg(object):
                       m._tech_area_time_sec_ckbtn,
                       m._tech_area_time_sec_entry)
     self._set_tooltip('--union-cols=默认10列\nunion查询时\n'
-        '提高level, 可增加至50列;\n'
-        '填12-16表示使用12到16列',
+        '填12-16表示使用12到16列;\n'
+        '提高level, 可增加至50列.',
                       m._tech_area_union_col_ckbtn,
                       m._tech_area_union_col_entry)
     self._set_tooltip('--union-char=默认使用NULL\nunion查询时\n'
-        '提高level, 会使用随机数\n'
-        '如--union-char=001',
+        '如--union-char=001\n'
+        '提高level, 会使用随机数',
                       m._tech_area_union_char_ckbtn,
                       m._tech_area_union_char_entry)
     self._set_tooltip('--union-from=\nunion查询时',
@@ -247,7 +251,7 @@ class Widget_Mesg(object):
         '不会对其他的payload进行任何混淆.\n'
         '要绕过IPS设备或Web应用防火墙(WAF)时, 使用此选项\n'
         '此处填写要使用的tamper脚本名\n'
-        '详见: sqlmap --list-tamper\n回车或逗号拼接',
+        '详见: sqlmap --list-tampers\n回车或逗号拼接',
                       m._tamper_area_tamper_view)
     self._set_tooltip('-o, 开启后会默认:\n'
         '  --keep-alive\n  --null-connection\n  --threads=3',
@@ -260,10 +264,10 @@ class Widget_Mesg(object):
     self._set_tooltip('--keep-alive\n'
         '此开关与--proxy不兼容',
                       m._optimize_area_keep_alive_ckbtn)
-    self._set_tooltip('--null-connection\n'
-        '有的请求类型可用来获取响应大小而不用获取响应主体\n'
-        '两种NULL连接技术: Range和HEAD\n'
-        '此开关与--text-only不兼容',
+    self._set_tooltip('--null-connection 盲注时\n'
+        '此开关与--text-only不兼容\n'
+        '有的请求类型可用来仅获取响应大小而不获取响应主体\n'
+        '两种NULL连接技术: Range和HEAD',
                       m._optimize_area_null_connect_ckbtn)
     # -v:
     # 0: 只显示Python回源(tracebacks), 错误(error)和关键(criticle)信息。
@@ -274,7 +278,7 @@ class Widget_Mesg(object):
     # 5: 同时显示http响应头
     # 6: 同时显示http响应内容
     # self._set_tooltip('-v 默认为1',
-                      # m._general_area_verbose_ckbtn)
+    #                   m._general_area_verbose_ckbtn)
     self._set_tooltip('--fingerprint\n'
         '默认就会自动指纹DB,\n'
         '开启此开关后, 会发送更多请求, 以确定更精确的DB/OS等版本信息',
@@ -286,9 +290,10 @@ class Widget_Mesg(object):
                       m._general_area_batch_ckbtn)
     self._set_tooltip('--wizard(其他选项可不选)',
                       m._page1_misc_wizard_ckbtn)
-    # 2.请求页面
+    # 2.请求页面(W)
     self._set_tooltip('--random-agent\n'
-        '默认, User-Agent: sqlmap/1.0-dev, 建议开启!',
+        '默认, User-Agent: sqlmap/1.0-dev\n'
+        '建议开启!',
                       m._request_area_random_agent_ckbtn)
     self._set_tooltip('--mobile',
                       m._request_area_mobile_ckbtn)
@@ -346,7 +351,8 @@ class Widget_Mesg(object):
                       m._request_area_csrf_method_ckbtn,
                       m._request_area_csrf_method_entry)
     self._set_tooltip('--csrf-token=\n'
-        '有的表单中含有隐藏的随机token字段, 来防止csrf攻击',
+        '如果表单中含有隐藏的随机token字段(用来防止csrf攻击的),\n'
+        '使用此选项.',
                       m._request_area_csrf_token_ckbtn,
                       m._request_area_csrf_token_entry)
     self._set_tooltip('--csrf-url=\n'
@@ -366,7 +372,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--force-ssl',
                       m._request_area_force_ssl_ckbtn)
     self._set_tooltip('--hpp\n'
-        '绕过WAF/IP/IDS的一种方法, 对ASP/IIS, ASP.NET/IIS特别有效',
+        '一种绕过WAF/IP/IDS的方法, 对ASP/IIS, ASP.NET/IIS特别有效',
                       m._request_area_hpp_ckbtn)
     self._set_tooltip('--delay=隔几秒发送一个HTTP请求',
                       m._request_area_delay_ckbtn,
@@ -377,15 +383,14 @@ class Widget_Mesg(object):
     self._set_tooltip('--retries=连接超时后的重连次数',
                       m._request_area_retries_ckbtn,
                       m._request_area_retries_entry)
-    self._set_tooltip('--randomize=',
+    self._set_tooltip('--randomize=随机改变参数值',
                       m._request_area_randomize_ckbtn,
                       m._request_area_randomize_entry)
-    self._set_tooltip('--eval=发送请求前先进行额外的处理(python code), 如:\n'
-                      'import hashlib;id2=hashlib.md5(id).hexdigest()',
+    self._set_tooltip('--eval=发送请求前先进行额外的处理(python code)',
                       m._request_area_eval_ckbtn,
                       m._request_area_eval_entry)
     self._set_tooltip('--safe-url=\n'
-        '避免错误请求过多而被屏蔽',
+        '避免错误请求过多而被屏蔽, 顺便访问一下正常的页面',
                       m._request_area_safe_url_ckbtn,
                       m._request_area_safe_url_entry)
     self._set_tooltip('--safe-post=',
@@ -423,8 +428,8 @@ class Widget_Mesg(object):
                       m._request_area_tor_type_entry)
     self._set_tooltip('--check-tor',
                       m._request_area_check_tor_ckbtn)
-    # 3.枚举页面
-    self._set_tooltip('-b\t获取version()/@@version',
+    # 3.枚举页面(E)
+    self._set_tooltip('-b 获取DB banner(version()/@@version)',
                       m._enum_area_opts_ckbtns[0][0])
     self._set_tooltip('--current-user',
                       m._enum_area_opts_ckbtns[0][1])
@@ -439,7 +444,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--passwords',
                       m._enum_area_opts_ckbtns[1][1])
     self._set_tooltip('--privileges\n'
-        'sql server会显示每个用户是否为dba, 而不是所有用户的权限列表',
+        'sql server会显示是否每个用户都为dba, 而不是所有用户的权限列表',
                       m._enum_area_opts_ckbtns[1][2])
     self._set_tooltip('--roles 仅限oracle可用',
                       m._enum_area_opts_ckbtns[1][3])
@@ -457,8 +462,7 @@ class Widget_Mesg(object):
         '将枚举所有库, 表, 列及其各自类型\n'
         '建议配合--exclude-sysdbs, 数据量可能很大!',
                       m._enum_area_opts_ckbtns[2][2])
-    self._set_tooltip('--count\n'
-        '表的条目数',
+    self._set_tooltip('--count 表的条目数',
                       m._enum_area_opts_ckbtns[2][3])
     self._set_tooltip('--comments',
                       m._enum_area_opts_ckbtns[2][4])
@@ -473,7 +477,8 @@ class Widget_Mesg(object):
         '  -T=逗号分隔的表名: 将在所有DB中 搜索指定表名\n'
         '  -D=逗号分隔的数据库名: 将 搜索指定库名\n',
                       m._dump_area_search_ckbtn)
-    self._set_tooltip('--exclude-sysdb\n注: sql server上master库不视为系统库',
+    self._set_tooltip('--exclude-sysdb\n'
+        '注: sql server上 master库不视为系统库',
                       m._dump_area_no_sys_db_ckbtn)
     self._set_tooltip('--dump-all',
                       m._dump_area_dump_all_ckbtn)
@@ -506,6 +511,7 @@ class Widget_Mesg(object):
                       m._meta_area_X_ckbtn,
                       m._meta_area_X_entry)
     self._set_tooltip('--pivot-column=P\n'
+        'for Microsoft SQL Server, Sybase and SAP MaxDB\n'
         '导出表数据时, 会自动选择合适的具有唯一值的列，一般是主键\n'
         '当自动选择的privot列不正确时使用此项',
                       m._meta_area_pivot_ckbtn,
@@ -514,7 +520,7 @@ class Widget_Mesg(object):
                       m._meta_area_where_ckbtn,
                       m._meta_area_where_entry)
     self._set_tooltip('--sql-query=QUERY\n'
-        '如果是select语句, 会返回输出;\n'
+        '如果是select语句, 会获取结果;\n'
         '如果目标支持多语句查询, 会使用堆查询技术',
                       m._runsql_area_sql_query_ckbtn,
                       m._runsql_area_sql_query_entry)
@@ -534,18 +540,18 @@ class Widget_Mesg(object):
                       m._brute_force_area_common_columns_ckbtn)
     self._set_tooltip('--common-files',
                       m._brute_force_area_common_files_ckbtn)
-    # 4.文件页面
+    # 4.文件页面(R)
     self._set_tooltip('远程DB所在主机上的文件路径\n'
         '前提: 1.MySQL, PostgreSQL或Microsoft SQL Server\n'
         '      2.当前用户有 读取文件的 相关权限',
                       m._file_read_area_file_read_ckbtn,
                       m._file_read_area_file_read_entry)
-    self._set_tooltip('只能查看已下载到本地的文件',
+    self._set_tooltip('仅查看已下载到本地的文件',
                       m._file_read_area_file_read_btn)
-    self._set_tooltip('--udf-inject\tUDF即user-defined function\n'
+    self._set_tooltip('--udf-inject  UDF即user-defined function\n'
         '将共享库上传到DB所在文件系统上, 来创建用户自定义的函数以供使用',
                       m._file_write_area_udf_ckbtn)
-    self._set_tooltip('与--udf-inject配套使用, 可选',
+    self._set_tooltip('可选, 与--udf-inject配套使用',
                       m._file_write_area_shared_lib_ckbtn,
                       m._file_write_area_shared_lib_entry)
     self._set_tooltip('若使用此选项, 则--file-dest为必选项\n'
@@ -561,18 +567,18 @@ class Widget_Mesg(object):
         '前提: 1.MySQL, PostgreSQL或Microsoft SQL Server\n'
         '      2.当前用户有相关权限\n'
         'MySQL或PostgreSQL: 上传包含sys_exec和sys_eval函数的共享库\n'
-        'SQL Server: 使用xp_cmdshell存储过程, 若被禁用(>=2005), 就启用它;\n'
+        'SQL Server: 使用xp_cmdshell存储过程. 若被禁用(>=2005), 就启用它;\n'
         '                                     若不存在, 就从新创建它',
                       m._file_os_access_os_cmd_ckbtn,
                       m._file_os_access_os_cmd_entry)
     self._set_tooltip('--os-shell\n支持TAB补全, 历史记录\n'
         '若不支持堆查询(如asp/php + MySQL), 且是MySQL(库站未分离!):\n'
         '  会使用SELECT子句INTO OUTFILE在可写目录创建一个web后门来执行命令\n'
-        '  支持的web后门类型有: ASP, ASP.NET, JSP, PHP',
+        '  内置的web后门类型有: ASP, ASP.NET, JSP, PHP',
                       m._file_os_access_os_shell_ckbtn)
     self._set_tooltip('MySQL和PostgreSQL:\n'
-        '  1.通过UDF中的sys_bineval函数 执行Metasploit的shellcode\n'
-        '  2.通过UDF中的sys_exec函数 上传并执行Metasploit的stand-alone payload stager\n'
+        '  1.通过自带的UDF中的sys_bineval() 执行Metasploit的shellcode\n'
+        '  2.通过自带的UDF中的sys_exec() 上传并执行Metasploit的stand-alone payload stager\n'
         'Microsoft SQL Server:\n'
         '  1.通过xp_cmdshell储存过程 上传并执行Metasploit的stand-alone payload stager\n',
                       m._file_os_access_os_pwn_ckbtn)
@@ -611,7 +617,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--reg-type=',
                       m._file_os_registry_reg_type_label,
                       m._file_os_registry_reg_type_entry)
-    # 5.其他页面
+    # 5.其他页面(T)
     self._set_tooltip('--check-internet',
                       m._page1_general_check_internet_ckbtn)
     self._set_tooltip('--fresh-queries',
@@ -621,7 +627,7 @@ class Widget_Mesg(object):
         '  1.通过某些方式得到请求文件或表单参数\n'
         '  2.可用-r读取请求文件或--data指定表单参数\n'
         '但--forms开关: 可让sqlmap自行获取url响应中的表单参数 再做测试\n'
-        '注: 是所有的表单, 及所有表单参数',
+        '注: 是所有表单 及 所有表单参数',
                       m._page1_general_forms_ckbtn)
     self._set_tooltip('--parse-errors',
                       m._page1_general_parse_errors_ckbtn)
@@ -656,10 +662,10 @@ class Widget_Mesg(object):
     self._set_tooltip('--test-skip=TEST.. Skip tests by payloads and/or titles (e.g. BENCHMARK)',
                       m._page1_general_test_skip_ckbtn,
                       m._page1_general_test_skip_entry)
-    self._set_tooltip('--crawl=  并且会收集有漏洞url',
+    self._set_tooltip('--crawl=depth 爬取有漏洞的url',
                       m._page1_general_crawl_ckbtn,
                       m._page1_general_crawl_entry)
-    self._set_tooltip('--crawl-exclude=',
+    self._set_tooltip('--crawl-exclude= 使用正则排除',
                       m._page1_general_crawl_exclude_ckbtn,
                       m._page1_general_crawl_exclude_entry)
     self._set_tooltip('-t TRAFFICFILE  Log all HTTP traffic into a textual file',
@@ -727,34 +733,29 @@ class Widget_Mesg(object):
     self._set_tooltip('--results-file=R..  Location of CSV results file in multiple targets mode',
                       m._page1_misc_results_file_ckbtn,
                       m._page1_misc_results_file_entry)
-    # 二、日志区(page3)
-    self._set_tooltip('不会修改文件',
-                      m._page3_clear_btn)
-    # 三、API区(page4)
-    self._set_tooltip('必填项, 不要加http://',
+    # API区(page4)
+    self._set_tooltip('sqlmapapi.py -s --username="admin" --password="secret"',
                       m._page4_api_server_label,
                       m._page4_api_server_entry)
-    self._set_tooltip('必填项, 32位的token',
-                      m._page4_admin_token_label,
-                      m._page4_admin_token_entry)
-    self._set_tooltip('此处填写要查看的选项(空格分隔), 如: url risk level',
+    self._set_tooltip('此处填写选项(空格分隔). 点击 "选项:" 查看',
                       m._page4_option_get_entry)
-    _api_usage = '''sqlampapi使用步骤:
-    1. 在本地或远程运行: ./sqlmapapi.py -s
-    2. 填写API区第一行的server和token
-    3. 点击 创建任务
-    4. 点击 显示任务 后, 下方窗格中会显示任务列表
-    5. 在本窗格中填写 python dict类型的选项如:
-    {
-      'url': 'http://www.site.com/vuln.php?id=1',
-      'level': 1, 'risk': 1,
-    }
-    6. 点击 设置:(会发送 本窗格的选项dict)
-    7. 点击 启动 (设置了选项才有意义)
-    注: 1.要查看任务的状态, 点击 显示任务 进行刷新
-        2.sqlmapapi支持的选项与sqlmap不兼容,
-          且其进行选项设置时, 不会检查选项!
-          如果设置了无效的选项, 只能删除任务!
+    _api_usage = '''sqlampapi HOW-TO:
+    - server: sqlmapapi.py -s
+    - client:
+      1. input API server and Admin token
+      2. click "create task"
+      3. click "view tasks", tasks show up below
+      4. input python dict type options to set here:
+      {
+        'url': 'http://www.site.com/vuln.php?id=1',
+        'level': 1, 'risk': 1,
+      }
+      5. click "set:" to send the dict
+      6. click start after sending the dict
+      Note: 1. click "view tasks" to recheck tasks' status.
+            2. sqlmapapi's options are not the same with sqlmap;
+               sqlmapapi accept options, but won't verify it!
+               delete the task whose option is invalid!
     '''
     self._set_tooltip(_api_usage,
                       m._page4_option_set_view)

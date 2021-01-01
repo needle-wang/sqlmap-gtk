@@ -4,7 +4,6 @@
 
 import time
 from os import environ, name as OS_NAME
-# python3.5+
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -14,7 +13,7 @@ from handler_api import Api
 # logger = get_console_logger()
 
 IS_POSIX = True if OS_NAME == 'posix' else False
-QUOTE = "'%s'" if OS_NAME == 'posix' else '"%s"'  # dos下只能用双引号
+QUOTE = "'%s'" if OS_NAME == 'posix' else '"%s"'  # for win, legacy
 
 
 class Handler(object):
@@ -40,7 +39,7 @@ class Handler(object):
 
   def run_cmdline(self, button):
     '''
-    only for posix, won't work for win now.
+    won't work at win.
     '''
     sqlmap_path = self.get_sqlmap_path()
     _target = self._get_target()
@@ -50,7 +49,6 @@ class Handler(object):
       self.w.main_notebook.next_page()
       _cmdline_str = '%s %s %s\n' % (sqlmap_path, _target, _sqlmap_opts)
       # print(_cmdline_str, len(_cmdline_str.encode('utf8')))
-      # self.m._page2_cmdline_str_label.set_text("running: " + _cmdline_str)
       if Vte.MAJOR_VERSION >= 0 and Vte.MINOR_VERSION > 52:
         self.m._page2_terminal.feed_child_binary(_cmdline_str.encode('utf8'))
       else:
@@ -88,13 +86,12 @@ class Handler(object):
     '''
     data: [file_entry, 'title of chooser']
     '''
-    if len(data) > 1:   # 选择目录
+    if len(data) > 1:
       dialog = g.FileChooserDialog(data[1], self.w,
                                    g.FileChooserAction.SELECT_FOLDER,
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_Select', g.ResponseType.OK))
     else:
-      # 点击左侧的 最近使用 可选择目录, 小问题, 不用管.
       dialog = g.FileChooserDialog("选择文件", self.w,
                                    g.FileChooserAction.OPEN,
                                    ('_Cancel', g.ResponseType.CANCEL,
@@ -131,7 +128,7 @@ class Handler(object):
   def _log_view_insert(self, file_path):
     '''
     file_path: pathlib.Path
-               sqlmap库中dataToOutFile默认utf8写入
+               dataToOutFile in sqlmap lib writes with utf8 (default)
     '''
     _log_view_textbuffer = self.m._page3_log_view.get_buffer()
 
@@ -145,7 +142,7 @@ class Handler(object):
           for _line_tmp in _line_list_tmp:
             _log_view_textbuffer.insert(_end, _line_tmp)
         else:
-          _log_view_textbuffer.insert(_end, ': 空文件' % str(file_path))
+          _log_view_textbuffer.insert(_end, '%s: 空文件' % str(file_path))
     except EnvironmentError as e:
       _log_view_textbuffer.insert(_end, str(e))
     finally:
@@ -758,7 +755,6 @@ class Handler(object):
     return ''
 
   def _get_tampers(self):
-    ''' --tamper=TAMPER     Use given script(s) for tampering injection data '''
     _tamper_textbuffer = self.m._tamper_area_tamper_view.get_buffer()
     _tampers = ''
 

@@ -152,8 +152,7 @@ class Notebook(g.Notebook):
     _boxes[10].pack_start(m._inject_area_no_escape_ckbtn, False, True, 5)
 
     _invalid_label = label.new('对payload中无效值:')
-    _invalid_label.set_tooltip_text('默认情况下, 要使原参数值无效时会改成相反数\n'
-        '真: id=13 假: id=-13')
+    _invalid_label.set_tooltip_text('默认情况下:\n真: id=13, 假: id=-13')
 
     _boxes[11].pack_start(_invalid_label, False, True, 5)
     _boxes[11].pack_end(m._inject_area_invalid_logic_ckbtn, False, True, 5)
@@ -268,7 +267,7 @@ class Notebook(g.Notebook):
     一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
     即内容的显示没有 下滑 滚轮的效果.
     '''
-    f = Frame.new('tamper脚本')
+    f = Frame.new('Tamper脚本')
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_size_request(300, -1)
@@ -672,7 +671,7 @@ class Notebook(g.Notebook):
   def _build_page1_enumeration_blind(self, m):
     f = Frame.new('盲注选项')
 
-    _boxes = [Box() for _ in range(3)]
+    _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._blind_area_first_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._blind_area_first_entry, False, True, 0)
@@ -680,7 +679,6 @@ class Notebook(g.Notebook):
     _boxes[1].pack_start(m._blind_area_last_ckbtn, False, True, 5)
     _boxes[1].pack_start(m._blind_area_last_entry, False, True, 0)
     _boxes[1].pack_start(label.new('个字符'), False, True, 5)
-    _boxes[2].pack_start(label.new('只适用于盲注,\n因为报错,union注入要求列数相同'), False, True, 5)
 
     _blind_area_opts = Box(orientation=VERTICAL)
     for _ in _boxes:
@@ -748,7 +746,6 @@ class Notebook(g.Notebook):
     _brute_force_area_opts = Box(orientation=VERTICAL)
 
     _row1 = Box()
-
     _row1.pack_start(label.new('检查是否存在:'), False, True, 10)
     _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
     _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 5)
@@ -770,7 +767,7 @@ class Notebook(g.Notebook):
     # http://www.sqlinjection.net/stacked-queries/
     # https://www.cnblogs.com/hongfei/p/3895980.html
     _file_note.set_tooltip_text(
-        '堆查询: MySQL/PHP - 不支持(supported by MySQL for other API)\n'
+        '堆查询: MySQL/PHP - 不支持(but supported by MySQL with other API)\n'
         '        SQL Server/Any API - 支持\n'
         '        PostgreSQL/PHP - 支持\n'
         '        Oracle/Any API - 不支持')
@@ -810,7 +807,7 @@ class Notebook(g.Notebook):
     return f
 
   def _build_page1_file_write(self, m):
-    f = Frame.new('文件上传')
+    f = Frame.new('上传本地文件')
 
     _boxes = [Box() for _ in range(3)]
 

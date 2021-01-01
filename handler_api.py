@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 #
 # 2019年 05月 14日 星期二 22:32:20 CST
 
@@ -41,7 +40,7 @@ class Api(object):
 
   def admin_list(self, button):
     '''
-    @get("/admin/<taskid>/list") 查看所有任务，并显示运行状态
+    @get("/admin/<taskid>/list") 查看所有任务, 并显示运行状态
     '''
     _host = self.m._page4_api_server_entry.get_text().strip()
     _token = self.m._page4_admin_token_entry.get_text().strip()
@@ -226,7 +225,7 @@ class Api(object):
         if _resp['success']:
           for _a_child in self.w._api_admin_list_rows.get_children():
             self.w._api_admin_list_rows.remove(_a_child)
-          self.task_view_append('清空全部任务: 成功')
+          self.task_view_append('清空全部任务: 成功.')
       except Exception as e:
         self.task_view_append(e)
 

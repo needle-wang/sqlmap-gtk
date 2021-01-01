@@ -268,7 +268,7 @@ class Model(object):
     self._file_read_area_file_read_ckbtn = cb('远程文件路径(--file-read=)')
     self._file_read_area_file_read_entry = et(text = '/etc/passwd')
     self._file_read_area_file_read_btn = btn.new_with_label('查看')
-    # 文件上传
+    # 上传本地文件
     self._file_write_area_udf_ckbtn = cb('注入UDF(仅限MySQL和PostgreSQL)')
     self._file_write_area_shared_lib_ckbtn = cb('本地共享库路径(--shared-lib=)')
     self._file_write_area_shared_lib_entry = FileEntry()
@@ -380,7 +380,6 @@ class Model(object):
     self._page1_misc_results_file_entry = FileEntry()
     self._page1_misc_results_file_chooser = btn.new_with_label('打开')
   # 输出区(2)
-    # self._page2_cmdline_str_label = label.new('')
     self._page2_respwan_btn = btn.new_with_label('重开终端')
     self._page2_right_btn = btn.new_with_label('context menu')
     self._page2_terminal = Vte.Terminal.new()

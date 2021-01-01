@@ -17,7 +17,7 @@ from gi.repository import Gio, GLib
 from gi.repository import Gtk as g
 from gi.repository import Vte
 
-# Box默认方向就是HORIZONTAL, 忘了在哪看的了
+# Box默认的orientation是HORIZONTAL
 HORIZONTAL = g.Orientation.HORIZONTAL
 VERTICAL = g.Orientation.VERTICAL
 
@@ -53,7 +53,7 @@ class Notebook(g.Notebook):
     '''
     https://stackoverflow.com/questions/11773132/gtk-notebook-change-page-with-scrolling-and-alt1-like-firefox-chrome-epipha
     '''
-    print('ha?')
+    print('can not work here.')
     if event.get_scroll_deltas()[2] < 0:
       notebook.prev_page()
     else:

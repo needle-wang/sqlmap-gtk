@@ -3,7 +3,6 @@
 # 2018年 08月 26日 星期日 16:54:41 CST
 # required: python3.6+, python3-gi, sqlmap
 
-# python3.5+
 from pathlib import Path
 from subprocess import (Popen, PIPE, STDOUT)
 from threading import Thread
@@ -35,7 +34,6 @@ class Window(g.Window):
 
     self._handlers = Handler(self, m)
 
-    # g.Box默认的orientation是HORIZONTAL
     _main_box = Box(orientation=VERTICAL)
 
     self._target_notebook = g.Notebook()
@@ -72,13 +70,11 @@ class Window(g.Window):
     # 添加tooltips, placeholders等
     INIT_MESG(m)
 
-    # 读取 上次所有选项
     self.session = Session(m)
     self.session.load_from_tmp()
 
   def on_quit(self):
     try:
-      # 保存 此次所有选项
       self.session.save_to_tmp()
     except Exception as e:
       raise e
@@ -261,7 +257,7 @@ class Window(g.Window):
 
     _build_button = btn.new_with_mnemonic('A.收集选项(_A)')
     _build_button.connect('clicked', self._handlers.build_all)
-    # 用于改善ui的使用体验
+
     _unselect_all_btn = btn.new_with_mnemonic('反选所有复选框(_S)')
     _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
     _clear_all_entry = btn.new_with_mnemonic('清空所有输入框(_D)')
@@ -287,14 +283,12 @@ class Window(g.Window):
     box.set_border_width(10)
 
     _row1 = Box(spacing = 6)
-    # m._page2_cmdline_str_label.set_alignment(0, 0.5)    # 怎么没有垂直居中?
     m._page2_respwan_btn.connect('clicked', self._handlers.respawn_terminal)
     m._page2_right_btn.connect("button-press-event", self.on_right_click)
     # can not disable
     # m._page2_right_btn.set_sensitive(False)
     self._build_page2_context()
 
-    # _row1.pack_start(m._page2_cmdline_str_label, True, True, 0)
     _row1.pack_start(m._page2_respwan_btn, False, True, 0)
     _row1.pack_start(m._page2_right_btn, False, True, 0)
 
@@ -375,7 +369,7 @@ class Window(g.Window):
 
   def on_clipboard_by_key(self, widget, event):
     _ctrl = event.state & d.ModifierType.CONTROL_MASK
-    keysym = event.keyval  # see: gdk/gdkkeysyms.h
+    keysym = event.keyval
 
     if _ctrl and keysym == d.KEY_C:
       return self._copy()
@@ -494,7 +488,7 @@ class Window(g.Window):
     _rbox.pack_start(_page4_option_set_view_tip, False, True, 2)
     _rbox.pack_start(_option_set_scrolled, True, True, 2)
 
-    # Warning: don't edit pack1(), pack2() again, or it would be strange.
+    # Warning: don't edit pack1(), pack2() again, otherwise it becomes strange.
     _paned.pack1(_lscrolled, False, False)
     _paned.pack2(_rbox, False, True)
     _row3.add(_paned)
@@ -565,8 +559,6 @@ class Window(g.Window):
       GLib.idle_add(self._get_sqlmap_path_btn.set_sensitive, False)
       GLib.idle_add(textbuffer.set_text, '')
 
-    # WIN下不能用此行
-    # _manual_hh = ['/usr/bin/env', 'sqlmap', '-hh']
     # _manual_hh = '/home/needle/bin/output_interval.sh'
     _manual_hh = [self._handlers.get_sqlmap_path(), '-hh']
     try:

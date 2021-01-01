@@ -117,7 +117,7 @@ class Session(object):
         else:  # _checked = [''], 则使用默认值
           pass
     except KeyError as e:
-      # 如果没有checked项, 则pass
+      # if no checked button, then pass
       pass
 
 
