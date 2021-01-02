@@ -600,7 +600,7 @@ class Window(g.Window):
     2. 使用PyGObject(python3-gi + Gtk+3)重写sqm.py
     3. 感谢sqm带来的灵感, 其作者: <a href="{_url_idea}" title="{_url_idea}">KINGX</a>, sqm UI 使用的是python2 + tkinter\n
     4. Python GTK+3教程: <a href="{_url_tutorial}">{_url_tutorial}</a>
-    5. PyGObject API: <a href="{_url_api}">{_url_api}</a>
+    5. PyGObject-GTK 3.0 API: <a href="{_url_api}">{_url_api}</a>
     '''
     _ = label.new(_about_str)
     _.set_use_markup(True)

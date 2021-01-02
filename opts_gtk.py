@@ -439,12 +439,20 @@ class Notebook(g.Notebook):
     _boxes[3].pack_start(m._request_area_cookie_del_ckbtn, False, True, 5)
     _boxes[3].pack_start(m._request_area_cookie_del_entry, False, True, 5)
 
+    m._request_area_live_cookies_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._request_area_live_cookies_entry]
+    )
     m._request_area_load_cookies_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
       [m._request_area_load_cookies_entry]
     )
 
+    _boxes[4].pack_start(m._request_area_live_cookies_ckbtn, False, True, 5)
+    _boxes[4].pack_start(m._request_area_live_cookies_entry, True, True, 0)
+    _boxes[4].pack_start(m._request_area_live_cookies_chooser, False, True, 5)
     _boxes[4].pack_start(m._request_area_load_cookies_ckbtn, False, True, 5)
     _boxes[4].pack_start(m._request_area_load_cookies_entry, True, True, 0)
     _boxes[4].pack_start(m._request_area_load_cookies_chooser, False, True, 5)
@@ -464,8 +472,13 @@ class Notebook(g.Notebook):
     _boxes[6].pack_start(m._request_area_auth_file_ckbtn, False, True, 5)
     _boxes[6].pack_start(m._request_area_auth_file_entry, True, True, 0)
     _boxes[6].pack_start(m._request_area_auth_file_chooser, False, True, 5)
+
+    m._request_area_csrf_retries_entry.set_width_chars(5)
+
     _boxes[7].pack_start(m._request_area_csrf_method_ckbtn, False, True, 5)
     _boxes[7].pack_start(m._request_area_csrf_method_entry, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_retries_ckbtn, False, True, 5)
+    _boxes[7].pack_start(m._request_area_csrf_retries_entry, False, True, 5)
     _boxes[7].pack_start(m._request_area_csrf_token_ckbtn, False, True, 5)
     _boxes[7].pack_start(m._request_area_csrf_token_entry, True, True, 5)
     _boxes[7].pack_start(m._request_area_csrf_url_ckbtn, False, True, 5)
@@ -954,6 +967,9 @@ class Notebook(g.Notebook):
     _boxes[1].pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
     _boxes[1].pack_start(m._page1_general_preprocess_entry, True, True, 0)
     _boxes[1].pack_start(m._page1_general_preprocess_chooser, False, True, 5)
+    _boxes[1].pack_start(m._page1_general_postprocess_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._page1_general_postprocess_entry, True, True, 0)
+    _boxes[1].pack_start(m._page1_general_postprocess_chooser, False, True, 5)
     _boxes[2].pack_start(m._page1_general_charset_ckbtn, False, True, 5)
     _boxes[2].pack_start(m._page1_general_charset_entry, True, True, 5)
     _boxes[2].pack_start(m._page1_general_encoding_ckbtn, False, True, 5)
@@ -1052,6 +1068,7 @@ class Notebook(g.Notebook):
 
     m._page1_misc_purge_ckbtn.get_children()[0].set_use_markup(True)
 
+    _boxes[0].pack_start(m._page1_misc_skip_heuristics_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_unstable_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._page1_misc_list_tampers_ckbtn, False, True, 5)

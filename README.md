@@ -22,7 +22,7 @@ sqlmap已经移植到了python3.
 
 #### 安装与使用
 1. **要求**  
-  - python3.6+, GTK+3.20以上(linux下已自带)  
+  - python3.6+, GTK+3.20以上(linux已自带)  
   - pygobject: (二选一)
     - `apt-get install python3-gi`(推荐)  
     - `pip3 install PyGObject`
@@ -49,4 +49,4 @@ sqlmap已经移植到了python3.
 
 #### 参考文献
 - Python GTK+3教程: <https://python-gtk-3-tutorial.readthedocs.io/en/latest/>
-- PyGObject API: <https://lazka.github.io/pgi-docs/Gtk-3.0/>
+- PyGObject-GTK 3.0 API: <https://lazka.github.io/pgi-docs/Gtk-3.0/>

@@ -82,6 +82,8 @@ class Widget_Mesg(object):
                           m._request_area_auth_file_entry)
     self._set_placeholder('post',
                           m._request_area_csrf_method_entry)
+    self._set_placeholder('0',
+                          m._request_area_csrf_retries_entry)
     self._set_placeholder('token字段名',
                           m._request_area_csrf_token_entry)
     self._set_placeholder('import hashlib;id2=hashlib.md5(id).hexdigest()',
@@ -332,6 +334,9 @@ class Widget_Mesg(object):
     self._set_tooltip('--cookie-del=',
                       m._request_area_cookie_del_ckbtn,
                       m._request_area_cookie_del_entry)
+    self._set_tooltip('--live-cookies=',
+                      m._request_area_live_cookies_ckbtn,
+                      m._request_area_live_cookies_entry)
     self._set_tooltip('--load-cookies=',
                       m._request_area_load_cookies_ckbtn,
                       m._request_area_load_cookies_entry)
@@ -350,6 +355,10 @@ class Widget_Mesg(object):
     self._set_tooltip('--csrf-method=',
                       m._request_area_csrf_method_ckbtn,
                       m._request_area_csrf_method_entry)
+    self._set_tooltip('--csrf-retries=\n'
+        'Retries for anti-CSRF token retrieval (default 0)',
+                      m._request_area_csrf_retries_ckbtn,
+                      m._request_area_csrf_retries_entry)
     self._set_tooltip('--csrf-token=\n'
         '如果表单中含有隐藏的随机token字段(用来防止csrf攻击的),\n'
         '使用此选项.',
@@ -644,6 +653,9 @@ class Widget_Mesg(object):
     self._set_tooltip('--preprocess=',
                       m._page1_general_preprocess_ckbtn,
                       m._page1_general_preprocess_entry)
+    self._set_tooltip('--postprocess=',
+                      m._page1_general_postprocess_ckbtn,
+                      m._page1_general_postprocess_entry)
     self._set_tooltip('--charset=  如获取SHA1密文时, 请求数可减小30%',
                       m._page1_general_charset_ckbtn,
                       m._page1_general_charset_entry)
@@ -691,6 +703,9 @@ class Widget_Mesg(object):
     self._set_tooltip('--output-dir=',
                       m._page1_general_output_dir_ckbtn,
                       m._page1_general_output_dir_entry)
+    self._set_tooltip('--skip-heuristics\n'
+        'Skip heuristic detection of SQLi/XSS vulnerabilities',
+                      m._page1_misc_skip_heuristics_ckbtn)
     self._set_tooltip('--skip-waf\n'
         '默认情况, 会发送一个可疑的payload(所以有时明显没有防护还报警告)\n'
         '勾选以禁用此默认机制',
