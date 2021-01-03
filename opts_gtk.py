@@ -328,7 +328,6 @@ class Notebook(g.Notebook):
   def _build_page1_setting_hidden(self, m):
     _boxes = [Box() for _ in range(6)]
 
-    _boxes[0].pack_start(m._hidden_area_base64_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._hidden_area_crack_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._hidden_area_debug_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._hidden_area_profile_ckbtn, False, True, 5)
@@ -541,14 +540,17 @@ class Notebook(g.Notebook):
       [m._request_area_proxy_file_entry]
     )
 
+    m._request_area_proxy_freq_entry.set_width_chars(10)
     m._request_area_proxy_port_entry.set_width_chars(10)
     m._request_area_tor_port_entry.set_width_chars(10)
 
     _boxes[3].pack_start(m._request_area_ignore_proxy_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._request_area_proxy_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._request_area_proxy_freq_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._request_area_proxy_freq_entry, False, True, 5)
     _boxes[3].pack_start(m._request_area_proxy_file_ckbtn, False, True, 5)
     _boxes[3].pack_start(m._request_area_proxy_file_entry, True, True, 0)
     _boxes[3].pack_start(m._request_area_proxy_file_chooser, False, True, 5)
+    _boxes[4].pack_start(m._request_area_proxy_ckbtn, False, True, 5)
     _boxes[4].pack_start(m._request_area_proxy_ip_label, False, True, 5)
     _boxes[4].pack_start(m._request_area_proxy_ip_entry, True, True, 5)
     _boxes[4].pack_start(m._request_area_proxy_port_label, False, True, 5)
@@ -725,7 +727,7 @@ class Notebook(g.Notebook):
     _brute_force_area_opts = Box(orientation=VERTICAL)
 
     _row1 = Box()
-    _row1.pack_start(label.new(m.text.gettext('check if exists:')), False, True, 10)
+    _row1.pack_start(label.new(m.text.gettext('check existence of:')), False, True, 10)
     _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
     _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 5)
     _row1.pack_start(m._brute_force_area_common_files_ckbtn, False, True, 0)
@@ -910,6 +912,9 @@ class Notebook(g.Notebook):
     _boxes[i].pack_start(m._page1_general_forms_ckbtn, False, True, 5)
     _boxes[i].pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
     _boxes[i].pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_base64_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_base64_entry, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_base64_safe_ckbtn, False, True, 5)
 
     m._page1_general_preprocess_chooser.connect(
       'clicked',

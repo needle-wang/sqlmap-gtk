@@ -25,6 +25,8 @@ class Widget_Mesg(object):
                           m._configfile)
     self._set_placeholder('-g: 将google dork的结果作为目标url',
                           m._google_dork)
+    self._set_placeholder('-d: 直接连接远程DB的连接字符串',
+                          m._direct_connect)
     # 选项区(page1)
     # 1.测试页面(Q)
     self._set_placeholder('id,user-agent',
@@ -404,21 +406,24 @@ class Widget_Mesg(object):
     self._set_tooltip('--safe-req=',
                       m._request_area_safe_req_ckbtn,
                       m._request_area_safe_req_entry)
-    self._set_tooltip('--safe-freq=SAFE..  Test requests between two visits to a given safe URL',
+    self._set_tooltip('--safe-freq=SAFE.. Test requests between two visits to a given safe URL',
                       m._request_area_safe_freq_ckbtn,
                       m._request_area_safe_freq_entry)
-    self._set_tooltip('--ignore-proxy',
+    self._set_tooltip('--ignore-proxy Ignore system default proxy settings',
                       m._request_area_ignore_proxy_ckbtn)
+    self._set_tooltip('--proxy-freq=PRO.. Requests between change of proxy from a given list',
+                      m._request_area_proxy_freq_ckbtn,
+                      m._request_area_proxy_freq_entry)
+    self._set_tooltip('--proxy-file=',
+                      m._request_area_proxy_file_ckbtn,
+                      m._request_area_proxy_file_entry)
     self._set_tooltip('--proxy=',
                       m._request_area_proxy_ckbtn,
                       m._request_area_proxy_ip_label,
                       m._request_area_proxy_ip_entry,
                       m._request_area_proxy_port_label,
                       m._request_area_proxy_port_entry)
-    self._set_tooltip('--proxy-file=',
-                      m._request_area_proxy_file_ckbtn,
-                      m._request_area_proxy_file_entry)
-    self._set_tooltip('--proxy-cred=',
+    self._set_tooltip('--proxy-cred=PRO.. Proxy authentication credentials (name:password)',
                       m._request_area_proxy_username_label,
                       m._request_area_proxy_username_entry,
                       m._request_area_proxy_password_label,

@@ -25,6 +25,8 @@ class Widget_Mesg(object):
                           m._configfile)
     self._set_placeholder('-g: Process Google dork results as target URLs',
                           m._google_dork)
+    self._set_placeholder('-d: DIRECT Connection string for direct database connection',
+                          m._direct_connect)
     # OPTIONS(page1)
     # 1.Inject(Q)
     self._set_placeholder('id,user-agent',
@@ -179,7 +181,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--no-cast Turn off payload casting mechanism\n'
         'When retrieving results, all entries would be casted to string type\n'
         'and replaced with a whitespace character in case of NULL values.\n'
-        'if in trouble(e.g. older versions of MySQL), check it.',
+        'if got problem(e.g. older versions of MySQL), check it.',
                       m._inject_area_no_cast_ckbtn)
     self._set_tooltip('--no-escape\n'
         'unchecked: select \'foobar\' become select char(102)+char(111)...\n'
@@ -195,7 +197,7 @@ class Widget_Mesg(object):
         'True: id=13, False: id=akewmc',
                       m._inject_area_invalid_string_ckbtn)
     self._set_tooltip('--text-only\n'
-        'In cases with lot of resource(e.g. js, embeds) in some HTTP responses\' body'
+        'In cases with lots of resource(e.g. js, embeds) in some HTTP responses\' body'
         'check it so that sqlmap focus on textual content\n'
         'to know the distinction of a True query from a False one',
                       m._detection_area_text_only_ckbtn)
@@ -271,7 +273,7 @@ class Widget_Mesg(object):
         'combining with -b would be more accurate.',
                       m._general_area_finger_ckbtn)
     self._set_tooltip('--hex\n'
-        'In lost of cases retrieval of non-ASCII data requires special needs.'
+        'In lost of cases retrieval of non-ASCII data requires special needs.\n'
         'checked: data is encoded to hexadecimal form before being retrieved and afterwards unencoded.\n',
                       m._general_area_hex_ckbtn)
     self._set_tooltip('--wizard vector mode for beginner.',
@@ -338,9 +340,19 @@ class Widget_Mesg(object):
         'Load and use safe HTTP request from a file.',
                       m._request_area_safe_req_ckbtn,
                       m._request_area_safe_req_entry)
-    self._set_tooltip('--safe-freq=SAFE..  Test requests between two visits to a given safe URL',
+    self._set_tooltip('--safe-freq=SAFE.. Test requests between two visits to a given safe URL',
                       m._request_area_safe_freq_ckbtn,
                       m._request_area_safe_freq_entry)
+    self._set_tooltip('--ignore-proxy Ignore system default proxy settings',
+                      m._request_area_ignore_proxy_ckbtn)
+    self._set_tooltip('--proxy-freq=PRO.. Requests between change of proxy from a given list',
+                      m._request_area_proxy_freq_ckbtn,
+                      m._request_area_proxy_freq_entry)
+    self._set_tooltip('--proxy-cred=PRO.. Proxy authentication credentials (name:password)',
+                      m._request_area_proxy_username_label,
+                      m._request_area_proxy_username_entry,
+                      m._request_area_proxy_password_label,
+                      m._request_area_proxy_password_entry)
     # 3.Enumerate(E)
     self._set_tooltip('-b get DB banner: version()/@@version',
                       m._enum_area_opts_ckbtns[0][0])
@@ -419,7 +431,7 @@ class Widget_Mesg(object):
         '         2.the session user has the needed privileges',
                       m._file_read_area_file_read_ckbtn,
                       m._file_read_area_file_read_entry)
-    self._set_tooltip('just view the file that has downloaded.',
+    self._set_tooltip('just view the downloaded file.',
                       m._file_read_area_file_read_btn)
     self._set_tooltip('--udf-inject\n'
         'UDF: user-defined function, only for MySQL or PostgreSQL.\n',
@@ -551,7 +563,7 @@ class Widget_Mesg(object):
         'level': 1, 'risk': 1,
       }
       5. click "set:" to send the dict
-      6. click start after sending the dict
+      6. click "start" after sending the dict
       Note: 1. click "view tasks" to recheck tasks' status.
             2. sqlmapapi's options are not the same with sqlmap;
                sqlmapapi accept options, but won't verify it!

@@ -192,7 +192,8 @@ class Handler(object):
                     ("-r ", m._request_file.get_text),
                     ("-m ", m._bulkfile.get_text),
                     ("-c ", m._configfile.get_text),
-                    ("-g ", m._google_dork.get_text)]
+                    ("-g ", m._google_dork.get_text),
+                    ("-d ", m._direct_connect.get_text)]
 
     _target_tmp = _target_list[_current_pagenum][1]().strip()
     if _target_tmp:
@@ -214,6 +215,11 @@ class Handler(object):
                                 m._page1_general_parse_errors_ckbtn),
       self._get_text_only_ckbtn("--cleanup",
                                 m._page1_misc_cleanup_ckbtn),
+      self._get_text_from_entry("--base64=",
+                                m._page1_general_base64_ckbtn,
+                                m._page1_general_base64_entry),
+      self._get_text_only_ckbtn("--base64-safe",
+                                m._page1_general_base64_safe_ckbtn),
       self._get_text_from_entry("--table-prefix=",
                                 m._page1_general_table_prefix_ckbtn,
                                 m._page1_general_table_prefix_entry),
@@ -569,6 +575,9 @@ class Handler(object):
                                 m._request_area_ignore_proxy_ckbtn),
       self._get_http_proxy(),
       self._get_http_proxy_cred(),
+      self._get_text_from_entry("--proxy-freq=",
+                                m._request_area_proxy_freq_ckbtn,
+                                m._request_area_proxy_freq_entry),
       self._get_text_from_entry("--proxy-file=",
                                 m._request_area_proxy_file_ckbtn,
                                 m._request_area_proxy_file_entry),
@@ -695,8 +704,6 @@ class Handler(object):
       self._get_text_only_ckbtn("--wizard",
                                 m._page1_misc_wizard_ckbtn),
       self._get_tampers(),
-      self._get_text_only_ckbtn("--base64",
-                                m._hidden_area_base64_ckbtn),
       self._get_text_only_ckbtn("--crack",
                                 m._hidden_area_crack_ckbtn),
       self._get_text_only_ckbtn("--debug",

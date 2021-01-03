@@ -225,6 +225,11 @@ class Window(g.Window):
     _google_dork_area = Box()
     _google_dork_area.pack_start(m._google_dork, True, True, 0)
 
+    _direct_connect_area = Box()
+    m._direct_connect.set_text('mysql://USER:PASSWORD@DBMS_IP:DBMS_PORT/DATABASE_NAME or '
+                               'access://DATABASE_FILEPATH')
+    _direct_connect_area.pack_start(m._direct_connect, True, True, 0)
+
     _ = m.text.gettext
     target_nb.append_page(_url_area, label.new(_('-u URL')))
     target_nb.append_page(_burp_area, label.new(_('-l LOGFILE')))
@@ -232,6 +237,7 @@ class Window(g.Window):
     target_nb.append_page(_bulkfile_area, label.new(_('-m BULKFILE')))
     target_nb.append_page(_configfile_area, label.new(_('-c CONFIGFILE')))
     target_nb.append_page(_google_dork_area, label.new(_('-g GOOGLEDORK')))
+    target_nb.append_page(_direct_connect_area, label.new(_('-d DIRECT')))
 
   def _build_page1(self):
     box = Box(orientation=VERTICAL, spacing=6)

@@ -23,11 +23,11 @@ don't use python2 any more please.
   - `./sqlmap_gtk.py`
 
 #### FUNCTION
-- sqlmap(1.3.12.1#dev) all options(except -d)
+- all sqlmap(1.4.12.45#dev) options(except --all)
 - sqlmapapi client
 - built-in terminal
 - session: autosave current options before quit, autoload last used options
-- language switch: english, chinese
+- language switch(see `ABOUT` page): English, Chinese
 
 #### ABOUT
 - v0.3.5  

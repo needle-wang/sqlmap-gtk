@@ -75,7 +75,7 @@ class Text(object):
     self.text_dict['General'] = '通用项'
     self.text_dict['Misc'] = '杂项'
 
-    self.text_dict['check if exists:'] = '检查是否存在:'
+    self.text_dict['check existence of:'] = '检查是否存在:'
     self.text_dict['cat'] = '查看'
     self.text_dict['with Meterpreter(TCP connect):'] = 'Meterpreter相关(TCP连接):'
     self.text_dict['operate:'] = '操作:'
