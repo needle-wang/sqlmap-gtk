@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# 2018年 08月 26日 星期日 16:54:41 CST
+# 2018-08-26 16:54:41
 # required: python3.6+, python3-gi, sqlmap
 
 from pathlib import Path
@@ -13,15 +13,21 @@ from widgets import VERTICAL
 from opts_gtk import Notebook
 from model import Model
 from handlers import Handler
-from session import Session
-from tooltips import Widget_Mesg as INIT_MESG
+from session import Session, load_settings
+
+SETTINGS = load_settings()
+if 'zh' == SETTINGS[1]:
+  from tooltips_zh import Widget_Mesg as INIT_MESG
+else:
+  from tooltips import Widget_Mesg as INIT_MESG
 
 # from basis_and_tool.logging_needle import get_console_logger
 # logger = get_console_logger()
 
 # Model()与对象有关, 按照OOP原则, 理应是实例属性
 # 但只有一个实例, 所以就这么写吧
-m = Model()
+m = Model(SETTINGS[0])
+del SETTINGS
 
 
 class Window(g.Window):
@@ -52,12 +58,13 @@ class Window(g.Window):
     page5 = self._build_page5()
     page6 = self._build_page6()
 
-    self.main_notebook.append_page(page1, label.new_with_mnemonic('选项区(_1)'))
-    self.main_notebook.append_page(page2, label.new_with_mnemonic('输出区(_2)'))
-    self.main_notebook.append_page(page3, label.new_with_mnemonic('日志区(_3)'))
-    self.main_notebook.append_page(page4, label.new_with_mnemonic('API区(_4)'))
-    self.main_notebook.append_page(page5, label.new_with_mnemonic('帮助(_H)'))
-    self.main_notebook.append_page(page6, label.new('关于'))
+    _ = m.text.gettext
+    self.main_notebook.append_page(page1, label.new_with_mnemonic(_('OPTIONS(_1)')))
+    self.main_notebook.append_page(page2, label.new_with_mnemonic(_('EXECUTION(_2)')))
+    self.main_notebook.append_page(page3, label.new_with_mnemonic(_('LOG(_3)')))
+    self.main_notebook.append_page(page4, label.new_with_mnemonic(_('SQLMAPAPI(_4)')))
+    self.main_notebook.append_page(page5, label.new_with_mnemonic(_('HELP(_H)')))
+    self.main_notebook.append_page(page6, label.new(_('ABOUT')))
 
     _main_box.pack_start(self.main_notebook, True, True, 0)
     self.add(_main_box)
@@ -102,7 +109,7 @@ class Window(g.Window):
       notebook.prev_page()
     else:
       notebook.next_page()
-    # returns True, so it should stop the emission.
+    # returns True, so it would stop the emission.
     # 返回True, 会停止向上(父容器)传递信号,
     # 不然page1的_notebook处理完信号后, 会传递给父容器的main_notebook
     return True
@@ -111,14 +118,14 @@ class Window(g.Window):
     '''
     data: [file_entry, 'title of chooser']
     '''
-    if len(data) > 1:   # 选择目录
+    if len(data) > 1:   # choose folder
       dialog = g.FileChooserDialog(data[1], self,
                                    g.FileChooserAction.SELECT_FOLDER,
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_Select', g.ResponseType.OK))
     else:
       # 点击左侧的 最近使用 可选择目录, 小问题, 不用管.
-      dialog = g.FileChooserDialog("选择文件", self,
+      dialog = g.FileChooserDialog("choose file", self,
                                    g.FileChooserAction.OPEN,
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_OK', g.ResponseType.OK))
@@ -164,7 +171,7 @@ class Window(g.Window):
     target_nb.add_events(d.EventMask.SCROLL_MASK
                          | d.EventMask.SMOOTH_SCROLL_MASK)
     target_nb.connect('scroll-event', self.scroll_page)
-    # 目标url
+    # --url
     name_store = g.ListStore(int, str)
     name_store.append([1, "http://www.site.com/vuln.php?id=1"])
 
@@ -215,55 +222,52 @@ class Window(g.Window):
     _configfile_area.pack_start(m._configfile, True, True, 0)
     _configfile_area.pack_start(m._configfile_chooser, False, True, 0)
 
-    _sitemap_url_area = Box()
-    _sitemap_url_area.pack_start(m._sitemap_url, True, True, 0)
-
     _google_dork_area = Box()
     _google_dork_area.pack_start(m._google_dork, True, True, 0)
 
-    target_nb.append_page(_url_area, label.new('目标url'))
-    target_nb.append_page(_burp_area, label.new('burp日志'))
-    target_nb.append_page(_request_area, label.new('HTTP请求'))
-    target_nb.append_page(_bulkfile_area, label.new('BULKFILE'))
-    target_nb.append_page(_configfile_area, label.new('ini文件'))
-    target_nb.append_page(_sitemap_url_area, label.new('xml_url'))
-    target_nb.append_page(_google_dork_area, label.new('GOOGLEDORK'))
+    _ = m.text.gettext
+    target_nb.append_page(_url_area, label.new(_('-u URL')))
+    target_nb.append_page(_burp_area, label.new(_('-l LOGFILE')))
+    target_nb.append_page(_request_area, label.new(_('-r REQUESTFILE')))
+    target_nb.append_page(_bulkfile_area, label.new(_('-m BULKFILE')))
+    target_nb.append_page(_configfile_area, label.new(_('-c CONFIGFILE')))
+    target_nb.append_page(_google_dork_area, label.new(_('-g GOOGLEDORK')))
 
   def _build_page1(self):
     box = Box(orientation=VERTICAL, spacing=6)
     box.set_border_width(10)
+    _ = m.text.gettext
 
     # sqlmap命令语句
-    _cmd_area = Frame.new('A.收集选项 的结果显示在这:')
-
+    _cmd_area = Frame.new(_('A.Options are collected here:'))
     _cmd_area.add(m._cmd_entry)
-
-    box.pack_start(_cmd_area, False, True, 0)
 
     # 主构造区
     _notebook = Notebook(m, self._handlers)
 
-    m._page1_misc_purge_ckbtn.connect('toggled', self._show_warn, '这将抹除所有本地记录!\n确定勾选?')
-    m._page1_general_flush_session_ckbtn.connect('toggled', self._show_warn, '这将清除本地缓存!\n确定勾选?')
+    m._page1_misc_purge_ckbtn.connect('toggled',
+                                      self._show_warn,
+                                      'Safely remove all content from sqlmap data directory?')
+    m._page1_general_flush_session_ckbtn.connect('toggled',
+                                                 self._show_warn,
+                                                 'Flush session files for current target?')
 
     _notebook.add_events(d.EventMask.SCROLL_MASK
                          | d.EventMask.SMOOTH_SCROLL_MASK)
     _notebook.connect('scroll-event', self.scroll_page)
 
-    box.pack_start(_notebook, True, True, 0)
-
     # 构造与执行
     _exec_area = Box()
 
-    _build_button = btn.new_with_mnemonic('A.收集选项(_A)')
+    _build_button = btn.new_with_mnemonic(_('A.collect(_A)'))
     _build_button.connect('clicked', self._handlers.build_all)
 
-    _unselect_all_btn = btn.new_with_mnemonic('反选所有复选框(_S)')
+    _unselect_all_btn = btn.new_with_mnemonic(_('unselect(_S)'))
     _unselect_all_btn.connect('clicked', self.unselect_all_ckbtn)
-    _clear_all_entry = btn.new_with_mnemonic('清空所有输入框(_D)')
+    _clear_all_entry = btn.new_with_mnemonic(_('clear all inputs(_D)'))
     _clear_all_entry.connect('clicked', self.clear_all_entry)
 
-    _run_button = btn.new_with_mnemonic('B.开始(_F)')
+    _run_button = btn.new_with_mnemonic(_('B.run(_F)'))
     _run_button.connect('clicked', self._handlers.run_cmdline)
 
     _exec_area.pack_start(_build_button, False, True, 0)
@@ -271,6 +275,8 @@ class Window(g.Window):
     _exec_area.pack_start(_clear_all_entry, True, False, 0)
     _exec_area.pack_end(_run_button, False, True, 0)
 
+    box.pack_start(_cmd_area, False, True, 0)
+    box.pack_start(_notebook, True, True, 0)
     box.pack_end(_exec_area, False, True, 0)
     return box
 
@@ -293,7 +299,7 @@ class Window(g.Window):
     _row1.pack_start(m._page2_right_btn, False, True, 0)
 
     _row2 = Frame()
-    # 等价于_pty = m._page2_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
+    # equals: _pty = m._page2_terminal.pty_new_sync(Vte.PtyFlags.DEFAULT)
     _pty = Vte.Pty.new_sync(Vte.PtyFlags.DEFAULT)
     m._page2_terminal.set_pty(_pty)
     m._page2_terminal.connect('key_press_event', self.on_clipboard_by_key)
@@ -328,8 +334,8 @@ class Window(g.Window):
 
     _vbox = g.Box(orientation=VERTICAL, spacing=6)
 
-    copy = btn.new_with_label('Copy(C)')
-    paste = btn.new_with_label('Paste(V)')
+    copy = btn.new_with_label(m.text.gettext('Copy(C)'))
+    paste = btn.new_with_label(m.text.gettext('Paste(V)'))
     copy.connect("clicked", self.on_right_click_copy)
     paste.connect("clicked", self.on_right_click_paste)
 
@@ -357,7 +363,7 @@ class Window(g.Window):
     self.popover.hide()
 
   def on_right_click_by_accel(self, widget, event):
-    keysym = event.keyval  # see: gdk/gdkkeysyms.h
+    keysym = event.keyval
 
     if keysym == d.KEY_c:
       self.on_right_click_copy(widget)
@@ -469,7 +475,7 @@ class Window(g.Window):
     _lscrolled.add(self._api_admin_list_rows)
 
     _rbox = Box(orientation=VERTICAL)
-    _page4_option_set_view_tip = label(label = '所有选项见sqlmap目录中的optiondict.py',
+    _page4_option_set_view_tip = label(label = 'check optiondict.py of sqlmap about options.',
                                        halign = g.Align.START)
     _option_set_view_textbuffer = m._page4_option_set_view.get_buffer()
     _options_example = ("{\n"
@@ -498,7 +504,7 @@ class Window(g.Window):
     _task_view_textbuffer = m._page4_task_view.get_buffer()
     _end = _task_view_textbuffer.get_end_iter()
     _task_view_textbuffer.create_mark('end', _end, False)
-    self._handlers.api.task_view_append('此处显示反馈的结果:')
+    self._handlers.api.task_view_append('response result:')
 
     _scrolled = g.ScrolledWindow()
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
@@ -585,27 +591,43 @@ class Window(g.Window):
     textbuffer.insert(textbuffer.get_end_iter(), line)
 
   def _build_page6(self):
-    box = Box()
+    box = Box(orientation=VERTICAL, spacing=6)
+    box.set_border_width(10)
+
+    _boxes = [Box() for _ in range(3)]
+
+    _lang = label.new('language:')
+    _tooltip = label.new('tooltips:')
+    _boxes[0].pack_start(_lang, False, True, 10)
+    _boxes[0].pack_start(m._page6_lang_en_radio, False, True, 10)
+    _boxes[0].pack_start(m._page6_lang_zh_radio, False, True, 10)
+    _boxes[0].pack_start(label.new(m.text.gettext('Take effects after restarting GUI.')), False, True, 10)
+    _boxes[1].pack_start(_tooltip, False, True, 10)
+    _boxes[1].pack_start(m._page6_tooltips_en_radio, False, True, 10)
+    _boxes[1].pack_start(m._page6_tooltips_zh_radio, False, True, 10)
 
     _url_self = 'https://github.com/needle-wang/sqlmap-gtk'
     _url_tutorial = 'https://python-gtk-3-tutorial.readthedocs.io/en/latest'
     _url_api = 'https://lazka.github.io/pgi-docs/Gtk-3.0/'
     _url_idea = 'https://github.com/kxcode'
     _about_str = f'''
-    1. <a href="{_url_self}" title = "{_url_self}">本项目首页</a> VERSION: 0.3.4.3
-       2021年01月01日 02:18:45
-       作者: needle wang
-       required: python3.6+, gtk+3.20以上,
+    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: 0.3.5
+       2021-01-03 16:56:23
+       required: python3.6+, gtk+3.20 above,
                  python3-gi, requests, sqlmap\n
-    2. 使用PyGObject(python3-gi + Gtk+3)重写sqm.py
-    3. 感谢sqm带来的灵感, 其作者: <a href="{_url_idea}" title="{_url_idea}">KINGX</a>, sqm UI 使用的是python2 + tkinter\n
-    4. Python GTK+3教程: <a href="{_url_tutorial}">{_url_tutorial}</a>
+    2. use PyGObject(python3-gi + Gtk+3) to recode sqm.py
+    3. thanks to the idea from sqm, author: <a href="{_url_idea}" title="{_url_idea}">KINGX</a>. sqm UI with python2 + tkinter\n
+    4. Python GTK+3 Tutorial: <a href="{_url_tutorial}">{_url_tutorial}</a>
     5. PyGObject-GTK 3.0 API: <a href="{_url_api}">{_url_api}</a>
     '''
     _ = label.new(_about_str)
     _.set_use_markup(True)
     # _.set_selectable(True)
-    box.pack_start(_, True, False, 0)
+    _boxes[2].pack_start(_, False, True, 0)
+
+    box.pack_start(_boxes[0], False, True, 0)
+    box.pack_start(_boxes[1], False, True, 0)
+    box.pack_start(_boxes[2], False, True, 80)
     return box
 
 

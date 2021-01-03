@@ -1,6 +1,6 @@
 #!/bin/bash -
 #
-# 2018年 11月 01日 星期四 04:18:20 CST
+# 2018-11-01 04:18:20
 
 kernprof -l -v sqlmap_gtk.py
 

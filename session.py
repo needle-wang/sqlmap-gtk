@@ -1,12 +1,35 @@
 #!/usr/bin/env python3
 #
-# 2018年 11月 09日 星期五 15:06:50 CST
+# 2018-11-09 15:06:50
 
 from configparser import ConfigParser
 from widgets import (g, et)
 
 
 LAST_TMP = 'last.tmp'
+
+
+def load_settings():
+  _cfg = ConfigParser()
+  _cfg.optionxform = str
+  _cfg.read(LAST_TMP, 'utf8')
+
+  if not _cfg.has_section('Setting'):
+    _cfg.add_section('Setting')
+
+  _ = ['en', 'en']
+  try:
+    if _cfg['Setting']['language'] == 'zh':
+      _[0] = 'zh'
+  except KeyError:
+    pass
+  try:
+    if _cfg['Setting']['tooltips'] == 'zh':
+      _[1] = 'zh'
+  except KeyError:
+    pass
+
+  return _
 
 
 class Session(object):
@@ -26,6 +49,7 @@ class Session(object):
     self._save_to_tmp_target()
     self._save_to_tmp_ckbtn()
     self._save_to_tmp_entry()
+    self._save_to_tmp_radio()
 
     with open(LAST_TMP, 'w') as f:
       self._cfg.write(f)
@@ -36,6 +60,7 @@ class Session(object):
     self._load_from_tmp_target()
     self._load_from_tmp_ckbtn()
     self._load_from_tmp_entry()
+    self._load_from_tmp_radio()
 
   def _save_to_tmp_target(self):
     if self._cfg.has_section('Target'):
@@ -47,19 +72,6 @@ class Session(object):
 
     if _tmp_url:
       self._cfg['Target']['_url_combobox'] = _tmp_url
-
-  def _save_to_tmp_entry(self):
-    if self._cfg.has_section('Entry'):
-      self._cfg.remove_section('Entry')
-
-    self._cfg.add_section('Entry')
-
-    for _i in dir(self.m):
-      if _i.endswith('entry'):
-        _tmp_entry = getattr(self.m, _i)
-
-        if isinstance(_tmp_entry, et) and _tmp_entry.get_text().strip():
-          self._cfg['Entry'][_i] = _tmp_entry.get_text()
 
   def _save_to_tmp_ckbtn(self):
     if self._cfg.has_section('CheckButton'):
@@ -77,6 +89,32 @@ class Session(object):
 
     self._cfg['CheckButton']['checked'] = ','.join(_checked)
 
+  def _save_to_tmp_entry(self):
+    if self._cfg.has_section('Entry'):
+      self._cfg.remove_section('Entry')
+
+    self._cfg.add_section('Entry')
+
+    for _i in dir(self.m):
+      if _i.endswith('entry'):
+        _tmp_entry = getattr(self.m, _i)
+
+        if isinstance(_tmp_entry, et) and _tmp_entry.get_text().strip():
+          self._cfg['Entry'][_i] = _tmp_entry.get_text()
+
+  def _save_to_tmp_radio(self):
+    if self._cfg.has_section('Setting'):
+      self._cfg.remove_section('Setting')
+
+    self._cfg.add_section('Setting')
+
+    self._cfg['Setting']['language'] = 'en'
+    self._cfg['Setting']['tooltips'] = 'en'
+    if self.m._page6_lang_zh_radio.get_active():
+      self._cfg['Setting']['language'] = 'zh'
+    if self.m._page6_tooltips_zh_radio.get_active():
+      self._cfg['Setting']['tooltips'] = 'zh'
+
   def _load_from_tmp_target(self):
     if not self._cfg.has_section('Target'):
       self._cfg.add_section('Target')
@@ -91,6 +129,23 @@ class Session(object):
 
       break
 
+  def _load_from_tmp_ckbtn(self):
+    if not self._cfg.has_section('CheckButton'):
+      self._cfg.add_section('CheckButton')
+
+    try:
+      _checked = self._cfg['CheckButton']['checked'].split(',')
+      for _i in _checked:
+        if _i:  # _i could be ''
+          # 不去手动改LAST_TMP, self.m就肯定有_i属性了
+          _tmp_ckbtn = getattr(self.m, _i)
+          _tmp_ckbtn.set_active(True)
+        else:  # if _checked = [''], then use default
+          pass
+    except KeyError as e:
+      # if no checked button, then pass
+      pass
+
   def _load_from_tmp_entry(self):
     if not self._cfg.has_section('Entry'):
       self._cfg.add_section('Entry')
@@ -103,21 +158,19 @@ class Session(object):
         # print(type(self._cfg['Entry'][_i]))
         _tmp_entry.set_text(self._cfg['Entry'][_i])
 
-  def _load_from_tmp_ckbtn(self):
-    if not self._cfg.has_section('CheckButton'):
-      self._cfg.add_section('CheckButton')
+  def _load_from_tmp_radio(self):
+    if not self._cfg.has_section('Setting'):
+      self._cfg.add_section('Setting')
 
     try:
-      _checked = self._cfg['CheckButton']['checked'].split(',')
-      for _i in _checked:
-        if _i:  # _i可能为''
-          # 不去手动改LAST_TMP, self.m就肯定有_i属性了
-          _tmp_ckbtn = getattr(self.m, _i)
-          _tmp_ckbtn.set_active(True)
-        else:  # _checked = [''], 则使用默认值
-          pass
-    except KeyError as e:
-      # if no checked button, then pass
+      if self._cfg['Setting']['language'] == 'zh':
+        self.m._page6_lang_zh_radio.set_active(True)
+    except KeyError:
+      pass
+    try:
+      if self._cfg['Setting']['tooltips'] == 'zh':
+        self.m._page6_tooltips_zh_radio.set_active(True)
+    except KeyError:
       pass
 
 

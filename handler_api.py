@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# 2019年 05月 14日 星期二 22:32:20 CST
+# 2019-05-14 22:32:20
 
 import ast
 import requests
@@ -19,7 +19,7 @@ class Api(object):
 
   def task_new(self, button):
     '''
-    rest api获取自: https://github.com/PyxYuYu/MyBlog/issues/69
+    rest api from https://github.com/PyxYuYu/MyBlog/issues/69
     @get("/task/new") 创建新任务
     '''
     _host = self.m._page4_api_server_entry.get_text().strip()
@@ -34,7 +34,7 @@ class Api(object):
 
         _resp = _resp.json()
         if _resp['success']:
-          self.task_view_append('%s: 创建成功.' % _resp['taskid'])
+          self.task_view_append('%s: success.' % _resp['taskid'])
       except Exception as e:
         self.task_view_append(e)
 
@@ -63,30 +63,30 @@ class Api(object):
             _a_child.destroy()
           # 填充任务列表
           _id = 0
+          _ = self.m.text.gettext
           for _taskid, _status in _resp['tasks'].items():
             _a_task_row = g.ListBoxRow()
             _a_row_box_tmp = g.Box()
             _a_task_row.add(_a_row_box_tmp)
 
-            _task_del_btn = g.Button.new_with_label('删除')
+            _task_del_btn = g.Button.new_with_label(_('delete'))
             _task_del_btn.connect('clicked', self.task_delete, _a_task_row, _taskid)
-            _scan_kill_btn = g.Button.new_with_label('杀死')
+            _scan_kill_btn = g.Button.new_with_label('kill')
             _scan_kill_btn.connect('clicked', self.scan_kill, _taskid)
-            _scan_stop_btn = g.Button.new_with_label('停止')
+            _scan_stop_btn = g.Button.new_with_label(_('stop'))
             _scan_stop_btn.connect('clicked', self.scan_stop, _taskid)
-            _scan_start_btn = g.Button.new_with_label('启动')
+            _scan_start_btn = g.Button.new_with_label(_('start'))
             _scan_start_btn.connect('clicked', self.scan_start, _taskid)
             _scan_data_btn = g.Button.new_with_label('data')
             _scan_data_btn.connect('clicked', self.scan_data, _taskid)
             _scan_log_btn = g.Button.new_with_label('log')
             _scan_log_btn.connect('clicked', self.scan_log, _taskid)
-            _option_list_btn = g.Button.new_with_label('所有选项')
+            _option_list_btn = g.Button.new_with_label(_('list'))
             _option_list_btn.connect('clicked', self.option_list, _taskid)
-            _option_get_btn = g.Button.new_with_label('选项:')
+            _option_get_btn = g.Button.new_with_label(_('option:'))
             _option_get_btn.connect('clicked', self.option_get, _taskid)
-            _option_set_btn = g.Button.new_with_label('设置:')
+            _option_set_btn = g.Button.new_with_label(_('set:'))
             _option_set_btn.connect('clicked', self.option_set, _taskid)
-
             _id += 1
             _a_row_box_tmp.pack_start(g.Label.new('%s. %s' % (_id, _taskid)), False, True, 5)
             _a_row_box_tmp.pack_start(g.Label.new('(%s)' % _status), False, True, 0)
@@ -94,7 +94,7 @@ class Api(object):
             _a_row_box_tmp.pack_start(_scan_kill_btn, False, True, 1)
             _a_row_box_tmp.pack_start(_scan_stop_btn, False, True, 1)
             _a_row_box_tmp.pack_start(_scan_start_btn, False, True, 1)
-            _a_row_box_tmp.pack_start(g.Label.new('查看:('), False, True, 1)
+            _a_row_box_tmp.pack_start(g.Label.new(_('view:(')), False, True, 1)
             _a_row_box_tmp.pack_start(_scan_data_btn, False, True, 1)
             _a_row_box_tmp.pack_start(_scan_log_btn, False, True, 1)
             _a_row_box_tmp.pack_start(_option_list_btn, False, True, 1)
@@ -198,11 +198,11 @@ class Api(object):
 
           _resp = _resp.json()
           if _resp['success']:
-            _mesg += '设置成功'
+            _mesg += 'set success.'
         except Exception as e:
           _mesg += str(e)
     else:
-      _mesg += '需要一个有效的python dict'
+      _mesg += 'need a valid python dict.'
 
     self.task_view_append(_mesg)
 
@@ -225,7 +225,7 @@ class Api(object):
         if _resp['success']:
           for _a_child in self.w._api_admin_list_rows.get_children():
             self.w._api_admin_list_rows.remove(_a_child)
-          self.task_view_append('清空全部任务: 成功.')
+          self.task_view_append(self.m.text.gettext('flush all tasks: Done.'))
       except Exception as e:
         self.task_view_append(e)
 
@@ -246,7 +246,7 @@ class Api(object):
         _resp = _resp.json()
         if _resp['success']:
           self.w._api_admin_list_rows.remove(data[0])
-          self.task_view_append('%s: 删除成功' % data[1])
+          self.task_view_append('%s: removed.' % data[1])
       except Exception as e:
         self.task_view_append(e)
 
@@ -305,7 +305,7 @@ class Api(object):
 
   def scan_kill(self, button, taskid):
     '''
-    @get("/scan/<taskid>/kill") kill -9 指定任务
+    @get("/scan/<taskid>/kill") kill -9 <taskid>
     '''
     _host = self.m._page4_api_server_entry.get_text()
     _username = self.m._page4_username_entry.get_text().strip()
@@ -376,7 +376,7 @@ class Api(object):
           if _logs:
             _mesg += _logs.strip()
           else:
-            _mesg += "没有log."
+            _mesg += "no log."
         else:
           _mesg += _resp['message']
       except Exception as e:

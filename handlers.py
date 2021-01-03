@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# 2018年 08月 29日 星期三 15:34:10 CST
+# 2018-08-29 15:34:10
 
 import time
 from os import environ, name as OS_NAME
@@ -52,7 +52,7 @@ class Handler(object):
       if Vte.MAJOR_VERSION >= 0 and Vte.MINOR_VERSION > 52:
         self.m._page2_terminal.feed_child_binary(_cmdline_str.encode('utf8'))
       else:
-        # 旧版本的api, len()还要用encode后的长度
+        # old version Vte's api
         self.m._page2_terminal.feed_child(_cmdline_str, len(_cmdline_str.encode('utf8')))
       self.m._page2_terminal.grab_focus()
 
@@ -92,7 +92,7 @@ class Handler(object):
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_Select', g.ResponseType.OK))
     else:
-      dialog = g.FileChooserDialog("选择文件", self.w,
+      dialog = g.FileChooserDialog("choose file", self.w,
                                    g.FileChooserAction.OPEN,
                                    ('_Cancel', g.ResponseType.CANCEL,
                                     '_OK', g.ResponseType.OK))
@@ -109,7 +109,7 @@ class Handler(object):
 
   def clear_log_view_buffer(self, button):
     self.m._page3_log_view.get_buffer().set_text(
-      'sqlmap的运行记录都放在这: %s\n' % (Path.home() / '.sqlmap/output'))
+      'sqlmap\'s log folder: %s\n' % (Path.home() / '.sqlmap/output'))
 
   def _get_url_dir(self):
     '''
@@ -142,13 +142,13 @@ class Handler(object):
           for _line_tmp in _line_list_tmp:
             _log_view_textbuffer.insert(_end, _line_tmp)
         else:
-          _log_view_textbuffer.insert(_end, '%s: 空文件' % str(file_path))
+          _log_view_textbuffer.insert(_end, '%s: empty file.' % str(file_path))
     except EnvironmentError as e:
       _log_view_textbuffer.insert(_end, str(e))
     finally:
       _log_view_textbuffer.insert(
         _end,
-        time.strftime('\n%Y-%m-%d %R:%S: ----------我是分割线----------\n',
+        time.strftime('\n%Y-%m-%d %R:%S: ----------split line----------\n',
                       time.localtime()))
 
       self.m._page3_log_view.grab_focus()
@@ -192,7 +192,6 @@ class Handler(object):
                     ("-r ", m._request_file.get_text),
                     ("-m ", m._bulkfile.get_text),
                     ("-c ", m._configfile.get_text),
-                    ("-x ", m._sitemap_url.get_text),
                     ("-g ", m._google_dork.get_text)]
 
     _target_tmp = _target_list[_current_pagenum][1]().strip()
@@ -619,12 +618,12 @@ class Handler(object):
                                 m._inject_area_no_cast_ckbtn),
       self._get_text_only_ckbtn("--no-escape",
                                 m._inject_area_no_escape_ckbtn),
-      self._get_text_only_ckbtn("--invalid-logic",
-                                m._inject_area_invalid_logic_ckbtn),
+      self._get_text_only_ckbtn("--invalid-logical",
+                                m._inject_area_invalid_logical_ckbtn),
       self._get_text_only_ckbtn("--invalid-bignum",
                                 m._inject_area_invalid_bignum_ckbtn),
       self._get_text_only_ckbtn("--invalid-str",
-                                m._inject_area_invalid_str_ckbtn),
+                                m._inject_area_invalid_string_ckbtn),
       self._get_text_from_scale("--level=",
                                 m._detection_area_level_ckbtn,
                                 m._detection_area_level_scale),

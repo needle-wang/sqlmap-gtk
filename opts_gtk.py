@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
-# 2019年 05月 14日 星期二 19:44:19 CST
+# 2019-05-14 19:44:19
 
-from widgets import (g, Box, Frame, label)
+from widgets import (g, Box, label)
 from widgets import (HORIZONTAL, VERTICAL)
 
 
@@ -15,18 +15,19 @@ class Notebook(g.Notebook):
 
     self.m = m
     self._handlers = handlers
-    # 选项区 - 设置, 请求, 枚举, 文件, 其他
+    # OPTIONS - Inject, Request, Enumerate, File, Other
     page1_setting = self._build_page1_setting(m)
     page1_request = self._build_page1_request()
     page1_enumeration = self._build_page1_enumeration()
     page1_file = self._build_page1_file()
     page1_other = self._build_page1_other()
 
-    self.append_page(page1_setting, label.new_with_mnemonic('测试(_Q)'))
-    self.append_page(page1_request, label.new_with_mnemonic('请求(_W)'))
-    self.append_page(page1_enumeration, label.new_with_mnemonic('枚举(_E)'))
-    self.append_page(page1_file, label.new_with_mnemonic('文件(_R)'))
-    self.append_page(page1_other, label.new_with_mnemonic('其他(_T)'))
+    _ = m.text.gettext
+    self.append_page(page1_setting, label.new_with_mnemonic(_('Inject(_Q)')))
+    self.append_page(page1_request, label.new_with_mnemonic(_('Request(_W)')))
+    self.append_page(page1_enumeration, label.new_with_mnemonic(_('Enumerate(_E)')))
+    self.append_page(page1_file, label.new_with_mnemonic(_('File(_R)')))
+    self.append_page(page1_other, label.new_with_mnemonic(_('Other(_T)')))
 
   def cb_single(self, widget, ckbtn):
     if widget.get_active():
@@ -51,7 +52,7 @@ class Notebook(g.Notebook):
     box = Box(orientation=VERTICAL)
 
     _row0 = Box()
-    _sqlmap_path_label = label.new('指定sqlmap路径:')
+    _sqlmap_path_label = label.new(m.text.gettext('sqlmap path:'))
     m._sqlmap_path_entry.set_text('sqlmap')
     m._sqlmap_path_chooser.connect(
       'clicked',
@@ -93,14 +94,14 @@ class Notebook(g.Notebook):
     return scrolled
 
   def _build_page1_setting_inject(self, m):
-    f = Frame.new('注入选项')
     _boxes = [Box() for _ in range(13)]
 
     m._inject_area_param_ckbtn.connect(
       'clicked',
       self.cb_single, m._detection_area_level_ckbtn)
-    _boxes[0].pack_start(m._inject_area_param_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._inject_area_param_entry, True, True, 5)
+    i = 0
+    _boxes[i].pack_start(m._inject_area_param_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_param_entry, True, True, 5)
 
     _ = g.ListStore(str)
     _.append(["GET"])
@@ -117,22 +118,26 @@ class Notebook(g.Notebook):
     m._inject_area_param_filter_combobox.set_entry_text_column(0)
     m._inject_area_param_filter_combobox.set_active(0)
     m._inject_area_param_filter_combobox.get_child().set_editable(False)
-
-    _boxes[1].pack_start(m._inject_area_param_filter_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._inject_area_param_filter_combobox, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_param_filter_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_param_filter_combobox, True, True, 5)
 
     # set_active(True)为选中状态
     m._inject_area_skip_static_ckbtn.set_active(True)
-
-    _boxes[2].pack_start(m._inject_area_skip_static_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._inject_area_skip_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._inject_area_skip_entry, True, True, 5)
-    _boxes[4].pack_start(m._inject_area_param_exclude_ckbtn, False, True, 5)
-    _boxes[4].pack_start(m._inject_area_param_exclude_entry, True, True, 5)
-    _boxes[5].pack_start(m._inject_area_prefix_ckbtn, False, True, 5)
-    _boxes[5].pack_start(m._inject_area_prefix_entry, True, True, 5)
-    _boxes[6].pack_start(m._inject_area_suffix_ckbtn, False, True, 5)
-    _boxes[6].pack_start(m._inject_area_suffix_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_skip_static_ckbtn, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_skip_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_skip_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_param_exclude_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_param_exclude_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_prefix_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_prefix_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_suffix_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_suffix_entry, True, True, 5)
 
     _ = g.ListStore(str)
     _.append(["postgresql"])
@@ -141,33 +146,36 @@ class Notebook(g.Notebook):
 
     m._inject_area_dbms_combobox.set_model(_)
     m._inject_area_dbms_combobox.set_entry_text_column(0)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_dbms_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_dbms_combobox, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_dbms_cred_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_dbms_cred_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_os_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_os_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._inject_area_no_cast_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._inject_area_no_escape_ckbtn, False, True, 5)
 
-    _boxes[7].pack_start(m._inject_area_dbms_ckbtn, False, True, 5)
-    _boxes[7].pack_start(m._inject_area_dbms_combobox, True, True, 5)
-    _boxes[8].pack_start(m._inject_area_dbms_cred_ckbtn, False, True, 5)
-    _boxes[8].pack_start(m._inject_area_dbms_cred_entry, True, True, 5)
-    _boxes[9].pack_start(m._inject_area_os_ckbtn, False, True, 5)
-    _boxes[9].pack_start(m._inject_area_os_entry, True, True, 5)
-    _boxes[10].pack_start(m._inject_area_no_cast_ckbtn, False, True, 5)
-    _boxes[10].pack_start(m._inject_area_no_escape_ckbtn, False, True, 5)
-
-    _invalid_label = label.new('对payload中无效值:')
-    _invalid_label.set_tooltip_text('默认情况下:\n真: id=13, 假: id=-13')
-
-    _boxes[11].pack_start(_invalid_label, False, True, 5)
-    _boxes[11].pack_end(m._inject_area_invalid_logic_ckbtn, False, True, 5)
-    _boxes[12].pack_end(m._inject_area_invalid_str_ckbtn, False, True, 5)
-    _boxes[12].pack_end(m._inject_area_invalid_bignum_ckbtn, False, True, 5)
+    _invalid_label = label.new('payload\'s invalid value:')
+    _invalid_label.set_tooltip_text('default:\nTrue: id=13, False: id=-13')
+    i += 1
+    _boxes[i].pack_start(_invalid_label, False, True, 5)
+    _boxes[i].pack_end(m._inject_area_invalid_logical_ckbtn, False, True, 5)
+    i += 1
+    _boxes[i].pack_end(m._inject_area_invalid_bignum_ckbtn, False, True, 5)
+    _boxes[i].pack_end(m._inject_area_invalid_string_ckbtn, False, True, 5)
 
     _inject_area_opts = Box(orientation=VERTICAL, spacing=3)
     for _ in _boxes:
       _inject_area_opts.add(_)
 
-    f.add(_inject_area_opts)
-    return f
+    m._injection_frame.add(_inject_area_opts)
+    return m._injection_frame
 
   def _build_page1_setting_detection(self, m):
-    f = Frame.new('探测选项')
     _boxes = [Box() for _ in range(9)]
 
     m._detection_area_level_ckbtn.connect(
@@ -200,33 +208,21 @@ class Notebook(g.Notebook):
     _boxes[6].pack_start(m._detection_area_text_only_ckbtn, False, True, 5)
     _boxes[6].pack_start(m._detection_area_titles_ckbtn, True, False, 5)
     _boxes[6].pack_start(m._detection_area_smart_ckbtn, False, True, 5)
-
     _boxes[7].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
+    # m._detection_area_risk_note.override_background_color(g.StateFlags.NORMAL,
+    #                                                       d.RGBA(255, 0, 0, 1))
     _boxes[8].set_spacing(6)
-    _level_note = label(label = 'Level 1(默认): 所有GET, POST参数\n'
-                                'Level 2  追加: Cookie\n'
-                                'Level 3  追加: User-Agent/Referer\n'
-                                'Level 4  追加: 啥?\n'
-                                'Level 5  追加: Host报头',
-                        halign = g.Align.START)
-    _risk_note = label(label = 'Risk 1(默认): 基本无风险\n'
-                               'Risk 2  追加: 大量时间型盲注\n'
-                               'Risk 3  追加: OR型布尔盲注',
-                       halign = g.Align.START)
-    # _risk_note.override_background_color(g.StateFlags.NORMAL, d.RGBA(255, 0, 0, 1))
-    _boxes[8].pack_start(_level_note, True, True, 5)
-    _boxes[8].pack_start(_risk_note, True, True, 5)
+    _boxes[8].pack_start(m._detection_area_level_note, True, True, 5)
+    _boxes[8].pack_start(m._detection_area_risk_note, True, True, 5)
 
     _detection_area_opts = Box(orientation=VERTICAL, spacing=3)
     for _ in _boxes:
       _detection_area_opts.add(_)
 
-    f.add(_detection_area_opts)
-    return f
+    m._detection_frame.add(_detection_area_opts)
+    return m._detection_frame
 
   def _build_page1_setting_tech(self, m):
-    f = Frame.new('各注入技术的选项')
-
     _boxes = [Box() for _ in range(9)]
 
     _boxes[0].pack_start(m._tech_area_tech_ckbtn, False, True, 5)
@@ -258,8 +254,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _tech_area_opts.add(_)
 
-    f.add(_tech_area_opts)
-    return f
+    m._tech_frame.add(_tech_area_opts)
+    return m._tech_frame
 
   def _build_page1_setting_tamper(self, m):
     '''
@@ -267,19 +263,15 @@ class Notebook(g.Notebook):
     一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
     即内容的显示没有 下滑 滚轮的效果.
     '''
-    f = Frame.new('Tamper脚本')
-
     _scrolled = g.ScrolledWindow()
     _scrolled.set_size_request(300, -1)
     _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
     _scrolled.add(m._tamper_area_tamper_view)
 
-    f.add(_scrolled)
-    return f
+    m._tamper_frame.add(_scrolled)
+    return m._tamper_frame
 
   def _build_page1_setting_optimize(self, m):
-    f = Frame.new('性能优化')
-
     _boxes = [Box() for _ in range(5)]
 
     m._optimize_area_turn_all_ckbtn.connect('clicked', self.optimize_area_controller)
@@ -311,12 +303,10 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _optimize_area_opts.add(_)
 
-    f.add(_optimize_area_opts)
-    return f
+    m._optimize_frame.add(_optimize_area_opts)
+    return m._optimize_frame
 
   def _build_page1_setting_general(self, m):
-    f = Frame.new('常用选项')
-
     _boxes = [Box() for _ in range(5)]
 
     _general_area_opts = Box(orientation=VERTICAL, spacing=6)
@@ -332,12 +322,10 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _general_area_opts.add(_)
 
-    f.add(_general_area_opts)
-    return f
+    m._offen_frame.add(_general_area_opts)
+    return m._offen_frame
 
   def _build_page1_setting_hidden(self, m):
-    f = Frame.new('隐藏选项')
-
     _boxes = [Box() for _ in range(6)]
 
     _boxes[0].pack_start(m._hidden_area_base64_ckbtn, False, True, 5)
@@ -364,8 +352,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _hidden_area_opts.add(_)
 
-    f.add(_hidden_area_opts)
-    return f
+    m._hidden_frame.add(_hidden_area_opts)
+    return m._hidden_frame
 
   def _build_page1_request(self):
     box = Box(orientation=VERTICAL)
@@ -395,8 +383,6 @@ class Notebook(g.Notebook):
     return scrolled
 
   def _build_page1_request_header(self, m):
-    f = Frame.new('HTTP header')
-
     _boxes = [Box() for _ in range(3)]
 
     m._request_area_random_agent_ckbtn.set_active(True)
@@ -418,12 +404,10 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_header_opts.add(_)
 
-    f.add(_request_header_opts)
-    return f
+    m._http_header_frame.add(_request_header_opts)
+    return m._http_header_frame
 
   def _build_page1_request_data(self, m):
-    f = Frame.new('HTTP data')
-
     _boxes = [Box() for _ in range(8)]
 
     _boxes[0].pack_start(m._request_area_method_ckbtn, False, True, 5)
@@ -488,12 +472,10 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_data_opts.add(_)
 
-    f.add(_request_data_opts)
-    return f
+    m._http_data_frame.add(_request_data_opts)
+    return m._http_data_frame
 
   def _build_page1_request_custom(self, m):
-    f = Frame.new('request定制')
-
     _boxes = [Box() for _ in range(3)]
 
     _boxes[0].pack_start(m._request_area_ignore_timeouts_ckbtn, False, True, 5)
@@ -526,12 +508,10 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_custom_opts.add(_)
 
-    f.add(_request_custom_opts)
-    return f
+    m._request_custom_frame.add(_request_custom_opts)
+    return m._request_custom_frame
 
   def _build_page1_request_proxy(self, m):
-    f = Frame.new('隐匿/代理')
-
     _boxes = [Box() for _ in range(6)]
 
     _boxes[0].pack_start(m._request_area_safe_url_ckbtn, False, True, 5)
@@ -588,8 +568,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_proxy_opts.add(_)
 
-    f.add(_request_proxy_opts)
-    return f
+    m._anonymous_Proxy_frame.add(_request_proxy_opts)
+    return m._anonymous_Proxy_frame
 
   def _build_page1_enumeration(self):
     box = Box(orientation=VERTICAL)
@@ -624,28 +604,24 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_enumeration_enum(self, m):
-    f = Frame.new('枚举')
-
     _enum_area_opts = Box(spacing=6)
 
     _enu_area_opts_cols = [Box(orientation=VERTICAL) for _ in range(3)]
 
     for _x in range(len(m._enum_area_opts_ckbtns)):
       for _y in m._enum_area_opts_ckbtns[_x]:
-        # 每列, 至上往下add
+        # add each column, from up to down
         _enu_area_opts_cols[_x].add(_y)
-      # 添加三列, 方便对齐...
+      # add 3 column for align...
       _enum_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
 
-    f.add(_enum_area_opts)
-    return f
+    m._enumeration_frame.add(_enum_area_opts)
+    return m._enumeration_frame
 
   def _build_page1_enumeration_dump(self, m):
-    f = Frame.new('Dump(转储)')
-
     _dump_area_opts = Box(spacing=6)
 
-    # 加这一层, 只是为了横向上有padding
+    # for padding in HORIZONTAL
     _dump_area_opts_cols = Box(orientation=VERTICAL)
 
     _dump_area_opts_cols.add(m._dump_area_dump_ckbtn)
@@ -659,50 +635,44 @@ class Notebook(g.Notebook):
 
     _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
 
-    f.add(_dump_area_opts)
-    return f
+    m._dump_frame.add(_dump_area_opts)
+    return m._dump_frame
 
   def _build_page1_enumeration_limit(self, m):
-    f = Frame.new('limit(dump时的限制)')
-
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._limit_area_start_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._limit_area_start_entry, False, True, 0)
-    _boxes[0].pack_start(label.new('行'), False, True, 5)
+    # _boxes[0].pack_start(label.new('行'), False, True, 5)
     _boxes[1].pack_start(m._limit_area_stop_ckbtn, False, True, 5)
     _boxes[1].pack_start(m._limit_area_stop_entry, False, True, 0)
-    _boxes[1].pack_start(label.new('行'), False, True, 5)
+    # _boxes[1].pack_start(label.new('行'), False, True, 5)
 
     _limit_area_opts = Box(orientation=VERTICAL)
     for _ in _boxes:
       _limit_area_opts.pack_start(_, False, True, 10)
 
-    f.add(_limit_area_opts)
-    return f
+    m._limit_frame.add(_limit_area_opts)
+    return m._limit_frame
 
   def _build_page1_enumeration_blind(self, m):
-    f = Frame.new('盲注选项')
-
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._blind_area_first_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._blind_area_first_entry, False, True, 0)
-    _boxes[0].pack_start(label.new('个字符'), False, True, 5)
+    # _boxes[0].pack_start(label.new('个字符'), False, True, 5)
     _boxes[1].pack_start(m._blind_area_last_ckbtn, False, True, 5)
     _boxes[1].pack_start(m._blind_area_last_entry, False, True, 0)
-    _boxes[1].pack_start(label.new('个字符'), False, True, 5)
+    # _boxes[1].pack_start(label.new('个字符'), False, True, 5)
 
     _blind_area_opts = Box(orientation=VERTICAL)
     for _ in _boxes:
       _blind_area_opts.pack_start(_, False, True, 10)
 
-    f.add(_blind_area_opts)
-    return f
+    m._blind_options_frame.add(_blind_area_opts)
+    return m._blind_options_frame
 
   def _build_page1_enumeration_meta(self, m):
-    f = Frame.new('数据库名, 表名, 列名...')
-
     _boxes = [Box() for _ in range(3)]
 
     _boxes[0].pack_start(m._meta_area_D_ckbtn, False, True, 5)
@@ -724,12 +694,10 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _meta_area_opts.pack_start(_, False, True, 5)
 
-    f.add(_meta_area_opts)
-    return f
+    m._DTC_name_frame.add(_meta_area_opts)
+    return m._DTC_name_frame
 
   def _build_page1_enumeration_runsql(self, m):
-    f = Frame.new('执行SQL语句')
-
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._runsql_area_sql_query_ckbtn, False, True, 10)
@@ -750,40 +718,38 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _runsql_area_opts.pack_start(_, False, True, 5)
 
-    f.add(_runsql_area_opts)
-    return f
+    m._execute_sql_frame.add(_runsql_area_opts)
+    return m._execute_sql_frame
 
   def _build_page1_enumeration_brute_force(self, m):
-    f = Frame.new('暴破表名/列名')
-
     _brute_force_area_opts = Box(orientation=VERTICAL)
 
     _row1 = Box()
-    _row1.pack_start(label.new('检查是否存在:'), False, True, 10)
+    _row1.pack_start(label.new(m.text.gettext('check if exists:')), False, True, 10)
     _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
     _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 5)
     _row1.pack_start(m._brute_force_area_common_files_ckbtn, False, True, 0)
 
     _brute_force_area_opts.pack_start(_row1, False, True, 5)
 
-    f.add(_brute_force_area_opts)
-    return f
+    m._brute_force_frame.add(_brute_force_area_opts)
+    return m._brute_force_frame
 
   def _build_page1_file(self):
     box = Box(orientation=VERTICAL, spacing=6)
 
     _file_note = label(
-        label = '注: 存在Stacked queries(堆查询注入)时, '
-                '才能使用该标签下的功能(udf功能除外)!',
+        label = 'Note: only if stacked query(堆查询注入) worked, '
+                'these functions below can be used except udf!',
         halign = g.Align.START,
         margin_start = 16)
     # http://www.sqlinjection.net/stacked-queries/
     # https://www.cnblogs.com/hongfei/p/3895980.html
     _file_note.set_tooltip_text(
-        '堆查询: MySQL/PHP - 不支持(but supported by MySQL with other API)\n'
-        '        SQL Server/Any API - 支持\n'
-        '        PostgreSQL/PHP - 支持\n'
-        '        Oracle/Any API - 不支持')
+        'stacked query: MySQL/PHP - no(but supported by MySQL with other API)\n'
+        '               SQL Server/Any API - yes\n'
+        '               PostgreSQL/PHP - yes\n'
+        '               Oracle/Any API - no')
 
     _boxes = [Box(margin_top = 10, margin_start = 10, margin_end = 10) for _ in range(4)]
 
@@ -803,8 +769,6 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_file_read(self, m):
-    f = Frame.new('读取远程文件')
-
     _file_read_area_opts = Box(orientation=VERTICAL, spacing=6)
 
     _row1 = Box()
@@ -816,12 +780,10 @@ class Notebook(g.Notebook):
 
     _file_read_area_opts.pack_start(_row1, False, True, 5)
 
-    f.add(_file_read_area_opts)
-    return f
+    m._read_remote_file_frame.add(_file_read_area_opts)
+    return m._read_remote_file_frame
 
   def _build_page1_file_write(self, m):
-    f = Frame.new('上传本地文件')
-
     _boxes = [Box() for _ in range(3)]
 
     m._file_write_area_shared_lib_chooser.connect(
@@ -852,18 +814,17 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _file_write_area_opts.pack_start(_, False, True, 5)
 
-    f.add(_file_write_area_opts)
-    return f
+    m._upload_local_file_frame.add(_file_write_area_opts)
+    return m._upload_local_file_frame
 
   def _build_page1_file_os_access(self, m):
-    f = Frame.new('访问后端OS')
-
     _boxes = [Box() for _ in range(3)]
 
     _boxes[0].pack_start(m._file_os_access_os_cmd_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
 
-    _for_msf_label = label(label = 'Meterpreter相关(TCP连接):', margin_start = 50)
+    _for_msf_label = label(label = m.text.gettext('with Meterpreter(TCP connect):'),
+                           margin_start = 50)
 
     _boxes[1].pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
     _boxes[1].pack_start(_for_msf_label, False, True, 5)
@@ -875,7 +836,7 @@ class Notebook(g.Notebook):
     m._file_os_access_msf_path_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._file_os_access_msf_path_entry, '选择 本地Metasploit安装目录']
+      [m._file_os_access_msf_path_entry, 'choose local Metasploit install path']
     )
 
     _boxes[2].pack_start(m._file_os_access_msf_path_ckbtn, False, True, 5)
@@ -888,17 +849,15 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _file_os_access_opts.add(_)
 
-    f.add(_file_os_access_opts)
-    return f
+    m._os_access_frame.add(_file_os_access_opts)
+    return m._os_access_frame
 
   def _build_page1_file_os_registry(self, m):
-    f = Frame.new('访问WIN下注册表')
-
     _boxes = [Box() for _ in range(3)]
 
-    m._file_os_registry_reg_combobox.append('--reg-read', '读取')
-    m._file_os_registry_reg_combobox.append('--reg-add', '新增')
-    m._file_os_registry_reg_combobox.append('--reg-del', '删除')
+    m._file_os_registry_reg_combobox.append('--reg-read', m.text.gettext('read'))
+    m._file_os_registry_reg_combobox.append('--reg-add', m.text.gettext('add'))
+    m._file_os_registry_reg_combobox.append('--reg-del', m.text.gettext('delete'))
     m._file_os_registry_reg_combobox.set_active(0)
 
     _boxes[0].pack_start(m._file_os_registry_reg_ckbtn, False, True, 5)
@@ -916,8 +875,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _file_os_registry_opts.add(_)
 
-    f.add(_file_os_registry_opts)
-    return f
+    m._register_access_frame.add(_file_os_registry_opts)
+    return m._register_access_frame
 
   def _build_page1_other(self):
     '''
@@ -944,60 +903,62 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_other_general(self, m):
-    f = Frame.new('通用项')
-
     _boxes = [Box() for _ in range(10)]
-
-    _boxes[0].pack_start(m._page1_general_check_internet_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_general_fresh_queries_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_general_forms_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
+    i = 0
+    _boxes[i].pack_start(m._page1_general_check_internet_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_fresh_queries_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_forms_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
 
     m._page1_general_preprocess_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
       [m._page1_general_preprocess_entry]
     )
-
-    _boxes[1].pack_start(m._page1_general_table_prefix_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_table_prefix_entry, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_binary_fields_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_binary_fields_entry, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_preprocess_entry, True, True, 0)
-    _boxes[1].pack_start(m._page1_general_preprocess_chooser, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_postprocess_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_general_postprocess_entry, True, True, 0)
-    _boxes[1].pack_start(m._page1_general_postprocess_chooser, False, True, 5)
-    _boxes[2].pack_start(m._page1_general_charset_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._page1_general_charset_entry, True, True, 5)
-    _boxes[2].pack_start(m._page1_general_encoding_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._page1_general_encoding_entry, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_table_prefix_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_table_prefix_entry, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_binary_fields_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_binary_fields_entry, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_preprocess_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_preprocess_chooser, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_postprocess_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_postprocess_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_postprocess_chooser, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_charset_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_charset_entry, True, True, 5)
+    _boxes[i].pack_start(m._page1_general_encoding_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_encoding_entry, False, True, 5)
 
     m._page1_general_scope_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
       [m._page1_general_scope_entry]
     )
-
-    _boxes[3].pack_start(m._page1_general_web_root_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._page1_general_web_root_entry, True, True, 5)
-    _boxes[3].pack_start(m._page1_general_scope_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._page1_general_scope_entry, True, True, 0)
-    _boxes[3].pack_start(m._page1_general_scope_chooser, False, True, 5)
-    _boxes[4].pack_start(m._page1_general_test_filter_ckbtn, False, True, 5)
-    _boxes[4].pack_start(m._page1_general_test_filter_entry, True, True, 5)
-    _boxes[4].pack_start(m._page1_general_test_skip_ckbtn, False, True, 5)
-    _boxes[4].pack_start(m._page1_general_test_skip_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_web_root_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_web_root_entry, True, True, 5)
+    _boxes[i].pack_start(m._page1_general_scope_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_scope_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_scope_chooser, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_test_filter_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_test_filter_entry, True, True, 5)
+    _boxes[i].pack_start(m._page1_general_test_skip_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_test_skip_entry, True, True, 5)
 
     m._page1_general_crawl_entry.set_width_chars(5)
 
-    _boxes[5].pack_start(m._page1_general_crawl_ckbtn, False, True, 5)
-    _boxes[5].pack_start(m._page1_general_crawl_entry, False, True, 5)
-    _boxes[5].pack_start(m._page1_general_crawl_exclude_ckbtn, False, True, 5)
-    _boxes[5].pack_start(m._page1_general_crawl_exclude_entry, True, True, 5)
-    _boxes[6].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_crawl_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_crawl_entry, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_crawl_exclude_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_crawl_exclude_entry, True, True, 5)
+    i += 1
+    _boxes[i].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
 
     m._page1_general_traffic_file_chooser.connect(
       'clicked',
@@ -1010,13 +971,13 @@ class Notebook(g.Notebook):
       self._handlers.set_file_entry_text,
       [m._page1_general_har_entry]
     )
-
-    _boxes[7].pack_start(m._page1_general_traffic_file_ckbtn, False, True, 5)
-    _boxes[7].pack_start(m._page1_general_traffic_file_entry, True, True, 0)
-    _boxes[7].pack_start(m._page1_general_traffic_file_chooser, False, True, 5)
-    _boxes[7].pack_start(m._page1_general_har_ckbtn, False, True, 5)
-    _boxes[7].pack_start(m._page1_general_har_entry, True, True, 0)
-    _boxes[7].pack_start(m._page1_general_har_chooser, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_traffic_file_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_traffic_file_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_traffic_file_chooser, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_har_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_har_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_har_chooser, False, True, 5)
 
     m._page1_general_save_chooser.connect(
       'clicked',
@@ -1025,15 +986,15 @@ class Notebook(g.Notebook):
     )
 
     m._page1_general_flush_session_ckbtn.get_children()[0].set_use_markup(True)
-
-    _boxes[8].pack_start(m._page1_general_flush_session_ckbtn, False, True, 5)
-    _boxes[8].pack_start(m._page1_general_dump_format_ckbtn, False, True, 5)
-    _boxes[8].pack_start(m._page1_general_dump_format_entry, False, True, 5)
-    _boxes[8].pack_start(m._page1_general_csv_del_ckbtn, False, True, 5)
-    _boxes[8].pack_start(m._page1_general_csv_del_entry, False, True, 5)
-    _boxes[8].pack_start(m._page1_general_save_ckbtn, False, True, 5)
-    _boxes[8].pack_start(m._page1_general_save_entry, True, True, 0)
-    _boxes[8].pack_start(m._page1_general_save_chooser, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_flush_session_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_dump_format_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_dump_format_entry, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_csv_del_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_csv_del_entry, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_save_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_save_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_save_chooser, False, True, 5)
 
     m._page1_general_session_file_chooser.connect(
       'clicked',
@@ -1046,24 +1007,22 @@ class Notebook(g.Notebook):
       self._handlers.set_file_entry_text,
       [m._page1_general_output_dir_entry, '选择 结果保存在哪']
     )
-
-    _boxes[9].pack_start(m._page1_general_session_file_ckbtn, False, True, 5)
-    _boxes[9].pack_start(m._page1_general_session_file_entry, True, True, 0)
-    _boxes[9].pack_start(m._page1_general_session_file_chooser, False, True, 5)
-    _boxes[9].pack_start(m._page1_general_output_dir_ckbtn, False, True, 5)
-    _boxes[9].pack_start(m._page1_general_output_dir_entry, True, True, 0)
-    _boxes[9].pack_start(m._page1_general_output_dir_chooser, False, True, 5)
+    i += 1
+    _boxes[i].pack_start(m._page1_general_session_file_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_session_file_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_session_file_chooser, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_output_dir_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._page1_general_output_dir_entry, True, True, 0)
+    _boxes[i].pack_start(m._page1_general_output_dir_chooser, False, True, 5)
 
     _page1_other_general_opts = Box(orientation=VERTICAL, spacing=6)
     for _ in _boxes:
       _page1_other_general_opts.add(_)
 
-    f.add(_page1_other_general_opts)
-    return f
+    m._general_frame.add(_page1_other_general_opts)
+    return m._general_frame
 
   def _build_page1_other_misc(self, m):
-    f = Frame.new('杂项')
-
     _boxes = [Box() for _ in range(5)]
 
     m._page1_misc_purge_ckbtn.get_children()[0].set_use_markup(True)
@@ -1111,8 +1070,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _page1_other_misc_opts.add(_)
 
-    f.add(_page1_other_misc_opts)
-    return f
+    m._misc_frame.add(_page1_other_misc_opts)
+    return m._misc_frame
 
 
 def main():
@@ -1120,6 +1079,7 @@ def main():
   from widgets import d
   from model import Model
   from handlers import Handler
+  from session import load_settings
 
   start = time.process_time()
   # --------
@@ -1133,9 +1093,9 @@ def main():
     g.STYLE_PROVIDER_PRIORITY_APPLICATION
   )
 
-  m = Model()
-  n = Notebook(m, Handler(win, m))
-  win.add(n)
+  m = Model(load_settings()[0])
+  _ = Notebook(m, Handler(win, m))
+  win.add(_)
 
   win.connect('destroy', g.main_quit)
   win.show_all()

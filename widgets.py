@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 #
-# 2018年 11月 09日 星期五 14:48:40 CST
+# 2018-11-09 14:48:40
 
 from os import sep as OS_SEP
-# python3.5+
 from pathlib import Path
 from urllib import request
 
