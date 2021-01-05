@@ -30,7 +30,8 @@ don't use python2 any more please.
 - session: autosave current options before quit, autoload last used options
 - language switch(see `ABOUT` page): English, Chinese  
   *if you don't need zh lang at all:*  
-    `rm -r static/{zh_CN.po, locale}`
+    `rm -r static/{zh_CN.po,locale}`  
+    it works fine.
 
 #### ABOUT
 - v0.3.5.1  
