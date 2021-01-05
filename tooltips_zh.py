@@ -796,7 +796,7 @@ def main():
   win = Window()
 
   css_provider = g.CssProvider.new()
-  css_provider.load_from_path('css.css')
+  css_provider.load_from_path('static/css.css')
   g.StyleContext.add_provider_for_screen(
     d.Screen.get_default(),
     css_provider,

@@ -22,7 +22,7 @@ class Notebook(g.Notebook):
     page1_file = self._build_page1_file()
     page1_other = self._build_page1_other()
 
-    _ = m.text.gettext
+    _ = m._
     self.append_page(page1_setting, label.new_with_mnemonic(_('Inject(_Q)')))
     self.append_page(page1_request, label.new_with_mnemonic(_('Request(_W)')))
     self.append_page(page1_enumeration, label.new_with_mnemonic(_('Enumerate(_E)')))
@@ -52,7 +52,7 @@ class Notebook(g.Notebook):
     box = Box(orientation=VERTICAL)
 
     _row0 = Box()
-    _sqlmap_path_label = label.new(m.text.gettext('sqlmap path:'))
+    _sqlmap_path_label = label.new(m._('sqlmap path:'))
     m._sqlmap_path_entry.set_text('sqlmap')
     m._sqlmap_path_chooser.connect(
       'clicked',
@@ -727,7 +727,7 @@ class Notebook(g.Notebook):
     _brute_force_area_opts = Box(orientation=VERTICAL)
 
     _row1 = Box()
-    _row1.pack_start(label.new(m.text.gettext('check existence of:')), False, True, 10)
+    _row1.pack_start(label.new(m._('check existence of:')), False, True, 10)
     _row1.pack_start(m._brute_force_area_common_tables_ckbtn, False, True, 0)
     _row1.pack_start(m._brute_force_area_common_columns_ckbtn, False, True, 5)
     _row1.pack_start(m._brute_force_area_common_files_ckbtn, False, True, 0)
@@ -825,7 +825,7 @@ class Notebook(g.Notebook):
     _boxes[0].pack_start(m._file_os_access_os_cmd_ckbtn, False, True, 5)
     _boxes[0].pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
 
-    _for_msf_label = label(label = m.text.gettext('with Meterpreter(TCP connect):'),
+    _for_msf_label = label(label = m._('with Meterpreter(TCP connect):'),
                            margin_start = 50)
 
     _boxes[1].pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
@@ -857,9 +857,9 @@ class Notebook(g.Notebook):
   def _build_page1_file_os_registry(self, m):
     _boxes = [Box() for _ in range(3)]
 
-    m._file_os_registry_reg_combobox.append('--reg-read', m.text.gettext('read'))
-    m._file_os_registry_reg_combobox.append('--reg-add', m.text.gettext('add'))
-    m._file_os_registry_reg_combobox.append('--reg-del', m.text.gettext('delete'))
+    m._file_os_registry_reg_combobox.append('--reg-read', m._('read'))
+    m._file_os_registry_reg_combobox.append('--reg-add', m._('add'))
+    m._file_os_registry_reg_combobox.append('--reg-del', m._('delete'))
     m._file_os_registry_reg_combobox.set_active(0)
 
     _boxes[0].pack_start(m._file_os_registry_reg_ckbtn, False, True, 5)
@@ -1091,7 +1091,7 @@ def main():
   win = g.Window(title = 'options-gtk')
 
   css_provider = g.CssProvider.new()
-  css_provider.load_from_path('css.css')
+  css_provider.load_from_path('static/css.css')
   g.StyleContext.add_provider_for_screen(
     d.Screen.get_default(),
     css_provider,

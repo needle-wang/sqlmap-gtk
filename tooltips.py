@@ -428,7 +428,7 @@ class Widget_Mesg(object):
     # 4.File(R)
     self._set_tooltip('remote file path from the underlying file system\n'
         'only if: 1.MySQL, PostgreSQL or Microsoft SQL Server\n'
-        '         2.the session user has the needed privileges',
+        '         2.the session user has the required privileges',
                       m._file_read_area_file_read_ckbtn,
                       m._file_read_area_file_read_entry)
     self._set_tooltip('just view the downloaded file.',
@@ -441,7 +441,7 @@ class Widget_Mesg(object):
                       m._file_write_area_shared_lib_entry)
     self._set_tooltip('the local file path. if checked, --file-dest required.\n'
         'only if: 1.MySQL, PostgreSQL or Microsoft SQL Server\n'
-        '         2.the session user has the needed privileges',
+        '         2.the session user has the required privileges',
                       m._file_write_area_file_write_ckbtn,
                       m._file_write_area_file_write_entry)
     self._set_tooltip('the remote absolute path to upload\n'
@@ -451,7 +451,7 @@ class Widget_Mesg(object):
                       m._file_write_area_file_dest_entry)
     self._set_tooltip('--os-cmd=\n'
         'only if: 1.MySQL, PostgreSQL or Microsoft SQL Server\n'
-        '         2.the session user has the needed privileges\n\n'
+        '         2.the session user has the required privileges\n\n'
         'MySQL/PostgreSQL: by uploading a shared library containing sys_exec() and sys_eval()\n\n'
         'SQL Server: by abusing xp_cmdshell stored procedure.\n'
         '            if disabled(SQL Server>=2005), sqlmap re-enables it;\n'
@@ -591,7 +591,7 @@ def main():
   win = Window()
 
   css_provider = g.CssProvider.new()
-  css_provider.load_from_path('css.css')
+  css_provider.load_from_path('static/css.css')
   g.StyleContext.add_provider_for_screen(
     d.Screen.get_default(),
     css_provider,

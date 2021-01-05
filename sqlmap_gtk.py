@@ -35,7 +35,7 @@ class Window(g.Window):
   def __init__(self):
     super().__init__(title='sqlmap-gtk')
     self.connect('key_press_event', self.on_quit_by_key)
-    self.set_icon_from_file("title.ico")
+    self.set_icon_from_file("static/title.ico")
     self.clipboard = g.Clipboard.get(d.SELECTION_CLIPBOARD)
 
     self._handlers = Handler(self, m)
@@ -58,7 +58,7 @@ class Window(g.Window):
     page5 = self._build_page5()
     page6 = self._build_page6()
 
-    _ = m.text.gettext
+    _ = m._
     self.main_notebook.append_page(page1, label.new_with_mnemonic(_('OPTIONS(_1)')))
     self.main_notebook.append_page(page2, label.new_with_mnemonic(_('EXECUTION(_2)')))
     self.main_notebook.append_page(page3, label.new_with_mnemonic(_('LOG(_3)')))
@@ -230,7 +230,7 @@ class Window(g.Window):
                                'access://DATABASE_FILEPATH')
     _direct_connect_area.pack_start(m._direct_connect, True, True, 0)
 
-    _ = m.text.gettext
+    _ = m._
     target_nb.append_page(_url_area, label.new(_('-u URL')))
     target_nb.append_page(_burp_area, label.new(_('-l LOGFILE')))
     target_nb.append_page(_request_area, label.new(_('-r REQUESTFILE')))
@@ -242,7 +242,7 @@ class Window(g.Window):
   def _build_page1(self):
     box = Box(orientation=VERTICAL, spacing=6)
     box.set_border_width(10)
-    _ = m.text.gettext
+    _ = m._
 
     # sqlmap命令语句
     _cmd_area = Frame.new(_('A.Options are collected here:'))
@@ -340,8 +340,8 @@ class Window(g.Window):
 
     _vbox = g.Box(orientation=VERTICAL, spacing=6)
 
-    copy = btn.new_with_label(m.text.gettext('Copy(C)'))
-    paste = btn.new_with_label(m.text.gettext('Paste(V)'))
+    copy = btn.new_with_label(m._('Copy(C)'))
+    paste = btn.new_with_label(m._('Paste(V)'))
     copy.connect("clicked", self.on_right_click_copy)
     paste.connect("clicked", self.on_right_click_paste)
 
@@ -607,7 +607,7 @@ class Window(g.Window):
     _boxes[0].pack_start(_lang, False, True, 10)
     _boxes[0].pack_start(m._page6_lang_en_radio, False, True, 10)
     _boxes[0].pack_start(m._page6_lang_zh_radio, False, True, 10)
-    _boxes[0].pack_start(label.new(m.text.gettext('Take effects after restarting GUI.')), False, True, 10)
+    _boxes[0].pack_start(label.new(m._('Take effects after restarting GUI.')), False, True, 10)
     _boxes[1].pack_start(_tooltip, False, True, 10)
     _boxes[1].pack_start(m._page6_tooltips_en_radio, False, True, 10)
     _boxes[1].pack_start(m._page6_tooltips_zh_radio, False, True, 10)
@@ -617,8 +617,8 @@ class Window(g.Window):
     _url_api = 'https://lazka.github.io/pgi-docs/Gtk-3.0/'
     _url_idea = 'https://github.com/kxcode'
     _about_str = f'''
-    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: 0.3.5
-       2021-01-03 16:56:23
+    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: 0.3.5.1
+       2021-01-05 13:33:04
        required: python3.6+, gtk+3.20 above,
                  python3-gi, requests, sqlmap\n
     2. use PyGObject(python3-gi + Gtk+3) to recode sqm.py
@@ -645,7 +645,7 @@ def main():
   win = Window()
 
   css_provider = g.CssProvider.new()
-  css_provider.load_from_path('css.css')
+  css_provider.load_from_path('static/css.css')
   g.StyleContext.add_provider_for_screen(
     d.Screen.get_default(),
     css_provider,

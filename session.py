@@ -6,7 +6,7 @@ from configparser import ConfigParser
 from widgets import (g, et)
 
 
-LAST_TMP = 'last.tmp'
+LAST_TMP = 'static/last.tmp'
 
 
 def load_settings():

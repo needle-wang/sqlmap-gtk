@@ -2,17 +2,26 @@
 #
 # 2020-12-31 01:55:43
 
+import os
+import gettext
 from widgets import (g, Vte, Frame, btn, cb, cbb, et, label, sl, sp, tv)
 from widgets import (FileEntry, NumberEntry)
 from widgets import HORIZONTAL
-from locale_text import Text
 
 
 class Model(object):
 
   def __init__(self, language):
-    self.text = Text(language)
-    _ = self.text.gettext
+    mo_filename = "sqlmap_gtk"
+    mo_base_folder = os.path.abspath("static/locale")
+    _ = self._
+    try:
+      if language == 'zh':
+        lang_zh = gettext.translation(mo_filename, mo_base_folder, languages = ["zh_CN"])
+        _ = lang_zh.gettext
+    except FileNotFoundError as e:
+      print(e)
+
     # 1. %s;(\('.*'\);(_(\1);g
     # 2. fix _enum_area_opts_ckbtns
     # TARGET
@@ -76,9 +85,15 @@ class Model(object):
     self._detection_area_text_only_ckbtn = cb(_('--text-only'))
     self._detection_area_titles_ckbtn = cb(_('--titles'))
     self._detection_area_smart_ckbtn = cb(_('--smart'))
-    self._detection_area_level_note = label(label = self.text.get_level_note(),
+    self._detection_area_level_note = label(label = _("Level 1(default): all GET, POST fields\n"
+                                                      "Level 2   append: Cookie\n"
+                                                      "Level 3   append: User-Agent/Referer\n"
+                                                      "Level 4   append: ?\n"
+                                                      "Level 5   append: Host header"),
                                             halign = g.Align.START)
-    self._detection_area_risk_note = label(label = self.text.get_risk_note(),
+    self._detection_area_risk_note = label(label = _("Risk 1(default): no risk\n"
+                                                     "Risk 2   append: Time-Based Blind\n"
+                                                     "Risk 3   append: \"OR\"-Based Blind"),
                                            halign = g.Align.START)
     # Technique
     self._tech_frame = Frame.new(_('Technique'))
@@ -459,6 +474,9 @@ class Model(object):
     self._page6_tooltips_en_radio = g.RadioButton.new_with_label_from_widget(None, 'en')
     self._page6_tooltips_zh_radio = g.RadioButton.new_from_widget(self._page6_tooltips_en_radio)
     self._page6_tooltips_zh_radio.set_label('zh')
+
+  def _(self, s):
+    return s
 
 
 def main():

@@ -63,7 +63,7 @@ class Api(object):
             _a_child.destroy()
           # 填充任务列表
           _id = 0
-          _ = self.m.text.gettext
+          _ = self.m._
           for _taskid, _status in _resp['tasks'].items():
             _a_task_row = g.ListBoxRow()
             _a_row_box_tmp = g.Box()
@@ -225,7 +225,7 @@ class Api(object):
         if _resp['success']:
           for _a_child in self.w._api_admin_list_rows.get_children():
             self.w._api_admin_list_rows.remove(_a_child)
-          self.task_view_append(self.m.text.gettext('flush all tasks: Done.'))
+          self.task_view_append(self.m._('flush all tasks: Done.'))
       except Exception as e:
         self.task_view_append(e)
 
