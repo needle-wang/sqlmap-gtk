@@ -60,6 +60,12 @@ class Widget_Mesg(object):
     self._set_placeholder('DNS exfiltration',
                           m._tech_area_dns_entry)
     # 2.Request(W)
+    self._set_placeholder('HTTP User-Agent header value',
+                          m._request_area_user_agent_entry)
+    self._set_placeholder('HTTP Host header value',
+                          m._request_area_host_entry)
+    self._set_placeholder('HTTP Referer header value',
+                          m._request_area_referer_entry)
     self._set_placeholder('e.g. X-Forwarded-For: 127.0.0.1',
                           m._request_area_header_entry)
     self._set_placeholder('e.g. Accept-Language: fr\\nETag: 123',
@@ -74,6 +80,10 @@ class Widget_Mesg(object):
                           m._request_area_cookie_entry)
     self._set_placeholder(';',
                           m._request_area_cookie_del_entry)
+    self._set_placeholder('Live cookies file used for loading up-to-date values',
+                          m._request_area_live_cookies_entry)
+    self._set_placeholder('File containing cookies in Netscape/wget format',
+                          m._request_area_load_cookies_entry)
     self._set_placeholder('Basic, Digest, NTLM or PKI',
                           m._request_area_auth_type_entry)
     self._set_placeholder('name:password',
@@ -84,6 +94,8 @@ class Widget_Mesg(object):
                           m._request_area_csrf_method_entry)
     self._set_placeholder('anti-CSRF token',
                           m._request_area_csrf_token_entry)
+    self._set_placeholder('URL to visit for extraction of anti-CSRF token',
+                          m._request_area_csrf_url_entry)
     self._set_placeholder('import hashlib;id2=hashlib.md5(id).hexdigest()',
                           m._request_area_eval_entry)
     # 3.Enumerate(E)
@@ -91,8 +103,24 @@ class Widget_Mesg(object):
                           m._limit_area_start_entry)
     self._set_placeholder('<=',
                           m._limit_area_stop_entry)
-    self._set_placeholder('id<3',
+    self._set_placeholder('DBMS database to enumerate',
+                          m._meta_area_D_entry)
+    self._set_placeholder('DBMS database table(s) to enumerate',
+                          m._meta_area_T_entry)
+    self._set_placeholder('DBMS database table column(s) to enumerate',
+                          m._meta_area_C_entry)
+    self._set_placeholder('DBMS user to enumerate',
+                          m._meta_area_U_entry)
+    self._set_placeholder('DBMS database identifier(s) to not enumerate',
+                          m._meta_area_X_entry)
+    self._set_placeholder('Pivot column name',
+                          m._meta_area_pivot_entry)
+    self._set_placeholder('Use WHERE condition while table dumping. e.g. id<3',
                           m._meta_area_where_entry)
+    self._set_placeholder('SQL statement to be executed',
+                          m._runsql_area_sql_query_entry)
+    self._set_placeholder('Execute SQL statements from given file(s)',
+                          m._runsql_area_sql_file_entry)
     # 4.File(R)
     self._set_placeholder('Local path where Metasploit Framework is installed',
                           m._file_os_access_msf_path_entry)
@@ -103,6 +131,8 @@ class Widget_Mesg(object):
                           m._page1_general_table_prefix_entry)
     self._set_placeholder('Use given script(s) for preprocessing (request)',
                           m._page1_general_preprocess_entry)
+    self._set_placeholder('Use given script(s) for postprocessing (response)',
+                          m._page1_general_postprocess_entry)
     self._set_placeholder('Web server document root directory (e.g. "/var/www")',
                           m._page1_general_web_root_entry)
     self._set_placeholder(r'Regexp for filtering targets. e.g. (www)?\.target\.(com|net|org)',
@@ -238,7 +268,7 @@ class Widget_Mesg(object):
                       m._tech_area_dns_entry)
     self._set_tooltip('sqlmap itself does no obfuscation of the payload sent,\n'
         'except for strings between single quotes replaced by their CHAR()-alike representation.\n'
-        'so input tamper script\'s name here. comma/enter separator\n'
+        'so input tamper script\'s name here. space/enter separator\n'
         'see also: sqlmap --list-tampers',
                       m._tamper_area_tamper_view)
     self._set_tooltip('-o, checked means:\n'
@@ -502,6 +532,10 @@ class Widget_Mesg(object):
     self._set_tooltip('--cleanup\n'
         'Clean up the DBMS from sqlmap specific UDF and tables',
                       m._page1_misc_cleanup_ckbtn)
+    self._set_tooltip('Parameter(s) containing Base64 encoded data',
+                      m._page1_general_base64_entry)
+    self._set_tooltip('Use URL and filename safe Base64 alphabet (RFC 4648)',
+                      m._page1_general_base64_safe_ckbtn)
     self._set_tooltip('--table-prefix=\n'
         'Prefix used for temporary tables (default: "sqlmap")',
                       m._page1_general_table_prefix_ckbtn,

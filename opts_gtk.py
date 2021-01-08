@@ -433,13 +433,13 @@ class Notebook(g.Notebook):
       [m._request_area_load_cookies_entry]
     )
 
+    _boxes[4].pack_start(m._request_area_drop_set_cookie_ckbtn, False, True, 5)
     _boxes[4].pack_start(m._request_area_live_cookies_ckbtn, False, True, 5)
     _boxes[4].pack_start(m._request_area_live_cookies_entry, True, True, 0)
     _boxes[4].pack_start(m._request_area_live_cookies_chooser, False, True, 5)
     _boxes[4].pack_start(m._request_area_load_cookies_ckbtn, False, True, 5)
     _boxes[4].pack_start(m._request_area_load_cookies_entry, True, True, 0)
     _boxes[4].pack_start(m._request_area_load_cookies_chooser, False, True, 5)
-    _boxes[4].pack_start(m._request_area_drop_set_cookie_ckbtn, False, True, 5)
     _boxes[5].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
 
     m._request_area_auth_file_chooser.connect(
@@ -688,7 +688,7 @@ class Notebook(g.Notebook):
     _boxes[1].pack_start(m._meta_area_X_ckbtn, False, True, 5)
     _boxes[1].pack_start(m._meta_area_X_entry, True, True, 5)
     _boxes[1].pack_start(m._meta_area_pivot_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._meta_area_pivot_entry, True, True, 5)
+    _boxes[1].pack_start(m._meta_area_pivot_entry, False, True, 5)
     _boxes[2].pack_start(m._meta_area_where_ckbtn, False, True, 5)
     _boxes[2].pack_start(m._meta_area_where_entry, True, True, 5)
 
@@ -905,7 +905,7 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_other_general(self, m):
-    _boxes = [Box() for _ in range(10)]
+    _boxes = [Box() for _ in range(11)]
     i = 0
     _boxes[i].pack_start(m._page1_general_check_internet_ckbtn, False, True, 5)
     _boxes[i].pack_start(m._page1_general_fresh_queries_ckbtn, False, True, 5)
@@ -926,6 +926,7 @@ class Notebook(g.Notebook):
     _boxes[i].pack_start(m._page1_general_table_prefix_entry, False, True, 5)
     _boxes[i].pack_start(m._page1_general_binary_fields_ckbtn, False, True, 5)
     _boxes[i].pack_start(m._page1_general_binary_fields_entry, False, True, 5)
+    i += 1
     _boxes[i].pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
     _boxes[i].pack_start(m._page1_general_preprocess_entry, True, True, 0)
     _boxes[i].pack_start(m._page1_general_preprocess_chooser, False, True, 5)

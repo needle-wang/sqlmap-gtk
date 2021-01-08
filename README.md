@@ -10,16 +10,16 @@ don't use python2 any more please.
 ![screenshot](https://github.com/needle-wang/sqlmap-gtk/blob/master/screenshots/sqlmap-ui1.png)
 
 #### HOW-TO
-1. **pre-request**  
+1. **Prerequisites**  
   - *python3.6+, GTK+3.20 above*(linux has contained)  
   - pygobject: (choose one)
     - `apt-get install python3-gi`(suggestion)  
     - `pip3 install PyGObject`
   - requests: `pip3 install requests`  
   - lastest [sqlmap](https://github.com/sqlmapproject/sqlmap): `git clone` it.  
-2. **download**  
+2. **Download**  
   - `git clone https://github.com/needle-wang/sqlmap-gtk.git`  
-3. **run**  
+3. **Run**  
   - `./sqlmap_gtk.py`
 
 #### FUNCTION
