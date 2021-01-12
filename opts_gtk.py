@@ -644,10 +644,10 @@ class Notebook(g.Notebook):
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._limit_area_start_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._limit_area_start_entry, False, True, 0)
+    _boxes[0].pack_end(m._limit_area_start_entry, False, True, 5)
     # _boxes[0].pack_start(label.new('行'), False, True, 5)
     _boxes[1].pack_start(m._limit_area_stop_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._limit_area_stop_entry, False, True, 0)
+    _boxes[1].pack_end(m._limit_area_stop_entry, False, True, 5)
     # _boxes[1].pack_start(label.new('行'), False, True, 5)
 
     _limit_area_opts = Box(orientation=VERTICAL)
@@ -661,10 +661,10 @@ class Notebook(g.Notebook):
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._blind_area_first_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._blind_area_first_entry, False, True, 0)
+    _boxes[0].pack_end(m._blind_area_first_entry, False, True, 5)
     # _boxes[0].pack_start(label.new('个字符'), False, True, 5)
     _boxes[1].pack_start(m._blind_area_last_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._blind_area_last_entry, False, True, 0)
+    _boxes[1].pack_end(m._blind_area_last_entry, False, True, 5)
     # _boxes[1].pack_start(label.new('个字符'), False, True, 5)
 
     _blind_area_opts = Box(orientation=VERTICAL)
@@ -688,7 +688,7 @@ class Notebook(g.Notebook):
     _boxes[1].pack_start(m._meta_area_X_ckbtn, False, True, 5)
     _boxes[1].pack_start(m._meta_area_X_entry, True, True, 5)
     _boxes[1].pack_start(m._meta_area_pivot_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._meta_area_pivot_entry, False, True, 5)
+    _boxes[1].pack_start(m._meta_area_pivot_entry, True, True, 5)
     _boxes[2].pack_start(m._meta_area_where_ckbtn, False, True, 5)
     _boxes[2].pack_start(m._meta_area_where_entry, True, True, 5)
 
@@ -1011,7 +1011,7 @@ class Notebook(g.Notebook):
     m._page1_general_output_dir_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_general_output_dir_entry, '选择 结果保存在哪']
+      [m._page1_general_output_dir_entry, 'choose output dir']
     )
     i += 1
     _boxes[i].pack_start(m._page1_general_session_file_ckbtn, False, True, 5)
@@ -1051,7 +1051,7 @@ class Notebook(g.Notebook):
     m._page1_misc_tmp_dir_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_misc_tmp_dir_entry, '选择 本地临时目录']
+      [m._page1_misc_tmp_dir_entry, 'choose temp dir']
     )
     _boxes[2].pack_start(m._page1_misc_alert_ckbtn, False, True, 5)
     _boxes[2].pack_start(m._page1_misc_alert_entry, True, True, 5)
