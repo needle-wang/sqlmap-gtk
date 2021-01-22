@@ -366,11 +366,9 @@ class Notebook(g.Notebook):
     _boxes[1].pack_start(_request_data_area, True, True, 5)
 
     _request_custom_area = self._build_page1_request_custom(self.m)
-
     _boxes[2].pack_start(_request_custom_area, True, True, 5)
 
     _request_proxy_area = self._build_page1_request_proxy(self.m)
-
     _boxes[3].pack_start(_request_proxy_area, True, True, 5)
 
     for _ in _boxes:

@@ -74,7 +74,7 @@ class Window(g.Window):
     # m._url_combobox.get_child().grab_focus()
     self.set_focus(m._url_combobox.get_child())
 
-    # 添加tooltips, placeholders等
+    # add tooltips, placeholders
     INIT_MESG(m)
 
     self.session = Session(m)
