@@ -21,6 +21,7 @@ class Notebook(g.Notebook):
     page1_enumeration = self._build_page1_enumeration()
     page1_file = self._build_page1_file()
     page1_other = self._build_page1_other()
+    page1_tamper = self._build_page1_tamper(m)
 
     _ = m._
     self.append_page(page1_setting, label.new_with_mnemonic(_('Inject(_Q)')))
@@ -28,6 +29,7 @@ class Notebook(g.Notebook):
     self.append_page(page1_enumeration, label.new_with_mnemonic(_('Enumerate(_E)')))
     self.append_page(page1_file, label.new_with_mnemonic(_('File(_R)')))
     self.append_page(page1_other, label.new_with_mnemonic(_('Other(_T)')))
+    self.append_page(page1_tamper, label.new_with_mnemonic(_('Tamper(_Y)')))
 
   def cb_single(self, widget, ckbtn):
     if widget.get_active():
@@ -74,12 +76,12 @@ class Notebook(g.Notebook):
     _row1.pack_start(_tech_area, False, True, 5)
 
     _row2 = Box()
-    _tamper_area = self._build_page1_setting_tamper(self.m)
+    # _tamper_area = self._build_page1_setting_tamper(self.m)
     _optimize_area = self._build_page1_setting_optimize(self.m)
     _general_area = self._build_page1_setting_general(self.m)
     _hidden_area = self._build_page1_setting_hidden(self.m)
 
-    _row2.pack_start(_tamper_area, False, True, 5)
+    # _row2.pack_start(_tamper_area, False, True, 5)
     _row2.pack_start(_optimize_area, False, True, 5)
     _row2.pack_start(_general_area, False, True, 5)
     _row2.pack_start(_hidden_area, False, True, 5)
@@ -257,19 +259,19 @@ class Notebook(g.Notebook):
     m._tech_frame.add(_tech_area_opts)
     return m._tech_frame
 
-  def _build_page1_setting_tamper(self, m):
-    '''
-    frame套box, box再套scroll会出现:
-    一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
-    即内容的显示没有 下滑 滚轮的效果.
-    '''
-    _scrolled = g.ScrolledWindow()
-    _scrolled.set_size_request(300, -1)
-    _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
-    _scrolled.add(m._tamper_area_tamper_view)
+  # def _build_page1_setting_tamper(self, m):
+  #   '''
+  #   frame套box, box再套scroll会出现:
+  #   一直按回车出现滚动条后, 光标会下移 直到移出可见区, 原内容不会上移
+  #   即内容的显示没有 下滑 滚轮的效果.
+  #   '''
+  #   _scrolled = g.ScrolledWindow()
+  #   _scrolled.set_size_request(300, -1)
+  #   _scrolled.set_policy(g.PolicyType.NEVER, g.PolicyType.ALWAYS)
+  #   _scrolled.add(m._tamper_area_tamper_view)
 
-    m._tamper_frame.add(_scrolled)
-    return m._tamper_frame
+  #   m._tamper_frame.add(_scrolled)
+  #   return m._tamper_frame
 
   def _build_page1_setting_optimize(self, m):
     _boxes = [Box() for _ in range(5)]
@@ -1076,6 +1078,28 @@ class Notebook(g.Notebook):
 
     m._misc_frame.add(_page1_other_misc_opts)
     return m._misc_frame
+
+  def _build_page1_tamper(self, m):
+    grid = g.Grid(row_spacing = 6, margin = 15)
+
+    _i = 0  # row number
+    for name, discribe in dict(zip(m._tampers_name, m._tampers_label)).items():
+      if _i % 2 != 0:
+        # stripe style for css
+        # name.set_name('stripe')
+        discribe.set_name('stripe')
+
+      grid.attach(name, 0, _i, 1, 1)
+      # grid.attach(discribe, 1, _i, 1, 1)
+      _ = Box()     # resolve that label always be center align...
+      _.pack_start(discribe, False, True, 0)
+      grid.attach_next_to(_, name, g.PositionType.RIGHT, 1, 1)
+      _i += 1
+
+    scrolled = g.ScrolledWindow()
+    scrolled.set_policy(g.PolicyType.AUTOMATIC, g.PolicyType.ALWAYS)
+    scrolled.add(grid)
+    return scrolled
 
 
 def main():

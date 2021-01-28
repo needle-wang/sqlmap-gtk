@@ -152,6 +152,8 @@ class Window(g.Window):
     for _i in m._enum_area_opts_ckbtns:
       for _j in _i:
         _j.set_active(False)
+    for _i in m._tampers_name:
+        _i.set_active(False)
 
   def _show_warn(self, button, mesg):
     if button.get_active():
@@ -619,8 +621,8 @@ class Window(g.Window):
     _url_api = 'https://lazka.github.io/pgi-docs/Gtk-3.0/'
     _url_idea = 'https://github.com/kxcode'
     _about_str = f'''
-    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: 0.3.5.1
-       2021-01-05 13:33:04
+    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: 0.3.5.2
+       2021-01-29 04:04:35
        required: python3.6+, gtk+3.20 above,
                  python3-gi, requests, sqlmap\n
     2. use PyGObject(python3-gi + Gtk+3) to recode sqm.py

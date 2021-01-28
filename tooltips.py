@@ -266,11 +266,11 @@ class Widget_Mesg(object):
         'if you controlled a DNS server, check it to speed up the process of data retrieval',
                       m._tech_area_dns_ckbtn,
                       m._tech_area_dns_entry)
-    self._set_tooltip('sqlmap itself does no obfuscation of the payload sent,\n'
-        'except for strings between single quotes replaced by their CHAR()-alike representation.\n'
-        'so input tamper script\'s name here. space/enter separator\n'
-        'see also: sqlmap --list-tampers',
-                      m._tamper_area_tamper_view)
+    # self._set_tooltip('sqlmap itself does no obfuscation of the payload sent,\n'
+    #     'except for strings between single quotes replaced by their CHAR()-alike representation.\n'
+    #     'so input tamper script\'s name here. space/enter separator\n'
+    #     'see also: sqlmap --list-tampers',
+    #                   m._tamper_area_tamper_view)
     self._set_tooltip('-o, checked means:\n'
         '  --keep-alive\n  --null-connection\n  --threads=3',
                       m._optimize_area_turn_all_ckbtn)

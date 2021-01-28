@@ -247,12 +247,12 @@ class Widget_Mesg(object):
     self._set_tooltip('--second-req=',
                       m._tech_area_second_req_ckbtn,
                       m._tech_area_second_req_entry)
-    self._set_tooltip('sqlmap只会对CHAR()字符串进行混淆,\n'
-        '不会对其他的payload进行任何混淆.\n'
-        '要绕过IPS设备或Web应用防火墙(WAF)时, 使用此选项\n'
-        '此处填写要使用的tamper脚本名, 回车或空格拼接\n'
-        '详见: sqlmap --list-tampers',
-                      m._tamper_area_tamper_view)
+    # self._set_tooltip('sqlmap只会对CHAR()字符串进行混淆,\n'
+    #     '不会对其他的payload进行任何混淆.\n'
+    #     '要绕过IPS设备或Web应用防火墙(WAF)时, 使用此选项\n'
+    #     '此处填写要使用的tamper脚本名, 回车或空格拼接\n'
+    #     '详见: sqlmap --list-tampers',
+    #                   m._tamper_area_tamper_view)
     self._set_tooltip('-o, 开启后会默认:\n'
         '  --keep-alive\n  --null-connection\n  --threads=3',
                       m._optimize_area_turn_all_ckbtn)

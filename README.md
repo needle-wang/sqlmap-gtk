@@ -1,7 +1,7 @@
 ## sqlmap-gtk
 sqlmap GUI, using PyGObject(gtk+3)  
 
-support linux, test on Mint 20, kali 2020.4  
+supports linux, test on Mint 20, kali 2020.4  
 [sqlmap-wx](https://github.com/needle-wang/sqlmap-wx) on win, which needs to improve.  
 sqlmap has port to python3.  
 don't use python2 any more please.  
@@ -34,8 +34,8 @@ don't use python2 any more please.
     it works fine.
 
 #### ABOUT
-- v0.3.5.1  
-  2021-01-05 13:33:04
+- v0.3.5.2  
+  2021-01-29 04:04:35
 - use PyGObject(python3-gi + Gtk+3) to recode sqm.py
 - thanks to the idea from sqm <https://github.com/kxcode/gui-for-sqlmap>  
   author: [KINGX](https://github.com/kxcode)(sqm UI using python2 + tkinter)  

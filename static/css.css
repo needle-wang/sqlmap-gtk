@@ -17,3 +17,7 @@ button:active {
   border-style: inset;
 }
 
+#stripe {
+  background-color: #eee;
+}
+

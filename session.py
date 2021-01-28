@@ -87,6 +87,14 @@ class Session(object):
         if isinstance(_tmp_ckbtn, g.CheckButton) and _tmp_ckbtn.get_active():
           _checked.append(_i)
 
+      if _i == '_tampers_name':
+        _tampers_name = getattr(self.m, _i)
+
+        for _tamper, index in zip(_tampers_name, range(len(_tampers_name))):
+          if _tamper.get_active():
+            _checked.append('tamper_{}'.format(index))
+
+    # print(_checked)
     self._cfg['CheckButton']['checked'] = ','.join(_checked)
 
   def _save_to_tmp_entry(self):
@@ -137,9 +145,11 @@ class Session(object):
       _checked = self._cfg['CheckButton']['checked'].split(',')
       for _i in _checked:
         if _i:  # _i could be ''
-          # 不去手动改LAST_TMP, self.m就肯定有_i属性了
-          _tmp_ckbtn = getattr(self.m, _i)
-          _tmp_ckbtn.set_active(True)
+          if _i.endswith('_ckbtn'):
+            _tmp_ckbtn = getattr(self.m, _i)
+            _tmp_ckbtn.set_active(True)
+          if _i.startswith('tamper_'):
+            self.m._tampers_name[int(_i[len('tamper_'):])].set_active(True)
         else:  # if _checked = [''], then use default
           pass
     except KeyError as e:

@@ -693,8 +693,10 @@ class Handler(object):
                                 m._general_area_batch_ckbtn),
       self._get_text_only_ckbtn("--wizard",
                                 m._misc_area_wizard_ckbtn),
+      # self._get_tampers('--tamper=',
+      #                   m._tamper_area_tamper_view),
       self._get_tampers('--tamper=',
-                        m._tamper_area_tamper_view),
+                        m._tampers_name),
       self._get_text_only_ckbtn("--crack",
                                 m._hidden_area_crack_ckbtn),
       self._get_text_only_ckbtn("--debug",
@@ -759,15 +761,25 @@ class Handler(object):
         _port = ':%s' % _port
       return "{}{}{}".format(opt_str, _ip, _port)
 
-  def _get_tampers(self, opt_str, textview):
-    _tamper_textbuffer = textview.get_buffer()
+  def _get_tampers(self, opt_str, tampers):
+    _checked = []
+    for _tamper in tampers:
+      if _tamper.get_active():
+        _checked.append(_tamper.get_label())
 
-    _start = _tamper_textbuffer.get_start_iter()
-    _end = _tamper_textbuffer.get_end_iter()
-    _ = _tamper_textbuffer.get_text(_start, _end, False)
-    _ = ','.join(_.split())
+    _ = ','.join(_checked)
     if _:
-      return "{}{}".format(opt_str, quote(_))
+      return "{}{}".format(opt_str, _)
+
+  # def _get_tampers(self, opt_str, textview):
+  #   _tamper_textbuffer = textview.get_buffer()
+
+  #   _start = _tamper_textbuffer.get_start_iter()
+  #   _end = _tamper_textbuffer.get_end_iter()
+  #   _ = _tamper_textbuffer.get_text(_start, _end, False)
+  #   _ = ','.join(_.split())
+  #   if _:
+  #     return "{}{}".format(opt_str, quote(_))
 
   def _get_text_from_scale(self, opt_str, ckbtn, scale):
     if ckbtn.get_active():
