@@ -318,7 +318,7 @@ class Notebook(g.Notebook):
     _boxes[1].pack_start(m._general_area_finger_ckbtn, False, True, 5)
     _boxes[2].pack_start(m._general_area_hex_ckbtn, False, True, 5)
     _boxes[3].pack_start(m._general_area_batch_ckbtn, False, True, 5)
-    _boxes[4].pack_start(m._page1_misc_wizard_ckbtn, False, True, 5)
+    _boxes[4].pack_start(m._misc_area_wizard_ckbtn, False, True, 5)
     for _ in _boxes:
       _general_area_opts.add(_)
 
@@ -755,13 +755,13 @@ class Notebook(g.Notebook):
 
     _file_read_area = self._build_page1_file_read(self.m)
     _file_write_area = self._build_page1_file_write(self.m)
-    _file_os_access_area = self._build_page1_file_os_access(self.m)
-    _file_os_registry_area = self._build_page1_file_os_registry(self.m)
+    _os_access_area = self._build_page1_file_os_access(self.m)
+    _registry_area = self._build_page1_file_os_registry(self.m)
 
     _boxes[0].pack_start(_file_read_area, True, True, 6)
     _boxes[1].pack_start(_file_write_area, True, True, 6)
-    _boxes[2].pack_start(_file_os_access_area, True, True, 6)
-    _boxes[3].pack_start(_file_os_registry_area, True, True, 6)
+    _boxes[2].pack_start(_os_access_area, True, True, 6)
+    _boxes[3].pack_start(_registry_area, True, True, 6)
 
     box.add(_file_note)
     for _ in _boxes:
@@ -820,63 +820,63 @@ class Notebook(g.Notebook):
   def _build_page1_file_os_access(self, m):
     _boxes = [Box() for _ in range(3)]
 
-    _boxes[0].pack_start(m._file_os_access_os_cmd_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._file_os_access_os_cmd_entry, True, True, 5)
+    _boxes[0].pack_start(m._os_access_area_os_cmd_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._os_access_area_os_cmd_entry, True, True, 5)
 
     _for_msf_label = label(label = m._('with Meterpreter(TCP connect):'),
                            margin_start = 50)
 
-    _boxes[1].pack_start(m._file_os_access_os_shell_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._os_access_area_os_shell_ckbtn, False, True, 5)
     _boxes[1].pack_start(_for_msf_label, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_os_pwn_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_os_smbrelay_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_os_bof_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._file_os_access_priv_esc_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._os_access_area_os_pwn_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._os_access_area_os_smbrelay_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._os_access_area_os_bof_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._os_access_area_priv_esc_ckbtn, False, True, 5)
 
-    m._file_os_access_msf_path_chooser.connect(
+    m._os_access_area_msf_path_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._file_os_access_msf_path_entry, 'choose local Metasploit install path']
+      [m._os_access_area_msf_path_entry, 'choose local Metasploit install path']
     )
 
-    _boxes[2].pack_start(m._file_os_access_msf_path_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._file_os_access_msf_path_entry, True, True, 0)
-    _boxes[2].pack_start(m._file_os_access_msf_path_chooser, False, True, 5)
-    _boxes[2].pack_start(m._file_os_access_tmp_path_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._file_os_access_tmp_path_entry, True, True, 5)
+    _boxes[2].pack_start(m._os_access_area_msf_path_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._os_access_area_msf_path_entry, True, True, 0)
+    _boxes[2].pack_start(m._os_access_area_msf_path_chooser, False, True, 5)
+    _boxes[2].pack_start(m._os_access_area_tmp_path_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._os_access_area_tmp_path_entry, True, True, 5)
 
-    _file_os_access_opts = Box(orientation=VERTICAL, spacing=6)
+    _os_access_area_opts = Box(orientation=VERTICAL, spacing=6)
     for _ in _boxes:
-      _file_os_access_opts.add(_)
+      _os_access_area_opts.add(_)
 
-    m._os_access_frame.add(_file_os_access_opts)
+    m._os_access_frame.add(_os_access_area_opts)
     return m._os_access_frame
 
   def _build_page1_file_os_registry(self, m):
     _boxes = [Box() for _ in range(3)]
 
-    m._file_os_registry_reg_combobox.append('--reg-read', m._('read'))
-    m._file_os_registry_reg_combobox.append('--reg-add', m._('add'))
-    m._file_os_registry_reg_combobox.append('--reg-del', m._('delete'))
-    m._file_os_registry_reg_combobox.set_active(0)
+    m._registry_area_reg_combobox.append('--reg-read', m._('read'))
+    m._registry_area_reg_combobox.append('--reg-add', m._('add'))
+    m._registry_area_reg_combobox.append('--reg-del', m._('delete'))
+    m._registry_area_reg_combobox.set_active(0)
 
-    _boxes[0].pack_start(m._file_os_registry_reg_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._file_os_registry_reg_combobox, False, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_key_label, False, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_key_entry, True, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_value_label, False, True, 5)
-    _boxes[1].pack_start(m._file_os_registry_reg_value_entry, True, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_data_label, False, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_data_entry, True, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_type_label, False, True, 5)
-    _boxes[2].pack_start(m._file_os_registry_reg_type_entry, True, True, 5)
+    _boxes[0].pack_start(m._registry_area_reg_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._registry_area_reg_combobox, False, True, 5)
+    _boxes[1].pack_start(m._registry_area_reg_key_label, False, True, 5)
+    _boxes[1].pack_start(m._registry_area_reg_key_entry, True, True, 5)
+    _boxes[1].pack_start(m._registry_area_reg_value_label, False, True, 5)
+    _boxes[1].pack_start(m._registry_area_reg_value_entry, True, True, 5)
+    _boxes[2].pack_start(m._registry_area_reg_data_label, False, True, 5)
+    _boxes[2].pack_start(m._registry_area_reg_data_entry, True, True, 5)
+    _boxes[2].pack_start(m._registry_area_reg_type_label, False, True, 5)
+    _boxes[2].pack_start(m._registry_area_reg_type_entry, True, True, 5)
 
-    _file_os_registry_opts = Box(orientation=VERTICAL)
+    _registry_area_opts = Box(orientation=VERTICAL)
     for _ in _boxes:
-      _file_os_registry_opts.add(_)
+      _registry_area_opts.add(_)
 
-    m._register_access_frame.add(_file_os_registry_opts)
-    return m._register_access_frame
+    m._registry_frame.add(_registry_area_opts)
+    return m._registry_frame
 
   def _build_page1_other(self):
     '''
@@ -905,119 +905,119 @@ class Notebook(g.Notebook):
   def _build_page1_other_general(self, m):
     _boxes = [Box() for _ in range(11)]
     i = 0
-    _boxes[i].pack_start(m._page1_general_check_internet_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_fresh_queries_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_forms_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_parse_errors_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_misc_cleanup_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_base64_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_base64_entry, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_base64_safe_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_check_internet_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_fresh_queries_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_forms_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_parse_errors_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._misc_area_cleanup_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_base64_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_base64_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_base64_safe_ckbtn, False, True, 5)
 
-    m._page1_general_preprocess_chooser.connect(
+    m._general_area_preprocess_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_general_preprocess_entry]
+      [m._general_area_preprocess_entry]
     )
     i += 1
-    _boxes[i].pack_start(m._page1_general_table_prefix_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_table_prefix_entry, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_binary_fields_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_binary_fields_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_table_prefix_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_table_prefix_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_binary_fields_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_binary_fields_entry, False, True, 5)
     i += 1
-    _boxes[i].pack_start(m._page1_general_preprocess_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_preprocess_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_preprocess_chooser, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_postprocess_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_postprocess_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_postprocess_chooser, False, True, 5)
+    _boxes[i].pack_start(m._general_area_preprocess_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_preprocess_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_preprocess_chooser, False, True, 5)
+    _boxes[i].pack_start(m._general_area_postprocess_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_postprocess_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_postprocess_chooser, False, True, 5)
     i += 1
-    _boxes[i].pack_start(m._page1_general_charset_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_charset_entry, True, True, 5)
-    _boxes[i].pack_start(m._page1_general_encoding_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_encoding_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_charset_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_charset_entry, True, True, 5)
+    _boxes[i].pack_start(m._general_area_encoding_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_encoding_entry, False, True, 5)
 
-    m._page1_general_scope_chooser.connect(
+    m._general_area_scope_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_general_scope_entry]
+      [m._general_area_scope_entry]
     )
     i += 1
-    _boxes[i].pack_start(m._page1_general_web_root_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_web_root_entry, True, True, 5)
-    _boxes[i].pack_start(m._page1_general_scope_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_scope_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_scope_chooser, False, True, 5)
+    _boxes[i].pack_start(m._general_area_web_root_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_web_root_entry, True, True, 5)
+    _boxes[i].pack_start(m._general_area_scope_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_scope_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_scope_chooser, False, True, 5)
     i += 1
-    _boxes[i].pack_start(m._page1_general_test_filter_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_test_filter_entry, True, True, 5)
-    _boxes[i].pack_start(m._page1_general_test_skip_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_test_skip_entry, True, True, 5)
+    _boxes[i].pack_start(m._general_area_test_filter_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_test_filter_entry, True, True, 5)
+    _boxes[i].pack_start(m._general_area_test_skip_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_test_skip_entry, True, True, 5)
 
-    m._page1_general_crawl_entry.set_width_chars(5)
+    m._general_area_crawl_entry.set_width_chars(5)
 
     i += 1
-    _boxes[i].pack_start(m._page1_general_crawl_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_crawl_entry, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_crawl_exclude_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_crawl_exclude_entry, True, True, 5)
+    _boxes[i].pack_start(m._general_area_crawl_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_crawl_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_crawl_exclude_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_crawl_exclude_entry, True, True, 5)
     i += 1
     _boxes[i].pack_start(g.Separator.new(HORIZONTAL), True, True, 5)
 
-    m._page1_general_traffic_file_chooser.connect(
+    m._general_area_traffic_file_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_general_traffic_file_entry]
+      [m._general_area_traffic_file_entry]
     )
 
-    m._page1_general_har_chooser.connect(
+    m._general_area_har_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_general_har_entry]
-    )
-    i += 1
-    _boxes[i].pack_start(m._page1_general_traffic_file_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_traffic_file_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_traffic_file_chooser, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_har_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_har_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_har_chooser, False, True, 5)
-
-    m._page1_general_save_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._page1_general_save_entry]
-    )
-
-    m._page1_general_flush_session_ckbtn.get_children()[0].set_use_markup(True)
-    i += 1
-    _boxes[i].pack_start(m._page1_general_flush_session_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_dump_format_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_dump_format_entry, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_csv_del_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_csv_del_entry, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_save_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_save_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_save_chooser, False, True, 5)
-
-    m._page1_general_session_file_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._page1_general_session_file_entry]
-    )
-
-    m._page1_general_output_dir_chooser.connect(
-      'clicked',
-      self._handlers.set_file_entry_text,
-      [m._page1_general_output_dir_entry, 'choose output dir']
+      [m._general_area_har_entry]
     )
     i += 1
-    _boxes[i].pack_start(m._page1_general_session_file_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_session_file_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_session_file_chooser, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_output_dir_ckbtn, False, True, 5)
-    _boxes[i].pack_start(m._page1_general_output_dir_entry, True, True, 0)
-    _boxes[i].pack_start(m._page1_general_output_dir_chooser, False, True, 5)
+    _boxes[i].pack_start(m._general_area_traffic_file_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_traffic_file_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_traffic_file_chooser, False, True, 5)
+    _boxes[i].pack_start(m._general_area_har_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_har_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_har_chooser, False, True, 5)
+
+    m._general_area_save_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._general_area_save_entry]
+    )
+
+    m._general_area_flush_session_ckbtn.get_children()[0].set_use_markup(True)
+    i += 1
+    _boxes[i].pack_start(m._general_area_flush_session_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_dump_format_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_dump_format_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_csv_del_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_csv_del_entry, False, True, 5)
+    _boxes[i].pack_start(m._general_area_save_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_save_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_save_chooser, False, True, 5)
+
+    m._general_area_session_file_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._general_area_session_file_entry]
+    )
+
+    m._general_area_output_dir_chooser.connect(
+      'clicked',
+      self._handlers.set_file_entry_text,
+      [m._general_area_output_dir_entry, 'choose output dir']
+    )
+    i += 1
+    _boxes[i].pack_start(m._general_area_session_file_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_session_file_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_session_file_chooser, False, True, 5)
+    _boxes[i].pack_start(m._general_area_output_dir_ckbtn, False, True, 5)
+    _boxes[i].pack_start(m._general_area_output_dir_entry, True, True, 0)
+    _boxes[i].pack_start(m._general_area_output_dir_chooser, False, True, 5)
 
     _page1_other_general_opts = Box(orientation=VERTICAL, spacing=6)
     for _ in _boxes:
@@ -1029,46 +1029,46 @@ class Notebook(g.Notebook):
   def _build_page1_other_misc(self, m):
     _boxes = [Box() for _ in range(5)]
 
-    m._page1_misc_purge_ckbtn.get_children()[0].set_use_markup(True)
+    m._misc_area_purge_ckbtn.get_children()[0].set_use_markup(True)
 
-    _boxes[0].pack_start(m._page1_misc_skip_heuristics_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_skip_waf_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_unstable_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_list_tampers_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_sqlmap_shell_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_misc_disable_color_ckbtn, False, True, 5)
-    _boxes[0].pack_start(m._page1_general_eta_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_gpage_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_gpage_spinbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_beep_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_offline_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_purge_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_dependencies_ckbtn, False, True, 5)
-    _boxes[1].pack_start(m._page1_misc_update_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._misc_area_skip_heuristics_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._misc_area_skip_waf_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._misc_area_unstable_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._misc_area_list_tampers_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._misc_area_sqlmap_shell_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._misc_area_disable_color_ckbtn, False, True, 5)
+    _boxes[0].pack_start(m._general_area_eta_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_gpage_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_gpage_spinbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_beep_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_offline_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_purge_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_dependencies_ckbtn, False, True, 5)
+    _boxes[1].pack_start(m._misc_area_update_ckbtn, False, True, 5)
 
-    m._page1_misc_tmp_dir_chooser.connect(
+    m._misc_area_tmp_dir_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_misc_tmp_dir_entry, 'choose temp dir']
+      [m._misc_area_tmp_dir_entry, 'choose temp dir']
     )
-    _boxes[2].pack_start(m._page1_misc_alert_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._page1_misc_alert_entry, True, True, 5)
-    _boxes[2].pack_start(m._page1_misc_tmp_dir_ckbtn, False, True, 5)
-    _boxes[2].pack_start(m._page1_misc_tmp_dir_entry, True, True, 0)
-    _boxes[2].pack_start(m._page1_misc_tmp_dir_chooser, False, True, 5)
-    _boxes[3].pack_start(m._page1_misc_answers_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._page1_misc_answers_entry, True, True, 5)
-    _boxes[3].pack_start(m._page1_misc_z_ckbtn, False, True, 5)
-    _boxes[3].pack_start(m._page1_misc_z_entry, True, True, 5)
+    _boxes[2].pack_start(m._misc_area_alert_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._misc_area_alert_entry, True, True, 5)
+    _boxes[2].pack_start(m._misc_area_tmp_dir_ckbtn, False, True, 5)
+    _boxes[2].pack_start(m._misc_area_tmp_dir_entry, True, True, 0)
+    _boxes[2].pack_start(m._misc_area_tmp_dir_chooser, False, True, 5)
+    _boxes[3].pack_start(m._misc_area_answers_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._misc_area_answers_entry, True, True, 5)
+    _boxes[3].pack_start(m._misc_area_z_ckbtn, False, True, 5)
+    _boxes[3].pack_start(m._misc_area_z_entry, True, True, 5)
 
-    m._page1_misc_results_file_chooser.connect(
+    m._misc_area_results_file_chooser.connect(
       'clicked',
       self._handlers.set_file_entry_text,
-      [m._page1_misc_results_file_entry]
+      [m._misc_area_results_file_entry]
     )
-    _boxes[4].pack_start(m._page1_misc_results_file_ckbtn, False, True, 5)
-    _boxes[4].pack_start(m._page1_misc_results_file_entry, True, True, 0)
-    _boxes[4].pack_start(m._page1_misc_results_file_chooser, False, True, 5)
+    _boxes[4].pack_start(m._misc_area_results_file_ckbtn, False, True, 5)
+    _boxes[4].pack_start(m._misc_area_results_file_entry, True, True, 0)
+    _boxes[4].pack_start(m._misc_area_results_file_chooser, False, True, 5)
 
     _page1_other_misc_opts = Box(orientation=VERTICAL, spacing=6)
     for _ in _boxes:

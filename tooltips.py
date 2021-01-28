@@ -123,46 +123,46 @@ class Widget_Mesg(object):
                           m._runsql_area_sql_file_entry)
     # 4.File(R)
     self._set_placeholder('Local path where Metasploit Framework is installed',
-                          m._file_os_access_msf_path_entry)
+                          m._os_access_area_msf_path_entry)
     self._set_placeholder('Remote absolute path of temporary files directory',
-                          m._file_os_access_tmp_path_entry)
+                          m._os_access_area_tmp_path_entry)
     # 5.Other(T)
     self._set_placeholder('sqlmap',
-                          m._page1_general_table_prefix_entry)
+                          m._general_area_table_prefix_entry)
     self._set_placeholder('Use given script(s) for preprocessing (request)',
-                          m._page1_general_preprocess_entry)
+                          m._general_area_preprocess_entry)
     self._set_placeholder('Use given script(s) for postprocessing (response)',
-                          m._page1_general_postprocess_entry)
+                          m._general_area_postprocess_entry)
     self._set_placeholder('Web server document root directory (e.g. "/var/www")',
-                          m._page1_general_web_root_entry)
+                          m._general_area_web_root_entry)
     self._set_placeholder(r'Regexp for filtering targets. e.g. (www)?\.target\.(com|net|org)',
-                          m._page1_general_scope_entry)
+                          m._general_area_scope_entry)
     self._set_placeholder('ROW',
-                          m._page1_general_test_filter_entry)
+                          m._general_area_test_filter_entry)
     self._set_placeholder('BENCHMARK',
-                          m._page1_general_test_skip_entry)
+                          m._general_area_test_skip_entry)
     self._set_placeholder('depth',
-                          m._page1_general_crawl_entry)
+                          m._general_area_crawl_entry)
     self._set_placeholder('Regexp to exclude pages from crawling (e.g. "logout")',
-                          m._page1_general_crawl_exclude_entry)
+                          m._general_area_crawl_exclude_entry)
     self._set_placeholder('Log all HTTP traffic into a textual file',
-                          m._page1_general_traffic_file_entry)
+                          m._general_area_traffic_file_entry)
     self._set_placeholder('Log all HTTP traffic into a HAR file',
-                          m._page1_general_har_entry)
+                          m._general_area_har_entry)
     self._set_placeholder('CSV',
-                          m._page1_general_dump_format_entry)
+                          m._general_area_dump_format_entry)
     self._set_placeholder('Save options to a configuration INI file',
-                          m._page1_general_save_entry)
+                          m._general_area_save_entry)
     self._set_placeholder('Load session from a stored (.sqlite) file',
-                          m._page1_general_session_file_entry)
+                          m._general_area_session_file_entry)
     self._set_placeholder('Custom output directory path',
-                          m._page1_general_output_dir_entry)
+                          m._general_area_output_dir_entry)
     self._set_placeholder('Run local OS command(s) when injection found',
-                          m._page1_misc_alert_entry)
+                          m._misc_area_alert_entry)
     self._set_placeholder('Local folder for storing temporary files',
-                          m._page1_misc_tmp_dir_entry)
+                          m._misc_area_tmp_dir_entry)
     self._set_placeholder('Location of CSV results file in multiple targets mode',
-                          m._page1_misc_results_file_entry)
+                          m._misc_area_results_file_entry)
 
     self._set_placeholder('no http://',
                           m._page4_api_server_entry)
@@ -307,7 +307,7 @@ class Widget_Mesg(object):
         'checked: data is encoded to hexadecimal form before being retrieved and afterwards unencoded.\n',
                       m._general_area_hex_ckbtn)
     self._set_tooltip('--wizard vector mode for beginner.',
-                      m._page1_misc_wizard_ckbtn)
+                      m._misc_area_wizard_ckbtn)
     # 2.Request(W)
     self._set_tooltip('--random-agent\n'
         'by default, User-Agent: sqlmap/1.0-dev\n'
@@ -486,28 +486,28 @@ class Widget_Mesg(object):
         'SQL Server: by abusing xp_cmdshell stored procedure.\n'
         '            if disabled(SQL Server>=2005), sqlmap re-enables it;\n'
         '            if not exist, sqlmap creates it from scratch.',
-                      m._file_os_access_os_cmd_ckbtn,
-                      m._file_os_access_os_cmd_entry)
+                      m._os_access_area_os_cmd_ckbtn,
+                      m._os_access_area_os_cmd_entry)
     self._set_tooltip('--os-shell  it provides TAB completion and history support.\n'
         'if no stacked queries(e.g. php/asp + MySQL) and the DBMS is MySQL;\n'
         '   the DBMS and the web server are hosted on the same server:\n\n'
         '  sqlmap abuses the SELECT clause\'s INTO OUTFILE to create a web backdoor'
         ' in a writable folder within the web server document root.\n\n'
         'mysql built-in web backdoor: ASP, ASP.NET, JSP, PHP',
-                      m._file_os_access_os_shell_ckbtn)
+                      m._os_access_area_os_shell_ckbtn)
     self._set_tooltip('MySQL和PostgreSQL:\n'
         '  1.Database in-memory execution of the Metasploit\'s shellcode via sqlmap own user-defined function sys_bineval()\n'
         '  2.Upload and execution of a Metasploit\'s stand-alone payload stager via sqlmap own user-defined function sys_exec()\n'
         '  or via xp_cmdshell() on Microsoft SQL Server',
-                      m._file_os_access_os_pwn_ckbtn)
+                      m._os_access_area_os_pwn_ckbtn)
     self._set_tooltip('only when:\n'
         '  1.running sqlmap with high privileges(uid=0, windows: Administrator);\n'
         '  2.the target DBMS runs as Administrator on Windows,\n'
         'performing a SMB reflection attack (MS08-068).',
-                      m._file_os_access_os_smbrelay_ckbtn)
+                      m._os_access_area_os_smbrelay_ckbtn)
     self._set_tooltip('Microsoft SQL Server 2000, 2005:\n'
         '  exploiting sp_replwritetovarbin(MS09-004)',
-                      m._file_os_access_os_bof_ckbtn)
+                      m._os_access_area_os_bof_ckbtn)
     self._set_tooltip('perform a privilege escalation via Metasploit\'s getsystem command\n'
         'Tips, on Windows:\n'
         '  MySQL: by default runs as SYSTEM\n'
@@ -516,69 +516,69 @@ class Widget_Mesg(object):
         '  PostgreSQL: runs as a low-privileged user postgres\n'
         '    linux:\n'
         '  PostgreSQL: runs as a low-privileged user postgres',
-                      m._file_os_access_priv_esc_ckbtn)
+                      m._os_access_area_priv_esc_ckbtn)
     # 5.Other(T)
     self._set_tooltip('--check-internet',
-                      m._page1_general_check_internet_ckbtn)
+                      m._general_area_check_internet_ckbtn)
     self._set_tooltip('--fresh-queries',
-                      m._page1_general_fresh_queries_ckbtn)
+                      m._general_area_fresh_queries_ckbtn)
     self._set_tooltip('--forms\n'
         'if you want to test some kind of forms:\n'
         '  1.get the request file or form\'s fields by yourself,\n'
         '  2.use -r request_file or --data.\n'
         'now use --forms: sqlmap parse the forms it has\n'
         'Note: all forms and all fields in forms.',
-                      m._page1_general_forms_ckbtn)
+                      m._general_area_forms_ckbtn)
     self._set_tooltip('--cleanup\n'
         'Clean up the DBMS from sqlmap specific UDF and tables',
-                      m._page1_misc_cleanup_ckbtn)
+                      m._misc_area_cleanup_ckbtn)
     self._set_tooltip('Parameter(s) containing Base64 encoded data',
-                      m._page1_general_base64_entry)
+                      m._general_area_base64_entry)
     self._set_tooltip('Use URL and filename safe Base64 alphabet (RFC 4648)',
-                      m._page1_general_base64_safe_ckbtn)
+                      m._general_area_base64_safe_ckbtn)
     self._set_tooltip('--table-prefix=\n'
         'Prefix used for temporary tables (default: "sqlmap")',
-                      m._page1_general_table_prefix_ckbtn,
-                      m._page1_general_table_prefix_entry)
+                      m._general_area_table_prefix_ckbtn,
+                      m._general_area_table_prefix_entry)
     self._set_tooltip('--binary-fields=\n'
         'Result fields having binary values (e.g. "digest")\n',
-                      m._page1_general_binary_fields_ckbtn,
-                      m._page1_general_binary_fields_entry)
+                      m._general_area_binary_fields_ckbtn,
+                      m._general_area_binary_fields_entry)
     self._set_tooltip('--charset=\n'
         'to speed-up the data retrieval for Blind SQL injection.',
-                      m._page1_general_charset_ckbtn,
-                      m._page1_general_charset_entry)
+                      m._general_area_charset_ckbtn,
+                      m._general_area_charset_entry)
     self._set_tooltip('--encoding= Force character encoding used for data retrieval.',
-                      m._page1_general_encoding_ckbtn,
-                      m._page1_general_encoding_entry)
+                      m._general_area_encoding_ckbtn,
+                      m._general_area_encoding_entry)
     self._set_tooltip('--test-filter=TE.. Select tests by payloads and/or titles (e.g. ROW)',
-                      m._page1_general_test_filter_ckbtn,
-                      m._page1_general_test_filter_entry)
+                      m._general_area_test_filter_ckbtn,
+                      m._general_area_test_filter_entry)
     self._set_tooltip('--test-skip=TEST.. Skip tests by payloads and/or titles (e.g. BENCHMARK)',
-                      m._page1_general_test_skip_ckbtn,
-                      m._page1_general_test_skip_entry)
+                      m._general_area_test_skip_ckbtn,
+                      m._general_area_test_skip_entry)
     self._set_tooltip('--crawl= collect vulnerable links crawling from the target location',
-                      m._page1_general_crawl_ckbtn,
-                      m._page1_general_crawl_entry)
+                      m._general_area_crawl_ckbtn,
+                      m._general_area_crawl_entry)
     self._set_tooltip('--dump-format=\nCSV(default), HTML or SQLITE',
-                      m._page1_general_dump_format_ckbtn,
-                      m._page1_general_dump_format_entry)
+                      m._general_area_dump_format_ckbtn,
+                      m._general_area_dump_format_entry)
     self._set_tooltip('--skip-waf\n'
         'uncheck: sends a dummy parameter containing a suspicious payload\n'
         'In case of any problems, check it.',
-                      m._page1_misc_skip_waf_ckbtn)
+                      m._misc_area_skip_waf_ckbtn)
     self._set_tooltip('--unstable  Adjust options for unstable connections',
-                      m._page1_misc_unstable_ckbtn)
+                      m._misc_area_unstable_ckbtn)
     self._set_tooltip('--gpage=\n'
         'by default -g use the first 100 resulting URLs\n'
         'combine with --gpage',
-                      m._page1_misc_gpage_ckbtn)
+                      m._misc_area_gpage_ckbtn)
     self._set_tooltip('--answers=ANSWERS Set predefined answers(e.g. "quit=N,follow=N")',
-                      m._page1_misc_answers_ckbtn,
-                      m._page1_misc_answers_entry)
+                      m._misc_area_answers_ckbtn,
+                      m._misc_area_answers_entry)
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
-                      m._page1_misc_z_ckbtn,
-                      m._page1_misc_z_entry)
+                      m._misc_area_z_ckbtn,
+                      m._misc_area_z_entry)
     # API区(page4)
     self._set_tooltip('sqlmapapi.py -s --username="admin" --password="secret"',
                       m._page4_api_server_label,

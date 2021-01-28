@@ -97,20 +97,20 @@ class Widget_Mesg(object):
                           m._meta_area_where_entry)
     # 4.文件页面(R)
     self._set_placeholder('配合 Meterpreter相关 使用',
-                          m._file_os_access_msf_path_entry)
+                          m._os_access_area_msf_path_entry)
     # 5.其他页面(T)
     self._set_placeholder('sqlmap',
-                          m._page1_general_table_prefix_entry)
+                          m._general_area_table_prefix_entry)
     self._set_placeholder('/var/www',
-                          m._page1_general_web_root_entry)
+                          m._general_area_web_root_entry)
     self._set_placeholder(r'(www)?\.target\.(com|net|org)',
-                          m._page1_general_scope_entry)
+                          m._general_area_scope_entry)
     self._set_placeholder('ROW',
-                          m._page1_general_test_filter_entry)
+                          m._general_area_test_filter_entry)
     self._set_placeholder('BENCHMARK',
-                          m._page1_general_test_skip_entry)
+                          m._general_area_test_skip_entry)
     self._set_placeholder('CSV',
-                          m._page1_general_dump_format_entry)
+                          m._general_area_dump_format_entry)
 
     self._set_placeholder('不要加 http://',
                           m._page4_api_server_entry)
@@ -289,7 +289,7 @@ class Widget_Mesg(object):
     self._set_tooltip('--batch',
                       m._general_area_batch_ckbtn)
     self._set_tooltip('--wizard(其他选项可不选)',
-                      m._page1_misc_wizard_ckbtn)
+                      m._misc_area_wizard_ckbtn)
     # 2.请求页面(W)
     self._set_tooltip('--random-agent\n'
         '默认, User-Agent: sqlmap/1.0-dev\n'
@@ -579,27 +579,27 @@ class Widget_Mesg(object):
         'MySQL或PostgreSQL: 上传包含sys_exec和sys_eval函数的共享库\n'
         'SQL Server: 使用xp_cmdshell存储过程. 若被禁用(>=2005), 就启用它;\n'
         '                                     若不存在, 就从新创建它',
-                      m._file_os_access_os_cmd_ckbtn,
-                      m._file_os_access_os_cmd_entry)
+                      m._os_access_area_os_cmd_ckbtn,
+                      m._os_access_area_os_cmd_entry)
     self._set_tooltip('--os-shell\n支持TAB补全, 历史记录\n'
         '若不支持堆查询(如asp/php + MySQL), 且是MySQL(库站未分离!):\n'
         '  会使用SELECT子句INTO OUTFILE在可写目录创建一个web后门来执行命令\n'
         '  内置的web后门类型有: ASP, ASP.NET, JSP, PHP',
-                      m._file_os_access_os_shell_ckbtn)
+                      m._os_access_area_os_shell_ckbtn)
     self._set_tooltip('MySQL和PostgreSQL:\n'
         '  1.通过自带的UDF中的sys_bineval() 执行Metasploit的shellcode\n'
         '  2.通过自带的UDF中的sys_exec() 上传并执行Metasploit的stand-alone payload stager\n'
         'Microsoft SQL Server:\n'
         '  1.通过xp_cmdshell储存过程 上传并执行Metasploit的stand-alone payload stager\n',
-                      m._file_os_access_os_pwn_ckbtn)
+                      m._os_access_area_os_pwn_ckbtn)
     self._set_tooltip('前提: 最高权限(linux: uid=0, windows: Administrator)\n'
         '      且目标 数据库以Windows管理员身份运行时\n'
         '  通过SMB攻击(MS08-068) 执行Metasploit的shellcode',
-                      m._file_os_access_os_smbrelay_ckbtn)
+                      m._os_access_area_os_smbrelay_ckbtn)
     self._set_tooltip('SQL Server 2000, 2005:\n'
         '  通过sp_replwritetovarbin存储过程(MS09-004)溢出漏洞 执行Metasploit的payload\n'
         '  sqlmap用自带的exploit自动绕过DEP内存保护来触发漏洞, 但它依赖Metasploit来生成shellcode, 以便在成功利用后执行',
-                      m._file_os_access_os_bof_ckbtn)
+                      m._os_access_area_os_bof_ckbtn)
     self._set_tooltip('使用Metasploit的getsystem命令来提权\n'
         '注: windows:\n'
         '  MySQL: 默认以SYSTEM身份运行\n'
@@ -608,147 +608,147 @@ class Widget_Mesg(object):
         '  PostgreSQL: 默认以低权限的用户postgres运行\n'
         '    linux:\n'
         '  PostgreSQL: 默认以低权限的用户postgres运行',
-                      m._file_os_access_priv_esc_ckbtn)
+                      m._os_access_area_priv_esc_ckbtn)
     self._set_tooltip('--msf-path=',
-                      m._file_os_access_msf_path_ckbtn,
-                      m._file_os_access_msf_path_entry)
+                      m._os_access_area_msf_path_ckbtn,
+                      m._os_access_area_msf_path_entry)
     self._set_tooltip('--tmp-path=TMPPATH Remote absolute path of temporary files directory',
-                      m._file_os_access_tmp_path_ckbtn,
-                      m._file_os_access_tmp_path_entry)
+                      m._os_access_area_tmp_path_ckbtn,
+                      m._os_access_area_tmp_path_entry)
     self._set_tooltip('--reg-key=',
-                      m._file_os_registry_reg_key_label,
-                      m._file_os_registry_reg_key_entry)
+                      m._registry_area_reg_key_label,
+                      m._registry_area_reg_key_entry)
     self._set_tooltip('--reg-value=',
-                      m._file_os_registry_reg_value_label,
-                      m._file_os_registry_reg_value_entry)
+                      m._registry_area_reg_value_label,
+                      m._registry_area_reg_value_entry)
     self._set_tooltip('--reg-data=',
-                      m._file_os_registry_reg_data_label,
-                      m._file_os_registry_reg_data_entry)
+                      m._registry_area_reg_data_label,
+                      m._registry_area_reg_data_entry)
     self._set_tooltip('--reg-type=',
-                      m._file_os_registry_reg_type_label,
-                      m._file_os_registry_reg_type_entry)
+                      m._registry_area_reg_type_label,
+                      m._registry_area_reg_type_entry)
     # 5.其他页面(T)
     self._set_tooltip('--check-internet',
-                      m._page1_general_check_internet_ckbtn)
+                      m._general_area_check_internet_ckbtn)
     self._set_tooltip('--fresh-queries',
-                      m._page1_general_fresh_queries_ckbtn)
+                      m._general_area_fresh_queries_ckbtn)
     self._set_tooltip('--forms\n'
         '若想对 form表单参数 测试:\n'
         '  1.通过某些方式得到请求文件或表单参数\n'
         '  2.可用-r读取请求文件或--data指定表单参数\n'
         '但--forms开关: 可让sqlmap自行获取url响应中的表单参数 再做测试\n'
         '注: 是所有表单 及 所有表单参数',
-                      m._page1_general_forms_ckbtn)
+                      m._general_area_forms_ckbtn)
     self._set_tooltip('--parse-errors',
-                      m._page1_general_parse_errors_ckbtn)
+                      m._general_area_parse_errors_ckbtn)
     self._set_tooltip('--cleanup\n'
         '清理 DBMS(如临时表sqlmapoutput, udf)及文件系统',
-                      m._page1_misc_cleanup_ckbtn)
+                      m._misc_area_cleanup_ckbtn)
     self._set_tooltip('--table-prefix=',
-                      m._page1_general_table_prefix_ckbtn,
-                      m._page1_general_table_prefix_entry)
+                      m._general_area_table_prefix_ckbtn,
+                      m._general_area_table_prefix_entry)
     self._set_tooltip('--binary-fields=\n'
         '指定有二进制值的列, 获取该列数据时, 会转成16进制输出',
-                      m._page1_general_binary_fields_ckbtn,
-                      m._page1_general_binary_fields_entry)
+                      m._general_area_binary_fields_ckbtn,
+                      m._general_area_binary_fields_entry)
     self._set_tooltip('--preprocess=',
-                      m._page1_general_preprocess_ckbtn,
-                      m._page1_general_preprocess_entry)
+                      m._general_area_preprocess_ckbtn,
+                      m._general_area_preprocess_entry)
     self._set_tooltip('--postprocess=',
-                      m._page1_general_postprocess_ckbtn,
-                      m._page1_general_postprocess_entry)
+                      m._general_area_postprocess_ckbtn,
+                      m._general_area_postprocess_entry)
     self._set_tooltip('--charset=  如获取SHA1密文时, 请求数可减小30%',
-                      m._page1_general_charset_ckbtn,
-                      m._page1_general_charset_entry)
+                      m._general_area_charset_ckbtn,
+                      m._general_area_charset_entry)
     self._set_tooltip('--encoding=',
-                      m._page1_general_encoding_ckbtn,
-                      m._page1_general_encoding_entry)
+                      m._general_area_encoding_ckbtn,
+                      m._general_area_encoding_entry)
     self._set_tooltip('--web-root=WEBROOT Web server document root directory (e.g. "/var/www")',
-                      m._page1_general_web_root_ckbtn,
-                      m._page1_general_web_root_entry)
+                      m._general_area_web_root_ckbtn,
+                      m._general_area_web_root_entry)
     self._set_tooltip('--scope=SCOPE Regexp to filter targets from provided proxy log',
-                      m._page1_general_scope_ckbtn,
-                      m._page1_general_scope_entry)
+                      m._general_area_scope_ckbtn,
+                      m._general_area_scope_entry)
     self._set_tooltip('--test-filter=TE.. Select tests by payloads and/or titles (e.g. ROW)',
-                      m._page1_general_test_filter_ckbtn,
-                      m._page1_general_test_filter_entry)
+                      m._general_area_test_filter_ckbtn,
+                      m._general_area_test_filter_entry)
     self._set_tooltip('--test-skip=TEST.. Skip tests by payloads and/or titles (e.g. BENCHMARK)',
-                      m._page1_general_test_skip_ckbtn,
-                      m._page1_general_test_skip_entry)
+                      m._general_area_test_skip_ckbtn,
+                      m._general_area_test_skip_entry)
     self._set_tooltip('--crawl=depth 爬取有漏洞的url',
-                      m._page1_general_crawl_ckbtn,
-                      m._page1_general_crawl_entry)
+                      m._general_area_crawl_ckbtn,
+                      m._general_area_crawl_entry)
     self._set_tooltip('--crawl-exclude= 使用正则排除',
-                      m._page1_general_crawl_exclude_ckbtn,
-                      m._page1_general_crawl_exclude_entry)
+                      m._general_area_crawl_exclude_ckbtn,
+                      m._general_area_crawl_exclude_entry)
     self._set_tooltip('-t TRAFFICFILE  Log all HTTP traffic into a textual file',
-                      m._page1_general_traffic_file_ckbtn,
-                      m._page1_general_traffic_file_entry)
+                      m._general_area_traffic_file_ckbtn,
+                      m._general_area_traffic_file_entry)
     self._set_tooltip('--har=HARFILE  Log all HTTP traffic into a HAR file',
-                      m._page1_general_har_ckbtn,
-                      m._page1_general_har_entry)
+                      m._general_area_har_ckbtn,
+                      m._general_area_har_entry)
     self._set_tooltip('--flush-session',
-                      m._page1_general_flush_session_ckbtn)
+                      m._general_area_flush_session_ckbtn)
     self._set_tooltip('--dump-format=\nCSV(默认), HTML or SQLITE',
-                      m._page1_general_dump_format_ckbtn,
-                      m._page1_general_dump_format_entry)
+                      m._general_area_dump_format_ckbtn,
+                      m._general_area_dump_format_entry)
     self._set_tooltip('--csv-del=',
-                      m._page1_general_csv_del_ckbtn,
-                      m._page1_general_csv_del_entry)
+                      m._general_area_csv_del_ckbtn,
+                      m._general_area_csv_del_entry)
     self._set_tooltip('--save=SAVECONFIG  Save options to a configuration INI file',
-                      m._page1_general_save_ckbtn,
-                      m._page1_general_save_entry)
+                      m._general_area_save_ckbtn,
+                      m._general_area_save_entry)
     self._set_tooltip('-s SESSIONFILE  Load session from a stored (.sqlite) file',
-                      m._page1_general_session_file_ckbtn,
-                      m._page1_general_session_file_entry)
+                      m._general_area_session_file_ckbtn,
+                      m._general_area_session_file_entry)
     self._set_tooltip('--output-dir=',
-                      m._page1_general_output_dir_ckbtn,
-                      m._page1_general_output_dir_entry)
+                      m._general_area_output_dir_ckbtn,
+                      m._general_area_output_dir_entry)
     self._set_tooltip('--skip-heuristics\n'
         'Skip heuristic detection of SQLi/XSS vulnerabilities',
-                      m._page1_misc_skip_heuristics_ckbtn)
+                      m._misc_area_skip_heuristics_ckbtn)
     self._set_tooltip('--skip-waf\n'
         '默认情况, 会发送一个可疑的payload(所以有时明显没有防护还报警告)\n'
         '勾选以禁用此默认机制',
-                      m._page1_misc_skip_waf_ckbtn)
+                      m._misc_area_skip_waf_ckbtn)
     self._set_tooltip('--unstable  Adjust options for unstable connections',
-                      m._page1_misc_unstable_ckbtn)
+                      m._misc_area_unstable_ckbtn)
     self._set_tooltip('--list-tampers',
-                      m._page1_misc_list_tampers_ckbtn)
+                      m._misc_area_list_tampers_ckbtn)
     self._set_tooltip('--sqlmap-shell',
-                      m._page1_misc_sqlmap_shell_ckbtn)
+                      m._misc_area_sqlmap_shell_ckbtn)
     self._set_tooltip('--disable-coloring',
-                      m._page1_misc_disable_color_ckbtn)
+                      m._misc_area_disable_color_ckbtn)
     self._set_tooltip('--eta',
-                      m._page1_general_eta_ckbtn)
+                      m._general_area_eta_ckbtn)
     self._set_tooltip('--gpage=\n'
         '默认使用-g时, 会使用google的前100个URLs',
-                      m._page1_misc_gpage_ckbtn)
+                      m._misc_area_gpage_ckbtn)
     self._set_tooltip('--beep',
-                      m._page1_misc_beep_ckbtn)
+                      m._misc_area_beep_ckbtn)
     self._set_tooltip('--offline',
-                      m._page1_misc_offline_ckbtn)
+                      m._misc_area_offline_ckbtn)
     self._set_tooltip('--purge 抹除$HOME/.sqlmap目录',
-                      m._page1_misc_purge_ckbtn)
+                      m._misc_area_purge_ckbtn)
     self._set_tooltip('--dependencies',
-                      m._page1_misc_dependencies_ckbtn)
+                      m._misc_area_dependencies_ckbtn)
     self._set_tooltip('--update',
-                      m._page1_misc_update_ckbtn)
+                      m._misc_area_update_ckbtn)
     self._set_tooltip('--alert=ALERT Run host OS command(s) when SQL injection is found',
-                      m._page1_misc_alert_ckbtn,
-                      m._page1_misc_alert_entry)
+                      m._misc_area_alert_ckbtn,
+                      m._misc_area_alert_entry)
     self._set_tooltip('--tmp-dir=TMPDIR Local directory for storing temporary files',
-                      m._page1_misc_tmp_dir_ckbtn,
-                      m._page1_misc_tmp_dir_entry)
+                      m._misc_area_tmp_dir_ckbtn,
+                      m._misc_area_tmp_dir_entry)
     self._set_tooltip('--answers=ANSWERS Set question answers(e.g. "quit=N,follow=N")',
-                      m._page1_misc_answers_ckbtn,
-                      m._page1_misc_answers_entry)
+                      m._misc_area_answers_ckbtn,
+                      m._misc_area_answers_entry)
     self._set_tooltip('-z MNEMONICS Use short mnemonics (e.g. "flu,bat,ban,tec=EU")',
-                      m._page1_misc_z_ckbtn,
-                      m._page1_misc_z_entry)
+                      m._misc_area_z_ckbtn,
+                      m._misc_area_z_entry)
     self._set_tooltip('--results-file=R..  Location of CSV results file in multiple targets mode',
-                      m._page1_misc_results_file_ckbtn,
-                      m._page1_misc_results_file_entry)
+                      m._misc_area_results_file_ckbtn,
+                      m._misc_area_results_file_entry)
     # API区(page4)
     self._set_tooltip('sqlmapapi.py -s --username="admin" --password="secret"',
                       m._page4_api_server_label,

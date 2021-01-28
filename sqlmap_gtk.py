@@ -251,14 +251,14 @@ class Window(g.Window):
     # 主构造区
     _notebook = Notebook(m, self._handlers)
 
-    m._page1_general_flush_session_ckbtn.connect('toggled',
-                                                 self._show_warn,
-                                                 'check --flush-session:\n\n'
-                                                 'Flush session files for current target?')
-    m._page1_misc_purge_ckbtn.connect('toggled',
-                                      self._show_warn,
-                                      'check --purge:\n\n'
-                                      'Safely remove all content from sqlmap data directory?')
+    m._general_area_flush_session_ckbtn.connect('toggled',
+                                                self._show_warn,
+                                                'check --flush-session:\n\n'
+                                                'Flush session files for current target?')
+    m._misc_area_purge_ckbtn.connect('toggled',
+                                     self._show_warn,
+                                     'check --purge:\n\n'
+                                     'Safely remove all content from sqlmap data directory?')
 
     _notebook.add_events(d.EventMask.SCROLL_MASK
                          | d.EventMask.SMOOTH_SCROLL_MASK)

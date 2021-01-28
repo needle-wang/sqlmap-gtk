@@ -151,12 +151,13 @@ class Session(object):
       self._cfg.add_section('Entry')
 
     for _i in self._cfg.options('Entry'):
-      # 不去手动改LAST_TMP, self.m就肯定有_i属性了
-      _tmp_entry = getattr(self.m, _i)
-
-      if isinstance(_tmp_entry, et) and self._cfg['Entry'][_i]:
-        # print(type(self._cfg['Entry'][_i]))
-        _tmp_entry.set_text(self._cfg['Entry'][_i])
+      try:
+        _tmp_entry = getattr(self.m, _i)
+        if isinstance(_tmp_entry, et) and self._cfg['Entry'][_i]:
+          # print(type(self._cfg['Entry'][_i]))
+          _tmp_entry.set_text(self._cfg['Entry'][_i])
+      except AttributeError as e:
+        pass
 
   def _load_from_tmp_radio(self):
     if not self._cfg.has_section('Setting'):
