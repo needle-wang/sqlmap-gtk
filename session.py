@@ -87,10 +87,10 @@ class Session(object):
         if isinstance(_tmp_ckbtn, g.CheckButton) and _tmp_ckbtn.get_active():
           _checked.append(_i)
 
-      if _i == '_tampers_name':
-        _tampers_name = getattr(self.m, _i)
+      if _i == 'tampers':
+        tampers = getattr(self.m, _i)
 
-        for _tamper, index in zip(_tampers_name, range(len(_tampers_name))):
+        for _tamper, index in zip(tampers, range(len(tampers))):
           if _tamper.get_active():
             _checked.append('tamper_{}'.format(index))
 
@@ -143,13 +143,14 @@ class Session(object):
 
     try:
       _checked = self._cfg['CheckButton']['checked'].split(',')
+      _tampers = list(self.m.tampers.keys())
       for _i in _checked:
         if _i:  # _i could be ''
           if _i.endswith('_ckbtn'):
             _tmp_ckbtn = getattr(self.m, _i)
             _tmp_ckbtn.set_active(True)
           if _i.startswith('tamper_'):
-            self.m._tampers_name[int(_i[len('tamper_'):])].set_active(True)
+            _tampers[int(_i[len('tamper_'):])].set_active(True)
         else:  # if _checked = [''], then use default
           pass
     except KeyError as e:

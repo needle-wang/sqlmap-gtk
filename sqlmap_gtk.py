@@ -152,7 +152,7 @@ class Window(g.Window):
     for _i in m._enum_area_opts_ckbtns:
       for _j in _i:
         _j.set_active(False)
-    for _i in m._tampers_name:
+    for _i in m.tampers:
         _i.set_active(False)
 
   def _show_warn(self, button, mesg):

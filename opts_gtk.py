@@ -1083,17 +1083,17 @@ class Notebook(g.Notebook):
     grid = g.Grid(row_spacing = 6, margin = 15)
 
     _i = 0  # row number
-    for name, discribe in dict(zip(m._tampers_name, m._tampers_label)).items():
+    for a_tamper, discribe in m.tampers.items():
       if _i % 2 != 0:
         # stripe style for css
-        # name.set_name('stripe')
+        # a_tamper.set_name('stripe')
         discribe.set_name('stripe')
 
-      grid.attach(name, 0, _i, 1, 1)
+      grid.attach(a_tamper, 0, _i, 1, 1)
       # grid.attach(discribe, 1, _i, 1, 1)
       _ = Box()     # resolve that label always be center align...
       _.pack_start(discribe, False, True, 0)
-      grid.attach_next_to(_, name, g.PositionType.RIGHT, 1, 1)
+      grid.attach_next_to(_, a_tamper, g.PositionType.RIGHT, 1, 1)
       _i += 1
 
     scrolled = g.ScrolledWindow()

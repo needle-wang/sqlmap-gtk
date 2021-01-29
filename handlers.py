@@ -696,7 +696,7 @@ class Handler(object):
       # self._get_tampers('--tamper=',
       #                   m._tamper_area_tamper_view),
       self._get_tampers('--tamper=',
-                        m._tampers_name),
+                        m.tampers),
       self._get_text_only_ckbtn("--crack",
                                 m._hidden_area_crack_ckbtn),
       self._get_text_only_ckbtn("--debug",
