@@ -4,7 +4,7 @@
 
 import os
 import gettext
-from widgets import (g, Vte, Frame, btn, cb, cbb, et, label, sl, sp, tv)
+from widgets import (g, Vte, btn, cb, cbb, et, label, sl, sp, tv)
 from widgets import (FileEntry, NumberEntry)
 from widgets import HORIZONTAL
 
@@ -43,7 +43,6 @@ class Model(object):
     self._sqlmap_path_entry = FileEntry()
     self._sqlmap_path_chooser = btn.new_with_label(_('open'))
     # Injection
-    self._injection_frame = Frame.new(_('Injection'))
     self._inject_area_param_ckbtn = cb(_('-p'))
     self._inject_area_param_entry = et()
     self._inject_area_param_filter_ckbtn = cb(_('--param-filter'))
@@ -69,7 +68,6 @@ class Model(object):
     self._inject_area_invalid_bignum_ckbtn = cb(_('--invalid-bignum'))
     self._inject_area_invalid_string_ckbtn = cb(_('--invalid-string'))
     # Detection
-    self._detection_frame = Frame.new(_('Detection'))
     self._detection_area_level_ckbtn = cb(_('--level'))
     self._detection_area_level_scale = sl(HORIZONTAL, 1, 5, 1)
     self._detection_area_risk_ckbtn = cb(_('--risk'))
@@ -96,7 +94,6 @@ class Model(object):
                                                      "Risk 3   append: \"OR\"-Based Blind"),
                                            halign = g.Align.START)
     # Technique
-    self._tech_frame = Frame.new(_('Technique'))
     self._tech_area_tech_ckbtn = cb(_('--technique'))
     self._tech_area_tech_entry = et()
     self._tech_area_time_sec_ckbtn = cb(_('--time-sec'))
@@ -118,7 +115,6 @@ class Model(object):
     # self._tamper_frame = Frame.new(_('--tamper'))
     # self._tamper_area_tamper_view = tv(wrap_mode = g.WrapMode.CHAR)
     # Optimize
-    self._optimize_frame = Frame.new(_('Optimize'))
     self._optimize_area_turn_all_ckbtn = cb(_('-o'))
     self._optimize_area_thread_num_ckbtn = cb(_('--threads'))
     self._optimize_area_thread_num_spinbtn = sp.new_with_range(2, 10, 1)
@@ -126,7 +122,6 @@ class Model(object):
     self._optimize_area_keep_alive_ckbtn = cb(_('--keep-alive'))
     self._optimize_area_null_connect_ckbtn = cb(_('--null-connection'))
     # Offen
-    self._offen_frame = Frame.new(_('Offen'))
     self._general_area_verbose_ckbtn = cb(_('-v'))
     self._general_area_verbose_scale = sl(HORIZONTAL, 0, 6, 1)
     self._general_area_finger_ckbtn = cb(_('--fingerprint'))
@@ -134,7 +129,6 @@ class Model(object):
     self._general_area_batch_ckbtn = cb(_('--batch'))
     self._misc_area_wizard_ckbtn = cb(_('--wizard'))
     # Hidden
-    self._hidden_frame = Frame.new(_('Hidden'))
     self._hidden_area_crack_ckbtn = cb(_('--crack'))
     self._hidden_area_debug_ckbtn = cb(_('--debug'))
     self._hidden_area_profile_ckbtn = cb(_('--profile'))
@@ -155,7 +149,6 @@ class Model(object):
     self._hidden_area_database_ckbtn = cb(_('--database'))
   # Request(W)
     # HTTP header
-    self._http_header_frame = Frame.new(_('HTTP header'))
     self._request_area_random_agent_ckbtn = cb(_('--random-agent'))
     self._request_area_mobile_ckbtn = cb(_('--mobile'))
     self._request_area_user_agent_ckbtn = cb(_('--user-agent'))
@@ -169,7 +162,6 @@ class Model(object):
     self._request_area_headers_ckbtn = cb(_('--headers'))
     self._request_area_headers_entry = et()
     # HTTP data
-    self._http_data_frame = Frame.new(_('HTTP data'))
     self._request_area_method_ckbtn = cb(_('--method'))
     self._request_area_method_entry = et(width_chars = 10)
     self._request_area_param_del_ckbtn = cb(_('--param-del'))
@@ -204,7 +196,6 @@ class Model(object):
     self._request_area_csrf_url_ckbtn = cb(_('--csrf-url'))
     self._request_area_csrf_url_entry = et()
     # Request custom
-    self._request_custom_frame = Frame.new(_('Request custom'))
     self._request_area_ignore_timeouts_ckbtn = cb(_('--ignore-timeouts'))
     self._request_area_ignore_redirects_ckbtn = cb(_('--ignore-redirects'))
     self._request_area_ignore_code_ckbtn = cb(_('--ignore-code'))
@@ -223,7 +214,6 @@ class Model(object):
     self._request_area_eval_ckbtn = cb(_('--eval'))
     self._request_area_eval_entry = et()
     # Anonymous/Proxy
-    self._anonymous_Proxy_frame = Frame.new(_('Anonymous/Proxy'))
     self._request_area_safe_url_ckbtn = cb(_('--safe-url'))
     self._request_area_safe_url_entry = et()
     self._request_area_safe_post_ckbtn = cb(_('--safe-post'))
@@ -256,14 +246,8 @@ class Model(object):
     self._request_area_check_tor_ckbtn = cb(_('--check-tor'))
   # Enumerate(E)
     # Enumeration
-    self._enumeration_frame = Frame.new(_('Enumeration'))
-    self._enum_area_opts_ckbtns = (
-      (cb(_('--banner')), cb(_('--current-user')), cb(_('--current-db')), cb(_('--hostname')), cb(_('--is-dba'))),
-      (cb(_('--users')), cb(_('--passwords')), cb(_('--privileges')), cb(_('--roles')), cb(_('--dbs'))),
-      (cb(_('--tables')), cb(_('--columns')), cb(_('--schema')), cb(_('--count')), cb(_('--comments'))),
-    )
+    self._init_enum_area_opts(_)
     # Dump
-    self._dump_frame = Frame.new(_('Dump'))
     self._dump_area_dump_ckbtn = cb(_('--dump'))
     self._dump_area_repair_ckbtn = cb(_('--repair'))
     self._dump_area_statements_ckbtn = cb(_('--statements'))
@@ -271,19 +255,16 @@ class Model(object):
     self._dump_area_no_sys_db_ckbtn = cb(_('--exclude-sysdb'))
     self._dump_area_dump_all_ckbtn = cb(_('--dump-all'))
     # Limit(when dump)
-    self._limit_frame = Frame.new(_('Limit'))
     self._limit_area_start_ckbtn = cb(_('--start'))
     self._limit_area_start_entry = NumberEntry()
     self._limit_area_stop_ckbtn = cb(_('--stop'))
     self._limit_area_stop_entry = NumberEntry()
     # Blind inject options
-    self._blind_options_frame = Frame.new(_('Blind inject options'))
     self._blind_area_first_ckbtn = cb(_('--first'))
     self._blind_area_first_entry = NumberEntry()
     self._blind_area_last_ckbtn = cb(_('--last'))
     self._blind_area_last_entry = NumberEntry()
     # DB, Table, Column name...
-    self._DTC_name_frame = Frame.new(_('DB, Table, Column name...'))
     self._meta_area_D_ckbtn = cb(_('-D'))
     self._meta_area_D_entry = et()
     self._meta_area_T_ckbtn = cb(_('-T'))
@@ -299,7 +280,6 @@ class Model(object):
     self._meta_area_where_ckbtn = cb(_('--where'))
     self._meta_area_where_entry = et()
     # Execute SQL
-    self._execute_sql_frame = Frame.new(_('Execute SQL'))
     self._runsql_area_sql_query_ckbtn = cb(_('--sql-query'))
     self._runsql_area_sql_query_entry = et()
     self._runsql_area_sql_shell_ckbtn = cb(_('--sql-shell'))
@@ -307,18 +287,15 @@ class Model(object):
     self._runsql_area_sql_file_entry = FileEntry()
     self._runsql_area_sql_file_chooser = btn.new_with_label(_('open'))
     # Brute force
-    self._brute_force_frame = Frame.new(_('Brute force'))
     self._brute_force_area_common_tables_ckbtn = cb(_('--common-tables'))
     self._brute_force_area_common_columns_ckbtn = cb(_('--common-columns'))
     self._brute_force_area_common_files_ckbtn = cb(_('--common-files'))
   # File(R)
     # Read remote file
-    self._read_remote_file_frame = Frame.new(_('Read remote file'))
     self._file_read_area_file_read_ckbtn = cb(_('--file-read'))
     self._file_read_area_file_read_entry = et(text = '/etc/passwd')
     self._file_read_area_file_read_btn = btn.new_with_label(_('cat'))
     # Upload local file
-    self._upload_local_file_frame = Frame.new(_('Upload local file'))
     self._file_write_area_udf_ckbtn = cb(_('--udf-inject'))
     self._file_write_area_shared_lib_ckbtn = cb(_('--shared-lib'))
     self._file_write_area_shared_lib_entry = FileEntry()
@@ -329,7 +306,6 @@ class Model(object):
     self._file_write_area_file_dest_ckbtn = cb(_('--file-dest'))
     self._file_write_area_file_dest_entry = et()
     # Access to the OS behind the DBMS
-    self._os_access_frame = Frame.new(_('Access to the OS behind the DBMS'))
     self._os_access_area_os_cmd_ckbtn = cb(_('--os-cmd'))
     self._os_access_area_os_cmd_entry = et()
     self._os_access_area_os_shell_ckbtn = cb(_('--os-shell'))
@@ -343,7 +319,6 @@ class Model(object):
     self._os_access_area_tmp_path_ckbtn = cb(_('--tmp-path'))
     self._os_access_area_tmp_path_entry = et()
     # Access to register in remote WIN
-    self._registry_frame = Frame.new(_('Access to register in remote WIN'))
     self._registry_area_reg_ckbtn = cb(_('operate:'))
     self._registry_area_reg_combobox = g.ComboBoxText.new()
     self._registry_area_reg_key_label = label.new(_('--reg-key'))
@@ -356,7 +331,6 @@ class Model(object):
     self._registry_area_reg_type_entry = et()
   # Other(T)
     # General
-    self._general_frame = Frame.new(_('General'))
     self._general_area_check_internet_ckbtn = cb(_('--check-internet'))
     self._general_area_fresh_queries_ckbtn = cb(_('--fresh-queries'))
     self._general_area_forms_ckbtn = cb(_('--forms'))
@@ -413,7 +387,6 @@ class Model(object):
     self._general_area_output_dir_entry = FileEntry()
     self._general_area_output_dir_chooser = btn.new_with_label(_('open'))
     # Misc
-    self._misc_frame = Frame.new(_('Misc'))
     self._misc_area_skip_heuristics_ckbtn = cb(_('--skip-heuristics'))
     self._misc_area_skip_waf_ckbtn = cb(_('--skip-waf'))
     self._misc_area_unstable_ckbtn = cb(_('--unstable'))
@@ -441,7 +414,7 @@ class Model(object):
     self._misc_area_results_file_entry = FileEntry()
     self._misc_area_results_file_chooser = btn.new_with_label(_('open'))
   # Tamper
-    self._tampers()
+    self._init_tampers()
   # EXECUTION(2)
     self._page2_respwan_btn = btn.new_with_label(_('reopen'))
     self._page2_right_btn = btn.new_with_label(_('context menu'))
@@ -477,7 +450,13 @@ class Model(object):
     self._page6_tooltips_zh_radio = g.RadioButton.new_from_widget(self._page6_tooltips_en_radio)
     self._page6_tooltips_zh_radio.set_label('zh')
 
-  def _tampers(self):
+  def _init_enum_area_opts(self, gettext):
+    _list = (('--banner', '--current-user', '--current-db', '--hostname', '--is-dba'),
+             ('--users', '--passwords', '--privileges', '--roles', '--dbs'),
+             ('--tables', '--columns', '--schema', '--count', '--comments'))
+    self._enum_area_opts_ckbtns = [[cb(gettext(j)) for j in i] for i in _list]
+
+  def _init_tampers(self):
     self.tampers = {}
     # use \x0 as delimeter
     # sqlmap --list-tamper | grep '^\*' | sed 's;^\* \(.*\.py\) - ;\1\x0;' > tamper/tamper_list

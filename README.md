@@ -1,5 +1,5 @@
 ## sqlmap-gtk
-sqlmap GUI, using PyGObject(gtk+3)  
+sqlmap GUI, using PyGObject(gtk+3)
 
 supports linux, test on Mint 20, kali 2020.4  
 [sqlmap-wx](https://github.com/needle-wang/sqlmap-wx) on win, which needs to improve.  
@@ -10,16 +10,18 @@ don't use python2 any more please.
 ![screenshot](https://github.com/needle-wang/sqlmap-gtk/blob/master/screenshots/sqlmap-ui1.png)
 
 #### HOW-TO
-1. **Prerequisites**  
-  - *python3.6+, GTK+3.20 above*(linux has contained)  
+1. **Prerequisites**
+  - *python3.6+, GTK+3.20 above*(linux has contained)
+  - [sqlmap](https://github.com/sqlmapproject/sqlmap): (choose one)
+    - `pip3 install sqlmap`(suggestion)
+    - `git clone https://github.com/sqlmapproject/sqlmap.git`
   - pygobject: (choose one)
-    - `apt-get install python3-gi`(suggestion)  
+    - `apt-get install python3-gi`(suggestion)
     - `pip3 install PyGObject`
-  - requests: `pip3 install requests`  
-  - lastest [sqlmap](https://github.com/sqlmapproject/sqlmap): `git clone` it.  
-2. **Download**  
+  - requests: `pip3 install requests`
+2. **Download**
   - `git clone https://github.com/needle-wang/sqlmap-gtk.git`  
-3. **Run**  
+3. **Run**
   - `./sqlmap_gtk.py`
 
 #### FUNCTION

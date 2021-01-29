@@ -2,7 +2,7 @@
 #
 # 2019-05-14 19:44:19
 
-from widgets import (g, Box, label)
+from widgets import (g, Box, Frame, label)
 from widgets import (HORIZONTAL, VERTICAL)
 
 
@@ -96,6 +96,7 @@ class Notebook(g.Notebook):
     return scrolled
 
   def _build_page1_setting_inject(self, m):
+    _f = Frame.new(m._('Injection'))
     _boxes = [Box() for _ in range(13)]
 
     m._inject_area_param_ckbtn.connect(
@@ -106,15 +107,10 @@ class Notebook(g.Notebook):
     _boxes[i].pack_start(m._inject_area_param_entry, True, True, 5)
 
     _ = g.ListStore(str)
-    _.append(["GET"])
-    _.append(["POST"])
-    _.append(["URI"])
-    _.append(["Cookie"])
-    _.append(["User-Agent"])
-    _.append(["Referer"])
-    _.append(["Host"])
-    _.append(["(custom) POST"])
-    _.append(["(custom) HEADER"])
+    for _data in (["GET"], ["POST"], ["URI"],
+                  ["Cookie"], ["User-Agent"], ["Referer"],
+                  ["Host"], ["(custom) POST"], ["(custom) HEADER"]):
+      _.append(_data)
 
     m._inject_area_param_filter_combobox.set_model(_)
     m._inject_area_param_filter_combobox.set_entry_text_column(0)
@@ -174,10 +170,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _inject_area_opts.add(_)
 
-    m._injection_frame.add(_inject_area_opts)
-    return m._injection_frame
+    _f.add(_inject_area_opts)
+    return _f
 
   def _build_page1_setting_detection(self, m):
+    _f = Frame.new(m._('Detection'))
     _boxes = [Box() for _ in range(9)]
 
     m._detection_area_level_ckbtn.connect(
@@ -221,10 +218,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _detection_area_opts.add(_)
 
-    m._detection_frame.add(_detection_area_opts)
-    return m._detection_frame
+    _f.add(_detection_area_opts)
+    return _f
 
   def _build_page1_setting_tech(self, m):
+    _f = Frame.new(m._('Technique'))
     _boxes = [Box() for _ in range(9)]
 
     _boxes[0].pack_start(m._tech_area_tech_ckbtn, False, True, 5)
@@ -256,8 +254,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _tech_area_opts.add(_)
 
-    m._tech_frame.add(_tech_area_opts)
-    return m._tech_frame
+    _f.add(_tech_area_opts)
+    return _f
 
   # def _build_page1_setting_tamper(self, m):
   #   '''
@@ -274,6 +272,7 @@ class Notebook(g.Notebook):
   #   return m._tamper_frame
 
   def _build_page1_setting_optimize(self, m):
+    _f = Frame.new(m._('Optimize'))
     _boxes = [Box() for _ in range(5)]
 
     m._optimize_area_turn_all_ckbtn.connect('clicked', self.optimize_area_controller)
@@ -305,10 +304,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _optimize_area_opts.add(_)
 
-    m._optimize_frame.add(_optimize_area_opts)
-    return m._optimize_frame
+    _f.add(_optimize_area_opts)
+    return _f
 
   def _build_page1_setting_general(self, m):
+    _f = Frame.new(m._('Offen'))
     _boxes = [Box() for _ in range(5)]
 
     _general_area_opts = Box(orientation=VERTICAL, spacing=6)
@@ -324,10 +324,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _general_area_opts.add(_)
 
-    m._offen_frame.add(_general_area_opts)
-    return m._offen_frame
+    _f.add(_general_area_opts)
+    return _f
 
   def _build_page1_setting_hidden(self, m):
+    _f = Frame.new(m._('Hidden'))
     _boxes = [Box() for _ in range(6)]
 
     _boxes[0].pack_start(m._hidden_area_crack_ckbtn, False, True, 5)
@@ -353,8 +354,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _hidden_area_opts.add(_)
 
-    m._hidden_frame.add(_hidden_area_opts)
-    return m._hidden_frame
+    _f.add(_hidden_area_opts)
+    return _f
 
   def _build_page1_request(self):
     box = Box(orientation=VERTICAL)
@@ -382,6 +383,7 @@ class Notebook(g.Notebook):
     return scrolled
 
   def _build_page1_request_header(self, m):
+    _f = Frame.new(m._('HTTP header'))
     _boxes = [Box() for _ in range(3)]
 
     m._request_area_random_agent_ckbtn.set_active(True)
@@ -403,10 +405,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_header_opts.add(_)
 
-    m._http_header_frame.add(_request_header_opts)
-    return m._http_header_frame
+    _f.add(_request_header_opts)
+    return _f
 
   def _build_page1_request_data(self, m):
+    _f = Frame.new(m._('HTTP data'))
     _boxes = [Box() for _ in range(8)]
 
     _boxes[0].pack_start(m._request_area_method_ckbtn, False, True, 5)
@@ -471,10 +474,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_data_opts.add(_)
 
-    m._http_data_frame.add(_request_data_opts)
-    return m._http_data_frame
+    _f.add(_request_data_opts)
+    return _f
 
   def _build_page1_request_custom(self, m):
+    _f = Frame.new(m._('Request custom'))
     _boxes = [Box() for _ in range(3)]
 
     _boxes[0].pack_start(m._request_area_ignore_timeouts_ckbtn, False, True, 5)
@@ -507,10 +511,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_custom_opts.add(_)
 
-    m._request_custom_frame.add(_request_custom_opts)
-    return m._request_custom_frame
+    _f.add(_request_custom_opts)
+    return _f
 
   def _build_page1_request_proxy(self, m):
+    _f = Frame.new(m._('Anonymous/Proxy'))
     _boxes = [Box() for _ in range(6)]
 
     _boxes[0].pack_start(m._request_area_safe_url_ckbtn, False, True, 5)
@@ -570,8 +575,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _request_proxy_opts.add(_)
 
-    m._anonymous_Proxy_frame.add(_request_proxy_opts)
-    return m._anonymous_Proxy_frame
+    _f.add(_request_proxy_opts)
+    return _f
 
   def _build_page1_enumeration(self):
     box = Box(orientation=VERTICAL)
@@ -606,21 +611,18 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_enumeration_enum(self, m):
-    _enum_area_opts = Box(spacing=6)
-
-    _enu_area_opts_cols = [Box(orientation=VERTICAL) for _ in range(3)]
+    _f = Frame.new(m._('Enumeration'))
+    _grid = g.Grid(column_spacing = 20, margin_left = 5, margin_right = 5)
 
     for _x in range(len(m._enum_area_opts_ckbtns)):
-      for _y in m._enum_area_opts_ckbtns[_x]:
-        # add each column, from up to down
-        _enu_area_opts_cols[_x].add(_y)
-      # add 3 column for align...
-      _enum_area_opts.pack_start(_enu_area_opts_cols[_x], False, True, 10)
+      for _y in range(len(m._enum_area_opts_ckbtns[_x])):
+        _grid.attach(m._enum_area_opts_ckbtns[_x][_y], _x, _y, 1, 1)
 
-    m._enumeration_frame.add(_enum_area_opts)
-    return m._enumeration_frame
+    _f.add(_grid)
+    return _f
 
   def _build_page1_enumeration_dump(self, m):
+    _f = Frame.new(m._('Dump'))
     _dump_area_opts = Box(spacing=6)
 
     # for padding in HORIZONTAL
@@ -637,10 +639,11 @@ class Notebook(g.Notebook):
 
     _dump_area_opts.pack_start(_dump_area_opts_cols, False, True, 10)
 
-    m._dump_frame.add(_dump_area_opts)
-    return m._dump_frame
+    _f.add(_dump_area_opts)
+    return _f
 
   def _build_page1_enumeration_limit(self, m):
+    _f = Frame.new(m._('Limit'))
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._limit_area_start_ckbtn, False, True, 5)
@@ -654,10 +657,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _limit_area_opts.pack_start(_, False, True, 10)
 
-    m._limit_frame.add(_limit_area_opts)
-    return m._limit_frame
+    _f.add(_limit_area_opts)
+    return _f
 
   def _build_page1_enumeration_blind(self, m):
+    _f = Frame.new(m._('Blind inject options'))
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._blind_area_first_ckbtn, False, True, 5)
@@ -671,10 +675,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _blind_area_opts.pack_start(_, False, True, 10)
 
-    m._blind_options_frame.add(_blind_area_opts)
-    return m._blind_options_frame
+    _f.add(_blind_area_opts)
+    return _f
 
   def _build_page1_enumeration_meta(self, m):
+    _f = Frame.new(m._('DB, Table, Column name...'))
     _boxes = [Box() for _ in range(3)]
 
     _boxes[0].pack_start(m._meta_area_D_ckbtn, False, True, 5)
@@ -696,10 +701,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _meta_area_opts.pack_start(_, False, True, 5)
 
-    m._DTC_name_frame.add(_meta_area_opts)
-    return m._DTC_name_frame
+    _f.add(_meta_area_opts)
+    return _f
 
   def _build_page1_enumeration_runsql(self, m):
+    _f = Frame.new(m._('Execute SQL'))
     _boxes = [Box() for _ in range(2)]
 
     _boxes[0].pack_start(m._runsql_area_sql_query_ckbtn, False, True, 10)
@@ -720,10 +726,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _runsql_area_opts.pack_start(_, False, True, 5)
 
-    m._execute_sql_frame.add(_runsql_area_opts)
-    return m._execute_sql_frame
+    _f.add(_runsql_area_opts)
+    return _f
 
   def _build_page1_enumeration_brute_force(self, m):
+    _f = Frame.new(m._('Brute force'))
     _brute_force_area_opts = Box(orientation=VERTICAL)
 
     _row1 = Box()
@@ -734,8 +741,8 @@ class Notebook(g.Notebook):
 
     _brute_force_area_opts.pack_start(_row1, False, True, 5)
 
-    m._brute_force_frame.add(_brute_force_area_opts)
-    return m._brute_force_frame
+    _f.add(_brute_force_area_opts)
+    return _f
 
   def _build_page1_file(self):
     box = Box(orientation=VERTICAL, spacing=6)
@@ -771,6 +778,7 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_file_read(self, m):
+    _f = Frame.new(m._('Read remote file'))
     _file_read_area_opts = Box(orientation=VERTICAL, spacing=6)
 
     _row1 = Box()
@@ -782,10 +790,11 @@ class Notebook(g.Notebook):
 
     _file_read_area_opts.pack_start(_row1, False, True, 5)
 
-    m._read_remote_file_frame.add(_file_read_area_opts)
-    return m._read_remote_file_frame
+    _f.add(_file_read_area_opts)
+    return _f
 
   def _build_page1_file_write(self, m):
+    _f = Frame.new(m._('Upload local file'))
     _boxes = [Box() for _ in range(3)]
 
     m._file_write_area_shared_lib_chooser.connect(
@@ -816,10 +825,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _file_write_area_opts.pack_start(_, False, True, 5)
 
-    m._upload_local_file_frame.add(_file_write_area_opts)
-    return m._upload_local_file_frame
+    _f.add(_file_write_area_opts)
+    return _f
 
   def _build_page1_file_os_access(self, m):
+    _f = Frame.new(m._('Access to the OS behind the DBMS'))
     _boxes = [Box() for _ in range(3)]
 
     _boxes[0].pack_start(m._os_access_area_os_cmd_ckbtn, False, True, 5)
@@ -851,10 +861,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _os_access_area_opts.add(_)
 
-    m._os_access_frame.add(_os_access_area_opts)
-    return m._os_access_frame
+    _f.add(_os_access_area_opts)
+    return _f
 
   def _build_page1_file_os_registry(self, m):
+    _f = Frame.new(m._('Access to register in remote WIN'))
     _boxes = [Box() for _ in range(3)]
 
     m._registry_area_reg_combobox.append('--reg-read', m._('read'))
@@ -877,8 +888,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _registry_area_opts.add(_)
 
-    m._registry_frame.add(_registry_area_opts)
-    return m._registry_frame
+    _f.add(_registry_area_opts)
+    return _f
 
   def _build_page1_other(self):
     '''
@@ -905,6 +916,7 @@ class Notebook(g.Notebook):
     return box
 
   def _build_page1_other_general(self, m):
+    _f = Frame.new(m._('General'))
     _boxes = [Box() for _ in range(11)]
     i = 0
     _boxes[i].pack_start(m._general_area_check_internet_ckbtn, False, True, 5)
@@ -1025,10 +1037,11 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _page1_other_general_opts.add(_)
 
-    m._general_frame.add(_page1_other_general_opts)
-    return m._general_frame
+    _f.add(_page1_other_general_opts)
+    return _f
 
   def _build_page1_other_misc(self, m):
+    _f = Frame.new(m._('Misc'))
     _boxes = [Box() for _ in range(5)]
 
     m._misc_area_purge_ckbtn.get_children()[0].set_use_markup(True)
@@ -1076,8 +1089,8 @@ class Notebook(g.Notebook):
     for _ in _boxes:
       _page1_other_misc_opts.add(_)
 
-    m._misc_frame.add(_page1_other_misc_opts)
-    return m._misc_frame
+    _f.add(_page1_other_misc_opts)
+    return _f
 
   def _build_page1_tamper(self, m):
     grid = g.Grid(row_spacing = 6, margin = 15)
