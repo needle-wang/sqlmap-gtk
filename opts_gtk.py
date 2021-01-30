@@ -16,12 +16,12 @@ class Notebook(g.Notebook):
     self.m = m
     self._handlers = handlers
     # OPTIONS - Inject, Request, Enumerate, File, Other
-    page1_setting = self._build_page1_setting(m)
-    page1_request = self._build_page1_request()
-    page1_enumeration = self._build_page1_enumeration()
-    page1_file = self._build_page1_file()
-    page1_other = self._build_page1_other()
-    page1_tamper = self._build_page1_tamper(m)
+    page1_setting = self.build_page1_setting(m)
+    page1_request = self.build_page1_request()
+    page1_enumeration = self.build_page1_enumeration()
+    page1_file = self.build_page1_file()
+    page1_other = self.build_page1_other()
+    page1_tamper = self.build_page1_tamper(m)
 
     _ = m._
     self.append_page(page1_setting, label.new_with_mnemonic(_('Inject(_Q)')))
@@ -50,7 +50,7 @@ class Notebook(g.Notebook):
       m._optimize_area_null_connect_ckbtn.set_sensitive(True)
       m._request_area_proxy_ckbtn.set_sensitive(True)
 
-  def _build_page1_setting(self, m):
+  def build_page1_setting(self, m):
     box = Box(orientation=VERTICAL)
 
     _row0 = Box()
@@ -67,9 +67,9 @@ class Notebook(g.Notebook):
     _row0.pack_start(m._sqlmap_path_chooser, False, True, 5)
 
     _row1 = Box()
-    _inject_area = self._build_page1_setting_inject(self.m)
-    _detection_area = self._build_page1_setting_detection(self.m)
-    _tech_area = self._build_page1_setting_tech(self.m)
+    _inject_area = self.build_page1_setting_inject(self.m)
+    _detection_area = self.build_page1_setting_detection(self.m)
+    _tech_area = self.build_page1_setting_tech(self.m)
 
     _row1.pack_start(_inject_area, False, True, 5)
     _row1.pack_start(_detection_area, True, True, 5)
@@ -77,9 +77,9 @@ class Notebook(g.Notebook):
 
     _row2 = Box()
     # _tamper_area = self._build_page1_setting_tamper(self.m)
-    _optimize_area = self._build_page1_setting_optimize(self.m)
-    _general_area = self._build_page1_setting_general(self.m)
-    _hidden_area = self._build_page1_setting_hidden(self.m)
+    _optimize_area = self.build_page1_setting_optimize(self.m)
+    _general_area = self.build_page1_setting_general(self.m)
+    _hidden_area = self.build_page1_setting_hidden(self.m)
 
     # _row2.pack_start(_tamper_area, False, True, 5)
     _row2.pack_start(_optimize_area, False, True, 5)
@@ -95,7 +95,7 @@ class Notebook(g.Notebook):
     scrolled.add(box)
     return scrolled
 
-  def _build_page1_setting_inject(self, m):
+  def build_page1_setting_inject(self, m):
     _f = Frame.new(m._('Injection'))
     _boxes = [Box() for _ in range(13)]
 
@@ -173,7 +173,7 @@ class Notebook(g.Notebook):
     _f.add(_inject_area_opts)
     return _f
 
-  def _build_page1_setting_detection(self, m):
+  def build_page1_setting_detection(self, m):
     _f = Frame.new(m._('Detection'))
     _boxes = [Box() for _ in range(9)]
 
@@ -221,7 +221,7 @@ class Notebook(g.Notebook):
     _f.add(_detection_area_opts)
     return _f
 
-  def _build_page1_setting_tech(self, m):
+  def build_page1_setting_tech(self, m):
     _f = Frame.new(m._('Technique'))
     _boxes = [Box() for _ in range(9)]
 
@@ -271,7 +271,7 @@ class Notebook(g.Notebook):
   #   m._tamper_frame.add(_scrolled)
   #   return m._tamper_frame
 
-  def _build_page1_setting_optimize(self, m):
+  def build_page1_setting_optimize(self, m):
     _f = Frame.new(m._('Optimize'))
     _boxes = [Box() for _ in range(5)]
 
@@ -307,7 +307,7 @@ class Notebook(g.Notebook):
     _f.add(_optimize_area_opts)
     return _f
 
-  def _build_page1_setting_general(self, m):
+  def build_page1_setting_general(self, m):
     _f = Frame.new(m._('Offen'))
     _boxes = [Box() for _ in range(5)]
 
@@ -327,7 +327,7 @@ class Notebook(g.Notebook):
     _f.add(_general_area_opts)
     return _f
 
-  def _build_page1_setting_hidden(self, m):
+  def build_page1_setting_hidden(self, m):
     _f = Frame.new(m._('Hidden'))
     _boxes = [Box() for _ in range(6)]
 
@@ -357,21 +357,21 @@ class Notebook(g.Notebook):
     _f.add(_hidden_area_opts)
     return _f
 
-  def _build_page1_request(self):
+  def build_page1_request(self):
     box = Box(orientation=VERTICAL)
 
     _boxes = [Box() for _ in range(4)]
 
-    _request_header_area = self._build_page1_request_header(self.m)
+    _request_header_area = self.build_page1_request_header(self.m)
     _boxes[0].pack_start(_request_header_area, True, True, 5)
 
-    _request_data_area = self._build_page1_request_data(self.m)
+    _request_data_area = self.build_page1_request_data(self.m)
     _boxes[1].pack_start(_request_data_area, True, True, 5)
 
-    _request_custom_area = self._build_page1_request_custom(self.m)
+    _request_custom_area = self.build_page1_request_custom(self.m)
     _boxes[2].pack_start(_request_custom_area, True, True, 5)
 
-    _request_proxy_area = self._build_page1_request_proxy(self.m)
+    _request_proxy_area = self.build_page1_request_proxy(self.m)
     _boxes[3].pack_start(_request_proxy_area, True, True, 5)
 
     for _ in _boxes:
@@ -382,7 +382,7 @@ class Notebook(g.Notebook):
     scrolled.add(box)
     return scrolled
 
-  def _build_page1_request_header(self, m):
+  def build_page1_request_header(self, m):
     _f = Frame.new(m._('HTTP header'))
     _boxes = [Box() for _ in range(3)]
 
@@ -408,7 +408,7 @@ class Notebook(g.Notebook):
     _f.add(_request_header_opts)
     return _f
 
-  def _build_page1_request_data(self, m):
+  def build_page1_request_data(self, m):
     _f = Frame.new(m._('HTTP data'))
     _boxes = [Box() for _ in range(8)]
 
@@ -477,7 +477,7 @@ class Notebook(g.Notebook):
     _f.add(_request_data_opts)
     return _f
 
-  def _build_page1_request_custom(self, m):
+  def build_page1_request_custom(self, m):
     _f = Frame.new(m._('Request custom'))
     _boxes = [Box() for _ in range(3)]
 
@@ -514,7 +514,7 @@ class Notebook(g.Notebook):
     _f.add(_request_custom_opts)
     return _f
 
-  def _build_page1_request_proxy(self, m):
+  def build_page1_request_proxy(self, m):
     _f = Frame.new(m._('Anonymous/Proxy'))
     _boxes = [Box() for _ in range(6)]
 
@@ -578,30 +578,30 @@ class Notebook(g.Notebook):
     _f.add(_request_proxy_opts)
     return _f
 
-  def _build_page1_enumeration(self):
+  def build_page1_enumeration(self):
     box = Box(orientation=VERTICAL)
 
     _boxes = [Box(margin_top = 10, margin_start = 10, margin_end = 10) for _ in range(4)]
 
-    _enum_area = self._build_page1_enumeration_enum(self.m)
-    _dump_area = self._build_page1_enumeration_dump(self.m)
-    _limit_area = self._build_page1_enumeration_limit(self.m)
-    _blind_area = self._build_page1_enumeration_blind(self.m)
+    _enum_area = self.build_page1_enumeration_enum(self.m)
+    _dump_area = self.build_page1_enumeration_dump(self.m)
+    _limit_area = self.build_page1_enumeration_limit(self.m)
+    _blind_area = self.build_page1_enumeration_blind(self.m)
 
     _boxes[0].pack_start(_enum_area, False, True, 10)
     _boxes[0].pack_start(_dump_area, False, True, 10)
     _boxes[0].pack_start(_limit_area, False, True, 10)
     _boxes[0].pack_start(_blind_area, False, True, 10)
 
-    _meta_area = self._build_page1_enumeration_meta(self.m)
+    _meta_area = self.build_page1_enumeration_meta(self.m)
 
     _boxes[1].pack_start(_meta_area, True, True, 10)
 
-    _runsql_area = self._build_page1_enumeration_runsql(self.m)
+    _runsql_area = self.build_page1_enumeration_runsql(self.m)
 
     _boxes[2].pack_start(_runsql_area, True, True, 10)
 
-    _brute_force_area = self._build_page1_enumeration_brute_force(self.m)
+    _brute_force_area = self.build_page1_enumeration_brute_force(self.m)
 
     _boxes[3].pack_start(_brute_force_area, False, True, 10)
 
@@ -610,7 +610,7 @@ class Notebook(g.Notebook):
 
     return box
 
-  def _build_page1_enumeration_enum(self, m):
+  def build_page1_enumeration_enum(self, m):
     _f = Frame.new(m._('Enumeration'))
     _grid = g.Grid(column_spacing = 20, margin_left = 5, margin_right = 5)
 
@@ -621,7 +621,7 @@ class Notebook(g.Notebook):
     _f.add(_grid)
     return _f
 
-  def _build_page1_enumeration_dump(self, m):
+  def build_page1_enumeration_dump(self, m):
     _f = Frame.new(m._('Dump'))
     _dump_area_opts = Box(spacing=6)
 
@@ -642,7 +642,7 @@ class Notebook(g.Notebook):
     _f.add(_dump_area_opts)
     return _f
 
-  def _build_page1_enumeration_limit(self, m):
+  def build_page1_enumeration_limit(self, m):
     _f = Frame.new(m._('Limit'))
     _boxes = [Box() for _ in range(2)]
 
@@ -660,7 +660,7 @@ class Notebook(g.Notebook):
     _f.add(_limit_area_opts)
     return _f
 
-  def _build_page1_enumeration_blind(self, m):
+  def build_page1_enumeration_blind(self, m):
     _f = Frame.new(m._('Blind inject options'))
     _boxes = [Box() for _ in range(2)]
 
@@ -678,7 +678,7 @@ class Notebook(g.Notebook):
     _f.add(_blind_area_opts)
     return _f
 
-  def _build_page1_enumeration_meta(self, m):
+  def build_page1_enumeration_meta(self, m):
     _f = Frame.new(m._('DB, Table, Column name...'))
     _boxes = [Box() for _ in range(3)]
 
@@ -704,7 +704,7 @@ class Notebook(g.Notebook):
     _f.add(_meta_area_opts)
     return _f
 
-  def _build_page1_enumeration_runsql(self, m):
+  def build_page1_enumeration_runsql(self, m):
     _f = Frame.new(m._('Execute SQL'))
     _boxes = [Box() for _ in range(2)]
 
@@ -729,7 +729,7 @@ class Notebook(g.Notebook):
     _f.add(_runsql_area_opts)
     return _f
 
-  def _build_page1_enumeration_brute_force(self, m):
+  def build_page1_enumeration_brute_force(self, m):
     _f = Frame.new(m._('Brute force'))
     _brute_force_area_opts = Box(orientation=VERTICAL)
 
@@ -744,7 +744,7 @@ class Notebook(g.Notebook):
     _f.add(_brute_force_area_opts)
     return _f
 
-  def _build_page1_file(self):
+  def build_page1_file(self):
     box = Box(orientation=VERTICAL, spacing=6)
 
     _file_note = label(
@@ -762,10 +762,10 @@ class Notebook(g.Notebook):
 
     _boxes = [Box(margin_top = 10, margin_start = 10, margin_end = 10) for _ in range(4)]
 
-    _file_read_area = self._build_page1_file_read(self.m)
-    _file_write_area = self._build_page1_file_write(self.m)
-    _os_access_area = self._build_page1_file_os_access(self.m)
-    _registry_area = self._build_page1_file_os_registry(self.m)
+    _file_read_area = self.build_page1_file_read(self.m)
+    _file_write_area = self.build_page1_file_write(self.m)
+    _os_access_area = self.build_page1_file_os_access(self.m)
+    _registry_area = self.build_page1_file_os_registry(self.m)
 
     _boxes[0].pack_start(_file_read_area, True, True, 6)
     _boxes[1].pack_start(_file_write_area, True, True, 6)
@@ -777,7 +777,7 @@ class Notebook(g.Notebook):
       box.add(_)
     return box
 
-  def _build_page1_file_read(self, m):
+  def build_page1_file_read(self, m):
     _f = Frame.new(m._('Read remote file'))
     _file_read_area_opts = Box(orientation=VERTICAL, spacing=6)
 
@@ -793,7 +793,7 @@ class Notebook(g.Notebook):
     _f.add(_file_read_area_opts)
     return _f
 
-  def _build_page1_file_write(self, m):
+  def build_page1_file_write(self, m):
     _f = Frame.new(m._('Upload local file'))
     _boxes = [Box() for _ in range(3)]
 
@@ -828,7 +828,7 @@ class Notebook(g.Notebook):
     _f.add(_file_write_area_opts)
     return _f
 
-  def _build_page1_file_os_access(self, m):
+  def build_page1_file_os_access(self, m):
     _f = Frame.new(m._('Access to the OS behind the DBMS'))
     _boxes = [Box() for _ in range(3)]
 
@@ -864,7 +864,7 @@ class Notebook(g.Notebook):
     _f.add(_os_access_area_opts)
     return _f
 
-  def _build_page1_file_os_registry(self, m):
+  def build_page1_file_os_registry(self, m):
     _f = Frame.new(m._('Access to register in remote WIN'))
     _boxes = [Box() for _ in range(3)]
 
@@ -891,7 +891,7 @@ class Notebook(g.Notebook):
     _f.add(_registry_area_opts)
     return _f
 
-  def _build_page1_other(self):
+  def build_page1_other(self):
     '''
     最大的宽应该是由最长的 request定制的第一行 决定
 
@@ -902,12 +902,12 @@ class Notebook(g.Notebook):
     box = Box(orientation=VERTICAL)
 
     _row1 = Box()
-    _page1_other_general_area = self._build_page1_other_general(self.m)
+    _page1_other_general_area = self.build_page1_other_general(self.m)
 
     _row1.pack_start(_page1_other_general_area, True, True, 5)
 
     _row2 = Box()
-    _page1_other_misc_area = self._build_page1_other_misc(self.m)
+    _page1_other_misc_area = self.build_page1_other_misc(self.m)
 
     _row2.pack_start(_page1_other_misc_area, True, True, 5)
 
@@ -915,7 +915,7 @@ class Notebook(g.Notebook):
     box.add(_row2)
     return box
 
-  def _build_page1_other_general(self, m):
+  def build_page1_other_general(self, m):
     _f = Frame.new(m._('General'))
     _boxes = [Box() for _ in range(11)]
     i = 0
@@ -1040,7 +1040,7 @@ class Notebook(g.Notebook):
     _f.add(_page1_other_general_opts)
     return _f
 
-  def _build_page1_other_misc(self, m):
+  def build_page1_other_misc(self, m):
     _f = Frame.new(m._('Misc'))
     _boxes = [Box() for _ in range(5)]
 
@@ -1092,7 +1092,7 @@ class Notebook(g.Notebook):
     _f.add(_page1_other_misc_opts)
     return _f
 
-  def _build_page1_tamper(self, m):
+  def build_page1_tamper(self, m):
     grid = g.Grid(row_spacing = 6, margin = 15)
 
     _i = 0  # row number

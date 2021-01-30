@@ -43,7 +43,7 @@ class Window(g.Window):
     _main_box = Box(orientation=VERTICAL)
 
     self._target_notebook = g.Notebook()
-    self._build_target_notebook(self._target_notebook)
+    self.build_target_notebook(self._target_notebook)
 
     _main_box.pack_start(self._target_notebook, False, True, 0)
 
@@ -51,12 +51,12 @@ class Window(g.Window):
     self.main_notebook.add_events(d.EventMask.SCROLL_MASK
                                   | d.EventMask.SMOOTH_SCROLL_MASK)
     self.main_notebook.connect('scroll-event', self.scroll_page)
-    page1 = self._build_page1()
-    page2 = self._build_page2()
-    page3 = self._build_page3()
-    page4 = self._build_page4()
-    page5 = self._build_page5()
-    page6 = self._build_page6()
+    page1 = self.build_page1()
+    page2 = self.build_page2()
+    page3 = self.build_page3()
+    page4 = self.build_page4()
+    page5 = self.build_page5()
+    page6 = self.build_page6()
 
     _ = m._
     self.main_notebook.append_page(page1, label.new_with_mnemonic(_('OPTIONS(_1)')))
@@ -169,7 +169,7 @@ class Window(g.Window):
 
       _.destroy()
 
-  def _build_target_notebook(self, target_nb):
+  def build_target_notebook(self, target_nb):
     target_nb.add_events(d.EventMask.SCROLL_MASK
                          | d.EventMask.SMOOTH_SCROLL_MASK)
     target_nb.connect('scroll-event', self.scroll_page)
@@ -241,7 +241,7 @@ class Window(g.Window):
     target_nb.append_page(_google_dork_area, label.new(_('-g GOOGLEDORK')))
     target_nb.append_page(_direct_connect_area, label.new(_('-d DIRECT')))
 
-  def _build_page1(self):
+  def build_page1(self):
     box = Box(orientation=VERTICAL, spacing=6)
     box.set_border_width(10)
     _ = m._
@@ -290,7 +290,7 @@ class Window(g.Window):
     box.pack_end(_exec_area, False, True, 0)
     return box
 
-  def _build_page2(self):
+  def build_page2(self):
     '''
     用subprocess不可实现与sqlmap的交互!
     不管是多线程, 同步还是异步, 都不行, 只能使用pty
@@ -413,7 +413,7 @@ class Window(g.Window):
     m._page2_terminal.paste_clipboard()
     return True
 
-  def _build_page3(self):
+  def build_page3(self):
     box = Box(orientation=VERTICAL, spacing=6)
     box.set_border_width(10)
 
@@ -443,7 +443,7 @@ class Window(g.Window):
     box.pack_end(_row2, False, True, 0)
     return box
 
-  def _build_page4(self):
+  def build_page4(self):
     box = Box(orientation=VERTICAL)
     box.set_border_width(10)
 
@@ -528,7 +528,7 @@ class Window(g.Window):
     box.pack_start(_row4, True, True, 5)
     return box
 
-  def _build_page5(self):
+  def build_page5(self):
     box = Box(orientation=VERTICAL)
     box.set_border_width(10)
 
@@ -578,14 +578,14 @@ class Window(g.Window):
     # _manual_hh = '/home/needle/bin/output_interval.sh'
     _manual_hh = [self._handlers.get_sqlmap_path(), '-hh']
     try:
-      _subprocess = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT)
+      _subp = Popen(_manual_hh, stdout=PIPE, stderr=STDOUT)
 
-      for _an_bytes_line_tmp in iter(_subprocess.stdout.readline, b''):
+      for _an_bytes_line_tmp in iter(_subp.stdout.readline, b''):
         GLib.idle_add(self.textbuffer_insert,
                       textbuffer,
                       _an_bytes_line_tmp.decode('utf8'))
 
-      _subprocess.wait()
+      _subp.wait()
     except FileNotFoundError as e:
       GLib.idle_add(self.textbuffer_insert, textbuffer, str(e))
     except Exception as e:
@@ -600,7 +600,7 @@ class Window(g.Window):
     # get_end_iter也要加锁, py有没有变量锁? 锁btn和textbuffer就行了嘛
     textbuffer.insert(textbuffer.get_end_iter(), line)
 
-  def _build_page6(self):
+  def build_page6(self):
     box = Box(orientation=VERTICAL, spacing=6)
     box.set_border_width(10)
 
