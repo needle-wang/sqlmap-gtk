@@ -78,12 +78,12 @@ class Notebook(g.Notebook):
     _row2 = Box()
     # _tamper_area = self._build_page1_setting_tamper(self.m)
     _optimize_area = self.build_page1_setting_optimize(self.m)
-    _general_area = self.build_page1_setting_general(self.m)
+    _offen_area = self.build_page1_setting_offen(self.m)
     _hidden_area = self.build_page1_setting_hidden(self.m)
 
     # _row2.pack_start(_tamper_area, False, True, 5)
     _row2.pack_start(_optimize_area, False, True, 5)
-    _row2.pack_start(_general_area, False, True, 5)
+    _row2.pack_start(_offen_area, False, True, 5)
     _row2.pack_start(_hidden_area, False, True, 5)
 
     box.pack_start(_row0, False, True, 5)
@@ -307,7 +307,7 @@ class Notebook(g.Notebook):
     _f.add(_optimize_area_opts)
     return _f
 
-  def build_page1_setting_general(self, m):
+  def build_page1_setting_offen(self, m):
     _f = Frame.new(m._('Offen'))
     _boxes = [Box() for _ in range(5)]
 

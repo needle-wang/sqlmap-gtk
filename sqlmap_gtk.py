@@ -70,7 +70,6 @@ class Window(g.Window):
     self.add(_main_box)
     # 初始化完后, 必须要有焦点, 不然按任何键都会报错, 直到操作一次UI:
     # gtk_widget_event: assertion 'WIDGET_REALIZED_FOR_EVENT (widget, event)' failed`
-    # 获取焦点
     # m._url_combobox.get_child().grab_focus()
     self.set_focus(m._url_combobox.get_child())
 
@@ -616,15 +615,18 @@ class Window(g.Window):
     _boxes[1].pack_start(m._page6_tooltips_en_radio, False, True, 10)
     _boxes[1].pack_start(m._page6_tooltips_zh_radio, False, True, 10)
 
+    _version = '0.3.5.2'
+    _timestamp = '2021-01-29 04:04:35'
+
     _url_self = 'https://github.com/needle-wang/sqlmap-gtk'
     _url_tutorial = 'https://python-gtk-3-tutorial.readthedocs.io/en/latest'
     _url_api = 'https://lazka.github.io/pgi-docs/Gtk-3.0/'
     _url_idea = 'https://github.com/kxcode'
     _about_str = f'''
-    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: 0.3.5.2
-       2021-01-29 04:04:35
-       required: python3.6+, gtk+3.20 above,
-                 python3-gi, requests, sqlmap\n
+    1. <a href="{_url_self}" title = "{_url_self}">Website</a> VERSION: {_version}
+       {_timestamp}
+       required: python3.6+, gtk+3.20 above, python3-gi,
+                 requests, sqlmap\n
     2. use PyGObject(python3-gi + Gtk+3) to recode sqm.py
     3. thanks to the idea from sqm, author: <a href="{_url_idea}" title="{_url_idea}">KINGX</a>. sqm UI with python2 + tkinter\n
     4. Python GTK+3 Tutorial: <a href="{_url_tutorial}">{_url_tutorial}</a>
